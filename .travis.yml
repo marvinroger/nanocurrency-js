@@ -1,0 +1,20 @@
+language: node_js
+sudo: required
+services:
+  - docker
+cache: yarn
+notifications:
+  email: false
+node_js:
+  - '8'
+branches:
+  except:
+    - /^v\d+\.\d+\.\d+$/
+  
+install:
+  - yarn
+script:
+  - yarn build
+  - yarn test
+after_success:
+  - yarn travis-deploy-once "yarn semantic-release"

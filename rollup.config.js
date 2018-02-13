@@ -1,5 +1,6 @@
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
+import uglify from 'rollup-plugin-uglify'
 import pkg from './package.json'
 
 export default [
@@ -12,8 +13,9 @@ export default [
 			{ file: pkg.module, format: 'es' }
 		],
 		plugins: [
-			resolve(), // so Rollup can find `ms`
-			commonjs() // so Rollup can convert `ms` to an ES module
+			resolve(),
+			commonjs(),
+      uglify()
 		]
 	},
 ]

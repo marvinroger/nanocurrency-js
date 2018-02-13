@@ -14,6 +14,7 @@
     "rollup": "^0.55.5",
     "rollup-plugin-commonjs": "^8.3.0",
     "rollup-plugin-node-resolve": "^3.0.2",
+    "rollup-plugin-uglify": "^3.0.0",
     "semantic-release": "^12.4.1",
     "travis-deploy-once": "^4.3.4"
   },
@@ -22,10 +23,11 @@
   ],
   "homepage": "https://github.com/marvinroger/nanocurrency-js",
   "keywords": [
+    "crypto",
     "currency",
     "nano",
     "pow",
-    "work"
+    "raiblocks"
   ],
   "license": "GPL-3.0",
   "main": "dist/nanocurrency.cjs.js",

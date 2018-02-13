@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+
+  <body>
+    <pre id="status"></pre>
+    <script>
+      (function () {
+        const hash = 'fe1fa06e1a1d2fba98b4a5c8f9950c58e996020be59b1fc6691775053c7567dd'
+
+        async function main () {
+          const start = Date.now()
+
+          const statusEl = document.getElementById('status')
+          const statuses = []
+          const setStatus = msg => {
+            statuses.push(msg)
+            statusEl.innerHTML = statuses.join('\n')
+          }
+
+          setStatus('Started')
+
+          const workerCount = Math.max(window.navigator.hardwareConcurrency - 1, 1)
+          setStatus(`Launching ${workerCount} worker(s)...`)
+          const workerList = []
+          for (let i = 0; i < workerCount; i++) {
+            const worker = new Worker('worker.js')
+            worker.postMessage({
+              blockHash: hash,
+              workerNumber: i,
+              workerCount
+            })
+            worker.onmessage = ({data}) => {
+              const {type} = data
+
+              if (type === 'started') {
+                setStatus(`Worker ${i} started`)
+              } else if (type === 'done') {
+                const end = Date.now()
+                const time = (end - start) / 1000
+                setStatus(`Worker ${i} found word ${data.work} in ${time}s`)
+                for (let workerIndex in workerList) {
+                  setStatus(`Terminating worker ${workerIndex}...`)
+                  workerList[workerIndex].terminate()
+                }
+                setStatus(`Done.`)
+              }
+            }
+            workerList.push(worker)
+          }
+        }
+
+        main()
+      })()
+    </script>
+  </body>
+</html>

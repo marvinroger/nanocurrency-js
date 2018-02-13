@@ -21,7 +21,9 @@
 
           setStatus('Started')
 
-          const workerCount = Math.max(window.navigator.hardwareConcurrency - 1, 1)
+          // some browsers (e.g. iOS) don't export hardwareConcurrency
+          const hardwareConcurrency = window.navigator.hardwareConcurrency || 4
+          const workerCount = Math.max(hardwareConcurrency - 1, 1)
           setStatus(`Launching ${workerCount} worker(s)...`)
           const workerList = []
           for (let i = 0; i < workerCount; i++) {

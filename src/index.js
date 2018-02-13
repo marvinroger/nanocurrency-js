@@ -20,6 +20,6 @@ export function generateWork (blockHash, workerNumber = 0, workerCount = 1) {
   if (instance === null) throw new Error('Nano is not initialized')
 
   const work = _generateWork(blockHash, workerNumber, workerCount)
-  
+
   return work !== '0000000000000000' ? work : null
 }

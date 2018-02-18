@@ -12,14 +12,16 @@ const licenseBanner = `
 */
 `.trim()
 
+const globals = { fs: 'fs', path: 'path' }
+
 export default [
   {
     input: 'src/index.js',
-    external: [],
+    external: ['fs', 'path'],
     output: [
-      { name: 'NanoCurrency', file: pkg.browser, format: 'umd' },
-      { file: pkg.main, format: 'cjs' },
-      { file: pkg.module, format: 'es' }
+      { name: 'NanoCurrency', file: pkg.browser, format: 'umd', globals },
+      { file: pkg.main, format: 'cjs', globals },
+      { file: pkg.module, format: 'es', globals }
     ],
     plugins: [
       resolve(),

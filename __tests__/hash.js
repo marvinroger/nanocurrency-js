@@ -4,7 +4,7 @@ const nano = require('../dist/nanocurrency.cjs')
 const {
   INVALID_HASHES,
   INVALID_ADDRESSES,
-  INVALID_BALANCES
+  INVALID_AMOUNTS
 } = require('./common/data')
 
 const VALID_SEND_BLOCK = {
@@ -38,45 +38,171 @@ beforeAll(nano.init)
 describe('send', () => {
   test('creates correct send block', () => {
     expect(
-      nano.computeSendBlockHash(
+      nano.hashSendBlock(
         VALID_SEND_BLOCK.previous,
         VALID_SEND_BLOCK.destination,
         VALID_SEND_BLOCK.balance
       )
     ).toBe(VALID_SEND_BLOCK.hash)
   })
+
+  test('throws with invalid previous', () => {
+    expect.assertions(INVALID_HASHES.length)
+    for (let invalidHash of INVALID_HASHES) {
+      expect(
+        () => nano.hashSendBlock(
+          invalidHash,
+          VALID_SEND_BLOCK.destination,
+          VALID_SEND_BLOCK.balance
+        )
+      ).toThrowError('Previous is not valid')
+    }
+  })
+
+  test('throws with invalid destination', () => {
+    expect.assertions(INVALID_ADDRESSES.length)
+    for (let invalidAddress of INVALID_ADDRESSES) {
+      expect(
+        () => nano.hashSendBlock(
+          VALID_SEND_BLOCK.previous,
+          invalidAddress,
+          VALID_SEND_BLOCK.balance
+        )
+      ).toThrowError('Destination is not valid')
+    }
+  })
+
+  test('throws with invalid balance', () => {
+    expect.assertions(INVALID_AMOUNTS.length)
+    for (let invalidAmount of INVALID_AMOUNTS) {
+      expect(
+        () => nano.hashSendBlock(
+          VALID_SEND_BLOCK.previous,
+          VALID_SEND_BLOCK.destination,
+          invalidAmount
+        )
+      ).toThrowError('Balance is not valid')
+    }
+  })
 })
 
 describe('open', () => {
   test('creates correct open block', () => {
     expect(
-      nano.computeOpenBlockHash(
+      nano.hashOpenBlock(
         VALID_OPEN_BLOCK.source,
         VALID_OPEN_BLOCK.representative,
         VALID_OPEN_BLOCK.account
       )
     ).toBe(VALID_OPEN_BLOCK.hash)
   })
+
+  test('throws with invalid source', () => {
+    expect.assertions(INVALID_HASHES.length)
+    for (let invalidHash of INVALID_HASHES) {
+      expect(
+        () => nano.hashOpenBlock(
+          invalidHash,
+          VALID_OPEN_BLOCK.representative,
+          VALID_OPEN_BLOCK.account
+        )
+      ).toThrowError('Source is not valid')
+    }
+  })
+
+  test('throws with invalid representative', () => {
+    expect.assertions(INVALID_ADDRESSES.length)
+    for (let invalidAddress of INVALID_ADDRESSES) {
+      expect(
+        () => nano.hashOpenBlock(
+          VALID_OPEN_BLOCK.source,
+          invalidAddress,
+          VALID_OPEN_BLOCK.account
+        )
+      ).toThrowError('Representative is not valid')
+    }
+  })
+
+  test('throws with invalid account', () => {
+    expect.assertions(INVALID_ADDRESSES.length)
+    for (let invalidAddress of INVALID_ADDRESSES) {
+      expect(
+        () => nano.hashOpenBlock(
+          VALID_OPEN_BLOCK.source,
+          VALID_OPEN_BLOCK.representative,
+          invalidAddress
+        )
+      ).toThrowError('Account is not valid')
+    }
+  })
 })
 
 describe('change', () => {
   test('creates correct change block', () => {
     expect(
-      nano.computeChangeBlockHash(
+      nano.hashChangeBlock(
         VALID_CHANGE_BLOCK.previous,
         VALID_CHANGE_BLOCK.representative
       )
     ).toBe(VALID_CHANGE_BLOCK.hash)
+  })
+
+  test('throws with invalid previous', () => {
+    expect.assertions(INVALID_HASHES.length)
+    for (let invalidHash of INVALID_HASHES) {
+      expect(
+        () => nano.hashChangeBlock(
+          invalidHash,
+          VALID_CHANGE_BLOCK.representative
+        )
+      ).toThrowError('Previous is not valid')
+    }
+  })
+
+  test('throws with invalid representative', () => {
+    expect.assertions(INVALID_ADDRESSES.length)
+    for (let invalidAddress of INVALID_ADDRESSES) {
+      expect(
+        () => nano.hashChangeBlock(
+          VALID_CHANGE_BLOCK.previous,
+          invalidAddress
+        )
+      ).toThrowError('Representative is not valid')
+    }
   })
 })
 
 describe('receive', () => {
   test('creates correct receive block', () => {
     expect(
-      nano.computeReceiveBlockHash(
+      nano.hashReceiveBlock(
         VALID_RECEIVE_BLOCK.previous,
         VALID_RECEIVE_BLOCK.source
       )
     ).toBe(VALID_RECEIVE_BLOCK.hash)
+  })
+
+  test('throws with invalid previous', () => {
+    expect.assertions(INVALID_HASHES.length)
+    for (let invalidHash of INVALID_HASHES) {
+      expect(
+        () => nano.hashReceiveBlock(
+          invalidHash,
+          VALID_RECEIVE_BLOCK.source
+        )
+      ).toThrowError('Previous is not valid')
+    }
+  })
+
+  test('throws with invalid source', () => {
+    expect.assertions(INVALID_HASHES.length)
+    for (let invalidHash of INVALID_HASHES) {
+      expect(
+        () => nano.hashReceiveBlock(
+          VALID_RECEIVE_BLOCK.previous,
+          invalidHash
+        )
+      ).toThrowError('Source is not valid')
+    }
   })
 })

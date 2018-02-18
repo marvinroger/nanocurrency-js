@@ -30,14 +30,7 @@ describe('validation', () => {
   })
 
   test('throws with invalid hashes', () => {
-    for (let invalidHash of INVALID_HASHES) {
-      expect(
-        () => nano.validateWork(invalidHash, VALID_WORK.work)
-      ).toThrowError('Hash is not valid')
-    }
-  })
-
-  test('throws with invalid hashes', () => {
+    expect.assertions(INVALID_HASHES.length)
     for (let invalidHash of INVALID_HASHES) {
       expect(
         () => nano.validateWork(invalidHash, VALID_WORK.work)
@@ -46,6 +39,7 @@ describe('validation', () => {
   })
 
   test('throws with invalid works', () => {
+    expect.assertions(INVALID_WORKS.length)
     for (let invalidWork of INVALID_WORKS) {
       expect(
         () => nano.validateWork(VALID_WORK.hash, invalidWork)
@@ -56,14 +50,15 @@ describe('validation', () => {
 
 describe('generation', () => {
   test('computes deterministic work', () => {
-    expect(nano.generateWork(VALID_WORK.hash))
+    expect(nano.work(VALID_WORK.hash))
       .toBe(VALID_WORK.work)
   })
 
   test('throws with invalid hashes', () => {
+    expect.assertions(INVALID_HASHES.length)
     for (let invalidHash of INVALID_HASHES) {
       expect(
-        () => nano.generateWork(invalidHash)
+        () => nano.work(invalidHash)
       ).toThrowError('Hash is not valid')
     }
   })
@@ -78,9 +73,10 @@ describe('generation', () => {
       [0, -1],
       [1, 1]
     ]
+    expect.assertions(INVALID_WORKER_PARAMETERS.length)
     for (let invalidWorkerParameters of INVALID_WORKER_PARAMETERS) {
       expect(
-        () => nano.generateWork(VALID_WORK.hash, invalidWorkerParameters[0], invalidWorkerParameters[1])
+        () => nano.work(VALID_WORK.hash, invalidWorkerParameters[0], invalidWorkerParameters[1])
       ).toThrowError('Worker parameters are not valid')
     }
   })

@@ -34,7 +34,7 @@ const INVALID_WORKS = [
   'z000000000995bc3'
 ]
 
-const INVALID_ACCOUNTS = [
+const INVALID_ADDRESSES = [
   12,
   'zrb_1mbj7xi6yrwcuwetzd5535pdqjea5rfpsoqo9nw4gxg8itycgntucp49i1nz',
   'xrb_2mbj7xi6yrwcuwetzd5535pdqjea5rfpsoqo9nw4gxg8itycgntucp49i1nz',
@@ -49,6 +49,12 @@ const INVALID_AMOUNTS = [
   '-1'
 ]
 
+const INVALID_SIGNATURES = [
+  12,
+  '974324f8cc42da56f62fc212a17886bdcb18de363d04da84eedc99cb4a33919d14a2cf9de9d534faa6d0b91d01f0622205d898293525e692586c84f2dcf9208',
+  'z974324f8cc42da56f62fc212a17886bdcb18de363d04da84eedc99cb4a33919d14a2cf9de9d534faa6d0b91d01f0622205d898293525e692586c84f2dcf9208'
+]
+
 module.exports = {
   INVALID_SEEDS,
   INVALID_INDEXES,
@@ -56,5 +62,7 @@ module.exports = {
   INVALID_PUBLIC_KEYS,
   INVALID_HASHES,
   INVALID_WORKS,
-  INVALID_ACCOUNTS
+  INVALID_ADDRESSES,
+  INVALID_AMOUNTS,
+  INVALID_SIGNATURES
 }

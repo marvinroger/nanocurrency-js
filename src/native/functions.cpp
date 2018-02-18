@@ -174,7 +174,7 @@ bool validate_work(const uint8_t* const block_hash, uint8_t* const work) {
 
 const uint64_t MIN_UINT64 = 0x0000000000000000;
 const uint64_t MAX_UINT64 = 0xffffffffffffffff;
-void generate_work(const uint8_t* const block_hash, const uint8_t worker_number, const uint8_t worker_count, uint8_t* const dst) {
+void work(const uint8_t* const block_hash, const uint8_t worker_number, const uint8_t worker_count, uint8_t* const dst) {
   const uint64_t interval = (MAX_UINT64 - MIN_UINT64) / worker_count;
 
   const uint64_t lower_bound = MIN_UINT64 + (worker_number * interval);
@@ -258,7 +258,7 @@ std::string compute_address(const uint8_t* const public_key) {
   return address;
 }
 
-void compute_open_block_hash(const uint8_t* const source, const uint8_t* const representative, const uint8_t* const account, uint8_t* const dst) {
+void hash_open_block(const uint8_t* const source, const uint8_t* const representative, const uint8_t* const account, uint8_t* const dst) {
   blake2b_state hash;
 
   blake2b_init(&hash, BLOCK_HASH_LENGTH);
@@ -268,7 +268,7 @@ void compute_open_block_hash(const uint8_t* const source, const uint8_t* const r
   blake2b_final(&hash, dst, BLOCK_HASH_LENGTH);
 }
 
-void compute_change_block_hash(const uint8_t* const previous, const uint8_t* const representative, uint8_t* const dst) {
+void hash_change_block(const uint8_t* const previous, const uint8_t* const representative, uint8_t* const dst) {
   blake2b_state hash;
 
   blake2b_init(&hash, BLOCK_HASH_LENGTH);
@@ -277,7 +277,7 @@ void compute_change_block_hash(const uint8_t* const previous, const uint8_t* con
   blake2b_final(&hash, dst, BLOCK_HASH_LENGTH);
 }
 
-void compute_send_block_hash(const uint8_t* const previous, const uint8_t* const destination, const uint8_t* const balance, uint8_t* const dst) {
+void hash_send_block(const uint8_t* const previous, const uint8_t* const destination, const uint8_t* const balance, uint8_t* const dst) {
   blake2b_state hash;
 
   blake2b_init(&hash, BLOCK_HASH_LENGTH);
@@ -287,7 +287,7 @@ void compute_send_block_hash(const uint8_t* const previous, const uint8_t* const
   blake2b_final(&hash, dst, BLOCK_HASH_LENGTH);
 }
 
-void compute_receive_block_hash(const uint8_t* const previous, const uint8_t* const source, uint8_t* const dst) {
+void hash_receive_block(const uint8_t* const previous, const uint8_t* const source, uint8_t* const dst) {
   blake2b_state hash;
 
   blake2b_init(&hash, BLOCK_HASH_LENGTH);
@@ -296,11 +296,19 @@ void compute_receive_block_hash(const uint8_t* const previous, const uint8_t* co
   blake2b_final(&hash, dst, BLOCK_HASH_LENGTH);
 }
 
-void compute_signature(const uint8_t* const block_hash, const uint8_t* const secret_key, const uint8_t* const public_key, uint8_t* const dst) {
+void sign_block(const uint8_t* const block_hash, const uint8_t* const secret_key, uint8_t* const dst) {
+  uint8_t public_key[PUBLIC_KEY_LENGTH];
+  compute_public_key(secret_key, public_key);
+
   ed25519_sign(dst, block_hash, BLOCK_HASH_LENGTH, public_key, secret_key);
 }
 
+bool verify_block(const uint8_t* const block_hash, const uint8_t* const signature, const uint8_t* const public_key) {
+  return ed25519_verify(signature, block_hash, BLOCK_HASH_LENGTH, public_key);
+}
 
+
+std::string stack_string;
 extern "C" {
   EMSCRIPTEN_KEEPALIVE
   uint8_t emscripten_validate_work(const char* const block_hash_hex, const char* const work_hex) {
@@ -319,60 +327,60 @@ extern "C" {
   }
 
   EMSCRIPTEN_KEEPALIVE
-  char* emscripten_generate_work(const char* const block_hash_hex, const uint8_t worker_number, const uint8_t worker_count) {
+  const char* emscripten_work(const char* const block_hash_hex, const uint8_t worker_number, const uint8_t worker_count) {
     const std::string block_hash_hex_string(block_hash_hex);
     uint8_t block_hash_bytes[BLOCK_HASH_LENGTH];
     hex_to_bytes(block_hash_hex_string, block_hash_bytes);
 
-    uint8_t work[WORK_LENGTH];
+    uint8_t work_[WORK_LENGTH];
     for (unsigned int i = 0; i < WORK_LENGTH; i++) {
-      work[i] = 0;
+      work_[i] = 0;
     }
-    generate_work(block_hash_bytes, worker_number, worker_count, work);
-    const std::string work_string = bytes_to_hex(work, WORK_LENGTH);
+    work(block_hash_bytes, worker_number, worker_count, work_);
+    stack_string = bytes_to_hex(work_, WORK_LENGTH);
 
-    return strdup(work_string.c_str());
+    return stack_string.c_str();
   }
 
   EMSCRIPTEN_KEEPALIVE
-  char* emscripten_compute_secret_key(const char* const seed_hex, const uint32_t index) {
+  const char* emscripten_compute_secret_key(const char* const seed_hex, const uint32_t index) {
     const std::string seed_hex_string(seed_hex);
     uint8_t seed_bytes[SEED_LENGTH];
     hex_to_bytes(seed_hex_string, seed_bytes);
 
     uint8_t secret_key[SECRET_KEY_LENGTH];
     compute_secret_key(seed_bytes, index, secret_key);
-    const std::string secret_key_string = bytes_to_hex(secret_key, SECRET_KEY_LENGTH);
+    stack_string = bytes_to_hex(secret_key, SECRET_KEY_LENGTH);
 
-    return strdup(secret_key_string.c_str());
+    return stack_string.c_str();
   }
 
   EMSCRIPTEN_KEEPALIVE
-  char* emscripten_compute_public_key(const char* const secret_key_hex) {
+  const char* emscripten_compute_public_key(const char* const secret_key_hex) {
     const std::string secret_key_hex_string(secret_key_hex);
     uint8_t secret_key_bytes[SECRET_KEY_LENGTH];
     hex_to_bytes(secret_key_hex_string, secret_key_bytes);
 
     uint8_t public_key[PUBLIC_KEY_LENGTH];
     compute_public_key(secret_key_bytes, public_key);
-    const std::string public_key_string = bytes_to_hex(public_key, PUBLIC_KEY_LENGTH);
+    stack_string = bytes_to_hex(public_key, PUBLIC_KEY_LENGTH);
 
-    return strdup(public_key_string.c_str());
+    return stack_string.c_str();
   }
 
   EMSCRIPTEN_KEEPALIVE
-  char* emscripten_compute_address(const char* const public_key_hex) {
+  const char* emscripten_compute_address(const char* const public_key_hex) {
     const std::string public_key_hex_string(public_key_hex);
     uint8_t public_key_bytes[PUBLIC_KEY_LENGTH];
     hex_to_bytes(public_key_hex_string, public_key_bytes);
 
-    const std::string address_string = compute_address(public_key_bytes);
+    stack_string = compute_address(public_key_bytes);
 
-    return strdup(address_string.c_str());
+    return stack_string.c_str();
   }
 
   EMSCRIPTEN_KEEPALIVE
-  char* emscripten_compute_receive_block_hash(const char* const previous_hex, const char* const source_hex) {
+  const char* emscripten_hash_receive_block(const char* const previous_hex, const char* const source_hex) {
     const std::string previous_hex_string(previous_hex);
     uint8_t previous_bytes[BLOCK_HASH_LENGTH];
     hex_to_bytes(previous_hex_string, previous_bytes);
@@ -382,14 +390,14 @@ extern "C" {
     hex_to_bytes(source_hex_string, source_bytes);
 
     uint8_t block_hash[BLOCK_HASH_LENGTH];
-    compute_receive_block_hash(previous_bytes, source_bytes, block_hash);
-    const std::string block_hash_string = bytes_to_hex(block_hash, BLOCK_HASH_LENGTH);
+    hash_receive_block(previous_bytes, source_bytes, block_hash);
+    stack_string = bytes_to_hex(block_hash, BLOCK_HASH_LENGTH);
 
-    return strdup(block_hash_string.c_str());
+    return stack_string.c_str();
   }
 
   EMSCRIPTEN_KEEPALIVE
-  char* emscripten_compute_open_block_hash(const char* const source_hex, const char* const representative_address, const char* const account_address) {
+  const char* emscripten_hash_open_block(const char* const source_hex, const char* const representative_address, const char* const account_address) {
     const std::string source_hex_string(source_hex);
     uint8_t source_bytes[BLOCK_HASH_LENGTH];
     hex_to_bytes(source_hex_string, source_bytes);
@@ -401,14 +409,14 @@ extern "C" {
     compute_public_key_from_address(account_address, account_public_key);
 
     uint8_t block_hash[BLOCK_HASH_LENGTH];
-    compute_open_block_hash(source_bytes, representative_public_key, account_public_key, block_hash);
-    const std::string block_hash_string = bytes_to_hex(block_hash, BLOCK_HASH_LENGTH);
+    hash_open_block(source_bytes, representative_public_key, account_public_key, block_hash);
+    stack_string = bytes_to_hex(block_hash, BLOCK_HASH_LENGTH);
 
-    return strdup(block_hash_string.c_str());
+    return stack_string.c_str();
   }
 
   EMSCRIPTEN_KEEPALIVE
-  char* emscripten_compute_change_block_hash(const char* const previous_hex, const char* const representative_address) {
+  const char* emscripten_hash_change_block(const char* const previous_hex, const char* const representative_address) {
     const std::string previous_hex_string(previous_hex);
     uint8_t previous_bytes[BLOCK_HASH_LENGTH];
     hex_to_bytes(previous_hex_string, previous_bytes);
@@ -417,14 +425,14 @@ extern "C" {
     compute_public_key_from_address(representative_address, representative_public_key);
 
     uint8_t block_hash[BLOCK_HASH_LENGTH];
-    compute_change_block_hash(previous_bytes, representative_public_key, block_hash);
-    const std::string block_hash_string = bytes_to_hex(block_hash, BLOCK_HASH_LENGTH);
+    hash_change_block(previous_bytes, representative_public_key, block_hash);
+    stack_string = bytes_to_hex(block_hash, BLOCK_HASH_LENGTH);
 
-    return strdup(block_hash_string.c_str());
+    return stack_string.c_str();
   }
 
   EMSCRIPTEN_KEEPALIVE
-  char* emscripten_compute_send_block_hash(const char* const previous_hex, const char* const destination_address, const char* const balance) {
+  const char* emscripten_hash_send_block(const char* const previous_hex, const char* const destination_address, const char* const balance) {
     const std::string previous_hex_string(previous_hex);
     uint8_t previous_bytes[BLOCK_HASH_LENGTH];
     hex_to_bytes(previous_hex_string, previous_bytes);
@@ -437,15 +445,14 @@ extern "C" {
     amount_to_bytes(balance_string, balance_bytes);
 
     uint8_t block_hash[BLOCK_HASH_LENGTH];
-    compute_send_block_hash(previous_bytes, destination_public_key, balance_bytes, block_hash);
-    const std::string block_hash_string = bytes_to_hex(block_hash, BLOCK_HASH_LENGTH);
+    hash_send_block(previous_bytes, destination_public_key, balance_bytes, block_hash);
+    stack_string = bytes_to_hex(block_hash, BLOCK_HASH_LENGTH);
 
-    return strdup(block_hash_string.c_str());
+    return stack_string.c_str();
   }
 
-  // TODO: check
   EMSCRIPTEN_KEEPALIVE
-  char* emscripten_compute_signature(const char* const block_hash_hex, const char* const secret_key_hex, const char* const public_key_hex) {
+  const char* emscripten_sign_block(const char* const block_hash_hex, const char* const secret_key_hex) {
     const std::string block_hash_hex_string(block_hash_hex);
     uint8_t block_hash_bytes[BLOCK_HASH_LENGTH];
     hex_to_bytes(block_hash_hex_string, block_hash_bytes);
@@ -454,14 +461,29 @@ extern "C" {
     uint8_t secret_key_bytes[SECRET_KEY_LENGTH];
     hex_to_bytes(secret_key_hex_string, secret_key_bytes);
 
+    uint8_t signature[SIGNATURE_LENGTH];
+    sign_block(block_hash_bytes, secret_key_bytes, signature);
+    stack_string = bytes_to_hex(signature, SIGNATURE_LENGTH);
+
+    return stack_string.c_str();
+  }
+
+  EMSCRIPTEN_KEEPALIVE
+  uint8_t emscripten_verify_block(const char* const block_hash_hex, const char* const signature_hex, const char* const public_key_hex) {
+    const std::string block_hash_hex_string(block_hash_hex);
+    uint8_t block_hash_bytes[BLOCK_HASH_LENGTH];
+    hex_to_bytes(block_hash_hex_string, block_hash_bytes);
+
+    const std::string signature_hex_string(signature_hex);
+    uint8_t signature_bytes[SIGNATURE_LENGTH];
+    hex_to_bytes(signature_hex_string, signature_bytes);
+
     const std::string public_key_hex_string(public_key_hex);
     uint8_t public_key_bytes[PUBLIC_KEY_LENGTH];
     hex_to_bytes(public_key_hex_string, public_key_bytes);
 
-    uint8_t signature[SIGNATURE_LENGTH];
-    compute_signature(block_hash_bytes, secret_key_bytes, public_key_bytes, signature);
-    const std::string signature_string = bytes_to_hex(signature, SIGNATURE_LENGTH);
+    const bool valid = verify_block(block_hash_bytes, signature_bytes, public_key_bytes);
 
-    return strdup(signature_string.c_str());
+    return valid ? 1 : 0;
   }
 }

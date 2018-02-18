@@ -26,7 +26,10 @@
   ],
   "homepage": "https://github.com/marvinroger/nanocurrency-js",
   "jest": {
-    "testPathIgnorePatterns": ["<rootDir>/__tests__/common/", "<rootDir>/node_modules/"]
+    "testPathIgnorePatterns": [
+      "<rootDir>/__tests__/common/",
+      "<rootDir>/node_modules/"
+    ]
   },
   "keywords": [
     "crypto",
@@ -45,7 +48,7 @@
   "scripts": {
     "build": "yarn build:native && yarn build:js",
     "build:js": "rollup -c",
-    "build:native": "docker run --rm -v $(pwd):/src trzeci/emscripten emcc -o native.js -O3 --closure 1 --llvm-lto 3 -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s 'EXTRA_EXPORTED_RUNTIME_METHODS=[\"cwrap\"]' src/native/functions.cpp src/native/uint128_t/uint128_t.cpp src/native/blake2/ref/blake2b-ref.c src/native/ed25519/src/ge.c src/native/ed25519/src/fe.c src/native/ed25519/src/sc.c src/native/ed25519/src/keypair.c src/native/ed25519/src/sign.c",
+    "build:native": "docker run --rm -v $(pwd):/src trzeci/emscripten emcc -o tmp/native.js -O3 --closure 1 --llvm-lto 3 -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s 'EXTRA_EXPORTED_RUNTIME_METHODS=[\"cwrap\"]' src/native/functions.cpp src/native/uint128_t/uint128_t.cpp src/native/blake2/ref/blake2b-ref.c src/native/ed25519/src/ge.c src/native/ed25519/src/fe.c src/native/ed25519/src/sc.c src/native/ed25519/src/keypair.c src/native/ed25519/src/sign.c src/native/ed25519/src/verify.c",
     "lint": "standard",
     "semantic-release": "semantic-release",
     "test": "jest",

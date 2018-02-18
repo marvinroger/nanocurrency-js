@@ -27,19 +27,23 @@ const KEYS = [
 beforeAll(nano.init)
 
 describe('seeds', () => {
-  test('generates different seeds', () => {
-    expect(nano.generateSeed()).not.toBe(nano.generateSeed())
+  test('generates different seeds', async () => {
+    const seed1 = await nano.generateSeed()
+    const seed2 = await nano.generateSeed()
+    expect(seed1).not.toBe(seed2)
   })
 })
 
 describe('secret keys', () => {
   test('creates correct secret keys', () => {
+    expect.assertions(KEYS.length)
     for (let key of KEYS) {
       expect(nano.computeSecretKey(SEED, key.index)).toBe(key.secretKey)
     }
   })
 
   test('throws with invalid seeds', () => {
+    expect.assertions(INVALID_SEEDS.length)
     for (let invalidSeed of INVALID_SEEDS) {
       expect(
         () => nano.computeSecretKey(invalidSeed, 0)
@@ -48,6 +52,7 @@ describe('secret keys', () => {
   })
 
   test('throws with invalid indexes', () => {
+    expect.assertions(INVALID_INDEXES.length)
     for (let invalidIndex of INVALID_INDEXES) {
       expect(
         () => nano.computeSecretKey(SEED, invalidIndex)
@@ -58,12 +63,14 @@ describe('secret keys', () => {
 
 describe('public keys', () => {
   test('creates correct public keys', () => {
+    expect.assertions(KEYS.length)
     for (let key of KEYS) {
       expect(nano.computePublicKey(key.secretKey)).toBe(key.publicKey)
     }
   })
 
   test('throws with invalid secret keys', () => {
+    expect.assertions(INVALID_SECRET_KEYS.length)
     for (let invalidSecretKey of INVALID_SECRET_KEYS) {
       expect(
         () => nano.computePublicKey(invalidSecretKey)
@@ -74,12 +81,14 @@ describe('public keys', () => {
 
 describe('addresses', () => {
   test('creates correct addresses', () => {
+    expect.assertions(KEYS.length)
     for (let key of KEYS) {
       expect(nano.computeAddress(key.publicKey)).toBe(key.address)
     }
   })
 
   test('throws with invalid public keys', () => {
+    expect.assertions(INVALID_PUBLIC_KEYS.length)
     for (let invalidPublicKey of INVALID_PUBLIC_KEYS) {
       expect(
         () => nano.computeAddress(invalidPublicKey)

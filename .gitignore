@@ -1,7 +1,8 @@
 ### App ###
 
 /dist/
-/native.js
+/tmp/*
+!/tmp/.gitkeep
 
 ### Node ###
 

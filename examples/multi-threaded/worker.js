@@ -9,7 +9,7 @@ onmessage = async function ({data}) {
   postMessage({ type: 'started' })
 
   await NanoCurrency.init()
-  const work = NanoCurrency.generateWork(blockHash, workerNumber, workerCount)
+  const work = NanoCurrency.work(blockHash, workerNumber, workerCount)
 
   postMessage({ type: 'done', work })
 }

@@ -1,6 +1,12 @@
 /* eslint-env jest */
 
 const nano = require('../dist/nanocurrency.cjs')
+const {
+  INVALID_SEEDS,
+  INVALID_INDEXES,
+  INVALID_SECRET_KEYS,
+  INVALID_PUBLIC_KEYS
+} = require('./common/data')
 
 const SEED = 'b947ee0115014a4d49a804e7fc7248e31690b80033ce7a6e3a07bdf93b2584ff'
 const KEYS = [
@@ -20,24 +26,64 @@ const KEYS = [
 
 beforeAll(nano.init)
 
-test('generates different seeds', () => {
-  expect(nano.generateSeed()).not.toBe(nano.generateSeed())
+describe('seeds', () => {
+  test('generates different seeds', () => {
+    expect(nano.generateSeed()).not.toBe(nano.generateSeed())
+  })
 })
 
-test('creates correct secret keys', () => {
-  for (let key of KEYS) {
-    expect(nano.computeSecretKey(SEED, key.index)).toBe(key.secretKey)
-  }
+describe('secret keys', () => {
+  test('creates correct secret keys', () => {
+    for (let key of KEYS) {
+      expect(nano.computeSecretKey(SEED, key.index)).toBe(key.secretKey)
+    }
+  })
+
+  test('throws with invalid seeds', () => {
+    for (let invalidSeed of INVALID_SEEDS) {
+      expect(
+        () => nano.computeSecretKey(invalidSeed, 0)
+      ).toThrowError('Seed is not valid')
+    }
+  })
+
+  test('throws with invalid indexes', () => {
+    for (let invalidIndex of INVALID_INDEXES) {
+      expect(
+        () => nano.computeSecretKey(SEED, invalidIndex)
+      ).toThrowError('Index is not valid')
+    }
+  })
 })
 
-test('creates correct public keys', () => {
-  for (let key of KEYS) {
-    expect(nano.computePublicKey(key.secretKey)).toBe(key.publicKey)
-  }
+describe('public keys', () => {
+  test('creates correct public keys', () => {
+    for (let key of KEYS) {
+      expect(nano.computePublicKey(key.secretKey)).toBe(key.publicKey)
+    }
+  })
+
+  test('throws with invalid secret keys', () => {
+    for (let invalidSecretKey of INVALID_SECRET_KEYS) {
+      expect(
+        () => nano.computePublicKey(invalidSecretKey)
+      ).toThrowError('Secret key is not valid')
+    }
+  })
 })
 
-test('creates correct addresses', () => {
-  for (let key of KEYS) {
-    expect(nano.computeAddress(key.publicKey)).toBe(key.address)
-  }
+describe('addresses', () => {
+  test('creates correct addresses', () => {
+    for (let key of KEYS) {
+      expect(nano.computeAddress(key.publicKey)).toBe(key.address)
+    }
+  })
+
+  test('throws with invalid public keys', () => {
+    for (let invalidPublicKey of INVALID_PUBLIC_KEYS) {
+      expect(
+        () => nano.computeAddress(invalidPublicKey)
+      ).toThrowError('Public key is not valid')
+    }
+  })
 })

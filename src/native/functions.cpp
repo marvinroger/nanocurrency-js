@@ -4,8 +4,6 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 #include <string>
-#include <random>
-#include <iostream>
 
 #include <emscripten.h>
 
@@ -24,10 +22,6 @@ const uint8_t ACCOUNT_LENGTH = 32;
 const uint8_t ADDRESS_PREFIX_LENGTH = 4; // xrb_
 const uint8_t ADDRESS_CHECKSUM_LENGTH = 5;
 const uint8_t WORK_LENGTH = 8;
-
-std::random_device rnd;
-std::mt19937 generator(rnd());
-std::uniform_int_distribution<uint8_t> dis;
 
 void hex_to_bytes(const std::string& hex, uint8_t* const dst) {
   int byte_index = 0;
@@ -111,12 +105,6 @@ void bit_array_to_bytes(const bool* const src, const uint16_t length, uint8_t* c
     }
 
     dst[byte_index] = byte;
-  }
-}
-
-void fill_random_bytes(uint8_t* const dst, const uint8_t length) {
-  for (unsigned int i = 0; i < length; i++) {
-    dst[i] = dis(generator);
   }
 }
 
@@ -344,15 +332,6 @@ extern "C" {
     const std::string work_string = bytes_to_hex(work, WORK_LENGTH);
 
     return strdup(work_string.c_str());
-  }
-
-  EMSCRIPTEN_KEEPALIVE
-  char* emscripten_generate_seed() {
-    uint8_t seed[SEED_LENGTH];
-    fill_random_bytes(seed, SEED_LENGTH);
-    const std::string seed_string = bytes_to_hex(seed, SEED_LENGTH);
-
-    return strdup(seed_string.c_str());
   }
 
   EMSCRIPTEN_KEEPALIVE

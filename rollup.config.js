@@ -15,7 +15,7 @@ const licenseBanner = `
 export default [
   {
     input: 'src/index.js',
-    external: ['greenlet'],
+    external: [],
     output: [
       { name: 'NanoCurrency', file: pkg.browser, format: 'umd' },
       { file: pkg.main, format: 'cjs' },

@@ -13,21 +13,21 @@ const licenseBanner = `
 `.trim()
 
 export default [
-	{
-		input: 'src/index.js',
-		external: ['greenlet'],
-		output: [
-			{ name: 'NanoCurrency', file: pkg.browser, format: 'umd' },
-			{ file: pkg.main, format: 'cjs' },
-			{ file: pkg.module, format: 'es' }
-		],
-		plugins: [
-			resolve(),
-			commonjs(),
+  {
+    input: 'src/index.js',
+    external: ['greenlet'],
+    output: [
+      { name: 'NanoCurrency', file: pkg.browser, format: 'umd' },
+      { file: pkg.main, format: 'cjs' },
+      { file: pkg.module, format: 'es' }
+    ],
+    plugins: [
+      resolve(),
+      commonjs(),
       uglify(),
       license({
         banner: licenseBanner
       })
-		]
-	},
+    ]
+  }
 ]

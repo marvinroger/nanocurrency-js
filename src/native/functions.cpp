@@ -5,17 +5,23 @@
  */
 #include <string>
 #include <random>
+#include <iostream>
 
 #include <emscripten.h>
 
+#include "uint128_t/uint128_t.h"
 #include "blake2/ref/blake2.h"
-#include "libsodium/ed25519_ref10.h"
+#include "ed25519/src/ed25519.h"
 
 const uint64_t WORK_THRESHOLD = 0xffffffc000000000;
 const uint8_t BLOCK_HASH_LENGTH = 32;
+const uint8_t SIGNATURE_LENGTH = 64;
 const uint8_t SEED_LENGTH = 32;
 const uint8_t SECRET_KEY_LENGTH = 32;
 const uint8_t PUBLIC_KEY_LENGTH = 32;
+const uint8_t AMOUNT_LENGTH = 16;
+const uint8_t ACCOUNT_LENGTH = 32;
+const uint8_t ADDRESS_PREFIX_LENGTH = 4; // xrb_
 const uint8_t ADDRESS_CHECKSUM_LENGTH = 5;
 const uint8_t WORK_LENGTH = 8;
 
@@ -29,6 +35,13 @@ void hex_to_bytes(const std::string& hex, uint8_t* const dst) {
     const std::string byte_string = hex.substr(i, 2);
     const uint8_t byte = (uint8_t) strtol(byte_string.c_str(), NULL, 16);
     dst[byte_index++] = byte;
+  }
+}
+
+const uint8_t UINT128_LENGTH = 16;
+void uint128_to_bytes(const uint128_t src, uint8_t* const dst) {
+  for (unsigned int i = 0; i < UINT128_LENGTH; i++) {
+    dst[i] = uint8_t((src >> 8 * ((UINT128_LENGTH - 1) - i)) & 0xFF);
   }
 }
 
@@ -75,12 +88,29 @@ void reverse_bytes(uint8_t* const src, const uint8_t length) {
   }
 }
 
+void byte_to_bit_array(const uint8_t src, bool* const dst, const uint8_t bit_length = 8) {
+  for (int bit_index = 0; bit_index < bit_length; bit_index++) {
+    const bool is_bit_set = (src & (1 << ((bit_length - 1) - bit_index)));
+    dst[bit_index] = is_bit_set;
+  }
+}
+
 void bytes_to_bit_array(const uint8_t* const src, const uint8_t length, bool* const dst) {
   for (unsigned int byte_index = 0; byte_index < length; byte_index++) {
+    byte_to_bit_array(src[byte_index], dst + (byte_index * 8));
+  }
+}
+
+void bit_array_to_bytes(const bool* const src, const uint16_t length, uint8_t* const dst) {
+  const uint16_t byte_length = length / 8;
+  for (unsigned int byte_index = 0; byte_index < byte_length; byte_index++) {
+    uint8_t byte = 0;
     for (int bit_index = 0; bit_index < 8; bit_index++) {
-      const bool is_bit_set = (src[byte_index] & (1 << (7 - bit_index)));
-      dst[(byte_index * 8) + bit_index] = is_bit_set;
+      byte += src[(byte_index * 8) + bit_index];
+      if (bit_index != 7) byte <<= 1;
     }
+
+    dst[byte_index] = byte;
   }
 }
 
@@ -94,23 +124,48 @@ const uint8_t BASE32_MAP[] = {'1', '3', '4', '5', '6', '7', '8', '9',
                               'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
                               'i', 'j', 'k', 'm', 'n', 'o', 'p', 'q',
                               'r', 's', 't', 'u', 'w', 'x', 'y', 'z'};
-std::string compute_base32(const bool* const bit_array, const uint16_t length) {
+std::string bit_array_to_base32(const bool* const bit_array, const uint16_t length) {
   const uint16_t base32_length = length / 5;
 
   std::string s(base32_length, ' ');
 
   for (unsigned int chunk_index = 0; chunk_index < base32_length; chunk_index++) {
-    uint8_t chunk_int = 0;
+    uint8_t chunk_value = 0;
     for (unsigned int i = 0; i < 5; i++) {
       if (bit_array[(chunk_index * 5) + i]) {
-        chunk_int |= 1 << (4 - i);
+        chunk_value |= 1 << (4 - i);
       }
     }
 
-    s[chunk_index] = BASE32_MAP[chunk_int];
+    s[chunk_index] = BASE32_MAP[chunk_value];
   }
 
   return s;
+}
+
+// TODO
+void base32_to_bit_array(const std::string& base32, bool* const dst) {
+  for (unsigned int i = 0; i < base32.length(); i++) {
+    const uint8_t character = base32[i];
+    uint8_t chunk_value = 0;
+    for (unsigned int j = 0; j < 32; j++) {
+      if (BASE32_MAP[j] == character) {
+        chunk_value = j;
+        break;
+      }
+    }
+
+    byte_to_bit_array(chunk_value, dst + (i * 5), 5);
+  }
+}
+
+void amount_to_bytes(const std::string& amount, uint8_t* const dst) {
+  uint128_t value = 0;
+  for (unsigned int i = 0; i < amount.length(); i++) {
+    value = (value * 10) + amount[i] - '0';
+  }
+
+  uint128_to_bytes(value, dst);
 }
 
 const uint8_t WORK_HASH_LENGTH = 8;
@@ -169,24 +224,21 @@ void compute_secret_key(const uint8_t* const seed, const uint32_t index, uint8_t
 }
 
 void compute_public_key(const uint8_t* const secret_key, uint8_t* const dst) {
-  ge25519_p3 A;
-  blake2b_state hash;
-  uint8_t output[64];
-
-  blake2b_init(&hash, 64);
-  blake2b_update(&hash, secret_key, SECRET_KEY_LENGTH);
-  blake2b_final(&hash, output, 64);
-
-  output[0] &= 248;
-  output[31] &= 127;
-  output[31] |= 64;
-  ge25519_scalarmult_base(&A, output);
-  ge25519_p3_tobytes(dst, &A);
+  ed25519_derive_public_from_secret(secret_key, dst);
 }
 
 const uint16_t PUBLIC_KEY_BIT_LENGTH = PUBLIC_KEY_LENGTH * 8;
 const uint8_t PUBLIC_KEY_BIT_PADDING_LENGTH = 4;
 const uint16_t PUBLIC_KEY_BIT_LENGTH_WITH_PADDING = PUBLIC_KEY_BIT_LENGTH + PUBLIC_KEY_BIT_PADDING_LENGTH;
+void compute_public_key_from_address(const std::string& address, uint8_t* const dst) {
+  const std::string public_key_base_32 = address.substr(ADDRESS_PREFIX_LENGTH, address.length() - (ADDRESS_PREFIX_LENGTH + ADDRESS_CHECKSUM_LENGTH));
+  bool public_key_with_padding_bit_array[PUBLIC_KEY_BIT_LENGTH_WITH_PADDING];
+  base32_to_bit_array(public_key_base_32, public_key_with_padding_bit_array);
+  bool* public_key_bit_array = public_key_with_padding_bit_array + PUBLIC_KEY_BIT_PADDING_LENGTH;
+
+  bit_array_to_bytes(public_key_bit_array, PUBLIC_KEY_BIT_LENGTH, dst);
+}
+
 const uint8_t ADDRESS_CHECKSUM_BIT_LENGTH = ADDRESS_CHECKSUM_LENGTH * 8;
 std::string compute_address(const uint8_t* const public_key) {
   bool public_key_bit_array[PUBLIC_KEY_BIT_LENGTH_WITH_PADDING];
@@ -197,7 +249,7 @@ std::string compute_address(const uint8_t* const public_key) {
 
   bytes_to_bit_array(public_key, PUBLIC_KEY_LENGTH, public_key_bit_array + PUBLIC_KEY_BIT_PADDING_LENGTH);
 
-  const std::string base32_public_key = compute_base32(public_key_bit_array, PUBLIC_KEY_BIT_LENGTH_WITH_PADDING);
+  const std::string base32_public_key = bit_array_to_base32(public_key_bit_array, PUBLIC_KEY_BIT_LENGTH_WITH_PADDING);
 
   blake2b_state hash;
   uint8_t address_checksum[ADDRESS_CHECKSUM_LENGTH];
@@ -211,12 +263,55 @@ std::string compute_address(const uint8_t* const public_key) {
   bool address_checksum_bit_array[ADDRESS_CHECKSUM_BIT_LENGTH];
   bytes_to_bit_array(address_checksum, ADDRESS_CHECKSUM_LENGTH, address_checksum_bit_array);
 
-  const std::string base32_checksum = compute_base32(address_checksum_bit_array, ADDRESS_CHECKSUM_BIT_LENGTH);
+  const std::string base32_checksum = bit_array_to_base32(address_checksum_bit_array, ADDRESS_CHECKSUM_BIT_LENGTH);
 
   const std::string address = "xrb_" + base32_public_key + base32_checksum;
 
   return address;
 }
+
+void compute_open_block_hash(const uint8_t* const source, const uint8_t* const representative, const uint8_t* const account, uint8_t* const dst) {
+  blake2b_state hash;
+
+  blake2b_init(&hash, BLOCK_HASH_LENGTH);
+  blake2b_update(&hash, source, BLOCK_HASH_LENGTH);
+  blake2b_update(&hash, representative, ACCOUNT_LENGTH);
+  blake2b_update(&hash, account, ACCOUNT_LENGTH);
+  blake2b_final(&hash, dst, BLOCK_HASH_LENGTH);
+}
+
+void compute_change_block_hash(const uint8_t* const previous, const uint8_t* const representative, uint8_t* const dst) {
+  blake2b_state hash;
+
+  blake2b_init(&hash, BLOCK_HASH_LENGTH);
+  blake2b_update(&hash, previous, BLOCK_HASH_LENGTH);
+  blake2b_update(&hash, representative, ACCOUNT_LENGTH);
+  blake2b_final(&hash, dst, BLOCK_HASH_LENGTH);
+}
+
+void compute_send_block_hash(const uint8_t* const previous, const uint8_t* const destination, const uint8_t* const balance, uint8_t* const dst) {
+  blake2b_state hash;
+
+  blake2b_init(&hash, BLOCK_HASH_LENGTH);
+  blake2b_update(&hash, previous, BLOCK_HASH_LENGTH);
+  blake2b_update(&hash, destination, ACCOUNT_LENGTH);
+  blake2b_update(&hash, balance, AMOUNT_LENGTH);
+  blake2b_final(&hash, dst, BLOCK_HASH_LENGTH);
+}
+
+void compute_receive_block_hash(const uint8_t* const previous, const uint8_t* const source, uint8_t* const dst) {
+  blake2b_state hash;
+
+  blake2b_init(&hash, BLOCK_HASH_LENGTH);
+  blake2b_update(&hash, previous, BLOCK_HASH_LENGTH);
+  blake2b_update(&hash, source, BLOCK_HASH_LENGTH);
+  blake2b_final(&hash, dst, BLOCK_HASH_LENGTH);
+}
+
+void compute_signature(const uint8_t* const block_hash, const uint8_t* const secret_key, const uint8_t* const public_key, uint8_t* const dst) {
+  ed25519_sign(dst, block_hash, BLOCK_HASH_LENGTH, public_key, secret_key);
+}
+
 
 extern "C" {
   EMSCRIPTEN_KEEPALIVE
@@ -295,5 +390,99 @@ extern "C" {
     const std::string address_string = compute_address(public_key_bytes);
 
     return strdup(address_string.c_str());
+  }
+
+  EMSCRIPTEN_KEEPALIVE
+  char* emscripten_compute_receive_block_hash(const char* const previous_hex, const char* const source_hex) {
+    const std::string previous_hex_string(previous_hex);
+    uint8_t previous_bytes[BLOCK_HASH_LENGTH];
+    hex_to_bytes(previous_hex_string, previous_bytes);
+
+    const std::string source_hex_string(source_hex);
+    uint8_t source_bytes[BLOCK_HASH_LENGTH];
+    hex_to_bytes(source_hex_string, source_bytes);
+
+    uint8_t block_hash[BLOCK_HASH_LENGTH];
+    compute_receive_block_hash(previous_bytes, source_bytes, block_hash);
+    const std::string block_hash_string = bytes_to_hex(block_hash, BLOCK_HASH_LENGTH);
+
+    return strdup(block_hash_string.c_str());
+  }
+
+  EMSCRIPTEN_KEEPALIVE
+  char* emscripten_compute_open_block_hash(const char* const source_hex, const char* const representative_address, const char* const account_address) {
+    const std::string source_hex_string(source_hex);
+    uint8_t source_bytes[BLOCK_HASH_LENGTH];
+    hex_to_bytes(source_hex_string, source_bytes);
+
+    uint8_t representative_public_key[PUBLIC_KEY_LENGTH];
+    compute_public_key_from_address(representative_address, representative_public_key);
+
+    uint8_t account_public_key[PUBLIC_KEY_LENGTH];
+    compute_public_key_from_address(account_address, account_public_key);
+
+    uint8_t block_hash[BLOCK_HASH_LENGTH];
+    compute_open_block_hash(source_bytes, representative_public_key, account_public_key, block_hash);
+    const std::string block_hash_string = bytes_to_hex(block_hash, BLOCK_HASH_LENGTH);
+
+    return strdup(block_hash_string.c_str());
+  }
+
+  EMSCRIPTEN_KEEPALIVE
+  char* emscripten_compute_change_block_hash(const char* const previous_hex, const char* const representative_address) {
+    const std::string previous_hex_string(previous_hex);
+    uint8_t previous_bytes[BLOCK_HASH_LENGTH];
+    hex_to_bytes(previous_hex_string, previous_bytes);
+
+    uint8_t representative_public_key[PUBLIC_KEY_LENGTH];
+    compute_public_key_from_address(representative_address, representative_public_key);
+
+    uint8_t block_hash[BLOCK_HASH_LENGTH];
+    compute_change_block_hash(previous_bytes, representative_public_key, block_hash);
+    const std::string block_hash_string = bytes_to_hex(block_hash, BLOCK_HASH_LENGTH);
+
+    return strdup(block_hash_string.c_str());
+  }
+
+  EMSCRIPTEN_KEEPALIVE
+  char* emscripten_compute_send_block_hash(const char* const previous_hex, const char* const destination_address, const char* const balance) {
+    const std::string previous_hex_string(previous_hex);
+    uint8_t previous_bytes[BLOCK_HASH_LENGTH];
+    hex_to_bytes(previous_hex_string, previous_bytes);
+
+    uint8_t destination_public_key[PUBLIC_KEY_LENGTH];
+    compute_public_key_from_address(destination_address, destination_public_key);
+
+    const std::string balance_string(balance);
+    uint8_t balance_bytes[AMOUNT_LENGTH];
+    amount_to_bytes(balance_string, balance_bytes);
+
+    uint8_t block_hash[BLOCK_HASH_LENGTH];
+    compute_send_block_hash(previous_bytes, destination_public_key, balance_bytes, block_hash);
+    const std::string block_hash_string = bytes_to_hex(block_hash, BLOCK_HASH_LENGTH);
+
+    return strdup(block_hash_string.c_str());
+  }
+
+  // TODO: check
+  EMSCRIPTEN_KEEPALIVE
+  char* emscripten_compute_signature(const char* const block_hash_hex, const char* const secret_key_hex, const char* const public_key_hex) {
+    const std::string block_hash_hex_string(block_hash_hex);
+    uint8_t block_hash_bytes[BLOCK_HASH_LENGTH];
+    hex_to_bytes(block_hash_hex_string, block_hash_bytes);
+
+    const std::string secret_key_hex_string(secret_key_hex);
+    uint8_t secret_key_bytes[SECRET_KEY_LENGTH];
+    hex_to_bytes(secret_key_hex_string, secret_key_bytes);
+
+    const std::string public_key_hex_string(public_key_hex);
+    uint8_t public_key_bytes[PUBLIC_KEY_LENGTH];
+    hex_to_bytes(public_key_hex_string, public_key_bytes);
+
+    uint8_t signature[SIGNATURE_LENGTH];
+    compute_signature(block_hash_bytes, secret_key_bytes, public_key_bytes, signature);
+    const std::string signature_string = bytes_to_hex(signature, SIGNATURE_LENGTH);
+
+    return strdup(signature_string.c_str());
   }
 }

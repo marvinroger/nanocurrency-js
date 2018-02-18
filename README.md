@@ -18,4 +18,6 @@ A toolkit for the Nano cryptocurrency.
 
 * BLAKE2 reference implementation, used for hashing: https://github.com/BLAKE2/BLAKE2
 
-* Sodium crypto library, used for Ed25519 keypair/signing: https://github.com/jedisct1/libsodium
+* Ed25519 portable implementation from Orson Peters, used for keypair/signing: https://github.com/orlp/ed25519. **Note: The library has been modified to use BLAKE2b instead of SHA-512**
+
+* uint128_t from Jason LEE, used for amount representation: https://github.com/calccrypto/uint128_t

@@ -4,7 +4,6 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 /** @module nanoCurrency */
-import Native from '../native.tmp'
 
 const IS_NODE = Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]'
 let fillRandom = null

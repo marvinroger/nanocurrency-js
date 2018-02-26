@@ -174,11 +174,11 @@ bool validate_work(const uint8_t* const block_hash, uint8_t* const work) {
 
 const uint64_t MIN_UINT64 = 0x0000000000000000;
 const uint64_t MAX_UINT64 = 0xffffffffffffffff;
-void work(const uint8_t* const block_hash, const uint8_t worker_number, const uint8_t worker_count, uint8_t* const dst) {
+void work(const uint8_t* const block_hash, const uint8_t worker_index, const uint8_t worker_count, uint8_t* const dst) {
   const uint64_t interval = (MAX_UINT64 - MIN_UINT64) / worker_count;
 
-  const uint64_t lower_bound = MIN_UINT64 + (worker_number * interval);
-  const uint64_t upper_bound = (worker_number != worker_count - 1) ? lower_bound + interval : MAX_UINT64;
+  const uint64_t lower_bound = MIN_UINT64 + (worker_index * interval);
+  const uint64_t upper_bound = (worker_index != worker_count - 1) ? lower_bound + interval : MAX_UINT64;
 
   uint64_t work = lower_bound;
   uint8_t work_bytes[WORK_LENGTH];
@@ -327,7 +327,7 @@ extern "C" {
   }
 
   EMSCRIPTEN_KEEPALIVE
-  const char* emscripten_work(const char* const block_hash_hex, const uint8_t worker_number, const uint8_t worker_count) {
+  const char* emscripten_work(const char* const block_hash_hex, const uint8_t worker_index, const uint8_t worker_count) {
     const std::string block_hash_hex_string(block_hash_hex);
     uint8_t block_hash_bytes[BLOCK_HASH_LENGTH];
     hex_to_bytes(block_hash_hex_string, block_hash_bytes);
@@ -336,7 +336,7 @@ extern "C" {
     for (unsigned int i = 0; i < WORK_LENGTH; i++) {
       work_[i] = 0;
     }
-    work(block_hash_bytes, worker_number, worker_count, work_);
+    work(block_hash_bytes, worker_index, worker_count, work_);
     stack_string = bytes_to_hex(work_, WORK_LENGTH);
 
     return stack_string.c_str();

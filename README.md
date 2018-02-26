@@ -10,6 +10,8 @@ A toolkit for the Nano cryptocurrency.
 
 ![Code showcase](showcase.png)
 
+The documentation is available in the [DOCUMENTATION.md](DOCUMENTATION.md) file.
+
 ---
 
 ## Helpful materials

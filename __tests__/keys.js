@@ -38,7 +38,7 @@ describe('secret keys', () => {
   test('creates correct secret keys', () => {
     expect.assertions(KEYS.length)
     for (let key of KEYS) {
-      expect(nano.computeSecretKey(SEED, key.index)).toBe(key.secretKey)
+      expect(nano.deriveSecretKey(SEED, key.index)).toBe(key.secretKey)
     }
   })
 
@@ -46,7 +46,7 @@ describe('secret keys', () => {
     expect.assertions(INVALID_SEEDS.length)
     for (let invalidSeed of INVALID_SEEDS) {
       expect(
-        () => nano.computeSecretKey(invalidSeed, 0)
+        () => nano.deriveSecretKey(invalidSeed, 0)
       ).toThrowError('Seed is not valid')
     }
   })
@@ -55,7 +55,7 @@ describe('secret keys', () => {
     expect.assertions(INVALID_INDEXES.length)
     for (let invalidIndex of INVALID_INDEXES) {
       expect(
-        () => nano.computeSecretKey(SEED, invalidIndex)
+        () => nano.deriveSecretKey(SEED, invalidIndex)
       ).toThrowError('Index is not valid')
     }
   })
@@ -65,7 +65,7 @@ describe('public keys', () => {
   test('creates correct public keys', () => {
     expect.assertions(KEYS.length)
     for (let key of KEYS) {
-      expect(nano.computePublicKey(key.secretKey)).toBe(key.publicKey)
+      expect(nano.derivePublicKey(key.secretKey)).toBe(key.publicKey)
     }
   })
 
@@ -73,7 +73,7 @@ describe('public keys', () => {
     expect.assertions(INVALID_SECRET_KEYS.length)
     for (let invalidSecretKey of INVALID_SECRET_KEYS) {
       expect(
-        () => nano.computePublicKey(invalidSecretKey)
+        () => nano.derivePublicKey(invalidSecretKey)
       ).toThrowError('Secret key is not valid')
     }
   })
@@ -83,7 +83,7 @@ describe('addresses', () => {
   test('creates correct addresses', () => {
     expect.assertions(KEYS.length)
     for (let key of KEYS) {
-      expect(nano.computeAddress(key.publicKey)).toBe(key.address)
+      expect(nano.deriveAddress(key.publicKey)).toBe(key.address)
     }
   })
 
@@ -91,7 +91,7 @@ describe('addresses', () => {
     expect.assertions(INVALID_PUBLIC_KEYS.length)
     for (let invalidPublicKey of INVALID_PUBLIC_KEYS) {
       expect(
-        () => nano.computeAddress(invalidPublicKey)
+        () => nano.deriveAddress(invalidPublicKey)
       ).toThrowError('Public key is not valid')
     }
   })

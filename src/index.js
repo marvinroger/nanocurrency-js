@@ -1,4 +1,4 @@
-/*!
+deriveSecretKey/*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
@@ -12,9 +12,9 @@ let fillRandom = null
 let instance = null
 let _work = null
 let _validateWork = null
-let _computeSecretKey = null
-let _computePublicKey = null
-let _computeAddress = null
+let _deriveSecretKey = null
+let _derivePublicKey = null
+let _deriveAddress = null
 let _hashReceiveBlock = null
 let _hashOpenBlock = null
 let _hashChangeBlock = null
@@ -41,9 +41,9 @@ export function init () {
         instance = native
         _work = instance.cwrap('emscripten_work', 'string', ['string', 'number', 'number'])
         _validateWork = instance.cwrap('emscripten_validate_work', 'number', ['string', 'string'])
-        _computeSecretKey = instance.cwrap('emscripten_compute_secret_key', 'string', ['string', 'number'])
-        _computePublicKey = instance.cwrap('emscripten_compute_public_key', 'string', ['string'])
-        _computeAddress = instance.cwrap('emscripten_compute_address', 'string', ['string'])
+        _deriveSecretKey = instance.cwrap('emscripten_derive_secret_key', 'string', ['string', 'number'])
+        _derivePublicKey = instance.cwrap('emscripten_derive_public_key', 'string', ['string'])
+        _deriveAddress = instance.cwrap('emscripten_derive_address', 'string', ['string'])
         _hashReceiveBlock = instance.cwrap('emscripten_hash_receive_block', 'string', ['string', 'string'])
         _hashOpenBlock = instance.cwrap('emscripten_hash_open_block', 'string', ['string', 'string', 'string'])
         _hashChangeBlock = instance.cwrap('emscripten_hash_change_block', 'string', ['string', 'string'])
@@ -187,13 +187,13 @@ export async function generateSeed () {
 }
 
 /**
- * Compute a secret key from a seed, given an index.
+ * Derive a secret key from a seed, given an index.
  *
  * @param {string} seed - The seed to generate the secret key from, in hexadecimal format
  * @param {number} index - The index to generate the secret key from
  * @return {string} Secret key, in hexadecimal format
  */
-export function computeSecretKey (seed, index) {
+export function deriveSecretKey (seed, index) {
   checkNotInitialized()
 
   if (!checkSeed(seed)) throw new Error('Seed is not valid')
@@ -202,35 +202,35 @@ export function computeSecretKey (seed, index) {
     index < 0
   ) throw new Error('Index is not valid')
 
-  return _computeSecretKey(seed, index)
+  return _deriveSecretKey(seed, index)
 }
 
 /**
- * Compute a public key from a secret key.
+ * Derive a public key from a secret key.
  *
  * @param {string} secretKey - The secret key to generate the secret key from, in hexadecimal format
  * @return {string} Public key, in hexadecimal format
  */
-export function computePublicKey (secretKey) {
+export function derivePublicKey (secretKey) {
   checkNotInitialized()
 
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
 
-  return _computePublicKey(secretKey)
+  return _derivePublicKey(secretKey)
 }
 
 /**
- * Compute address from a public key.
+ * Derive address from a public key.
  *
  * @param {string} publicKey - The public key to generate the address from, in hexadecimal format
  * @return {string} Address
  */
-export function computeAddress (publicKey) {
+export function deriveAddress (publicKey) {
   checkNotInitialized()
 
   if (!checkKey(publicKey)) throw new Error('Public key is not valid')
 
-  return _computeAddress(publicKey)
+  return _deriveAddress(publicKey)
 }
 
 /**

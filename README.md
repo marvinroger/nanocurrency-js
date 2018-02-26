@@ -23,3 +23,9 @@ The documentation is available in the [DOCUMENTATION.md](DOCUMENTATION.md) file.
 * Ed25519 portable implementation from Orson PETERS, used for keypair/signing: https://github.com/orlp/ed25519. **Note: The library has been modified to use BLAKE2b instead of SHA-512**
 
 * uint128_t from Jason LEE, used for amount representation: https://github.com/calccrypto/uint128_t
+
+## Donations
+
+If you like the project, feel free to donate some nano:
+
+`xrb_3mrogerjhkdyj6mzf4e7aatf3xs3gp4stwc9yt9ymgasw7kr7g17t4jwwwy8`

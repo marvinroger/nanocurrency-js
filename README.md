@@ -3,14 +3,29 @@
 [![npm version](https://img.shields.io/npm/v/nanocurrency.svg)](https://www.npmjs.com/package/nanocurrency)
 [![build status](https://travis-ci.org/marvinroger/nanocurrency-js.svg?branch=master)](https://travis-ci.org/marvinroger/nanocurrency-js)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ---
 
-A toolkit for the Nano cryptocurrency.
+A toolkit for the Nano cryptocurrency, allowing you to derive keys, generate seeds, hashes, signatures, proofs of work and blocks.
 
 ![Code showcase](showcase.png)
 
 The documentation is available in the [DOCUMENTATION.md](DOCUMENTATION.md) file.
+
+---
+
+## Contribute
+
+Contributions are very welcome. To develop, make use of the following commands (using [Yarn](https://yarnpkg.com)):
+
+* `yarn build`: build the C++ code to WebAssembly and bundle the production files into the `dist` directory
+
+* `yarn test`: test the code
+
+* `yarn lint`: lint the code against [JavaScript Standard Style](https://standardjs.com)
+
+* `yarn generate-docs`: generate the `DOCUMENTATION.md` file from the [JSDoc](http://usejsdoc.org) annotations
 
 ---
 

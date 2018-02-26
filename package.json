@@ -1,6 +1,6 @@
 {
   "name": "nanocurrency",
-  "description": "A toolkit for the Nano cryptocurrency.",
+  "description": "A toolkit for the Nano cryptocurrency, allowing you to derive keys, generate seeds, hashes, signatures, proofs of work and blocks.",
   "version": "0.0.0-development",
   "author": {
     "name": "Marvin ROGER",
@@ -53,17 +53,17 @@
   "scripts": {
     "build": "yarn build:native && yarn build:js",
     "build:js": "rollup -c",
-    "build:native": "cross-os cross__build:native",
-    "cross__build:native": {
+    "build:native": "cross-os build:native__cross",
+    "build:native__common": "cross-var docker run --rm -v $PWD:/src trzeci/emscripten emcc -o native.tmp.js -O3 --closure 1 --llvm-lto 3 -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[\\\"cwrap\\\"]\" src/native/functions.cpp src/native/uint128_t/uint128_t.cpp src/native/blake2/ref/blake2b-ref.c src/native/ed25519/src/ge.c src/native/ed25519/src/fe.c src/native/ed25519/src/sc.c src/native/ed25519/src/keypair.c src/native/ed25519/src/sign.c src/native/ed25519/src/verify.c",
+    "build:native__cross": {
       "darwin": "cross-env PWD=\"$(pwd)\" yarn build:native__common",
       "linux": "cross-env PWD=\"$(pwd)\" yarn build:native__common",
       "win32": "cross-env PWD=\"%cd%\" yarn build:native__common"
     },
-    "build:native__common": "cross-var docker run --rm -v $PWD:/src trzeci/emscripten emcc -o native.tmp.js -O3 --closure 1 --llvm-lto 3 -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[\\\"cwrap\\\"]\" src/native/functions.cpp src/native/uint128_t/uint128_t.cpp src/native/blake2/ref/blake2b-ref.c src/native/ed25519/src/ge.c src/native/ed25519/src/fe.c src/native/ed25519/src/sc.c src/native/ed25519/src/keypair.c src/native/ed25519/src/sign.c src/native/ed25519/src/verify.c",
+    "generate-docs": "jsdoc2md src/**/*.js > DOCUMENTATION.md",
     "lint": "standard",
     "semantic-release": "semantic-release",
     "test": "jest",
-    "travis-deploy-once": "travis-deploy-once",
-    "generate-docs": "jsdoc2md src/**/*.js > DOCUMENTATION.md"
+    "travis-deploy-once": "travis-deploy-once"
   }
 }

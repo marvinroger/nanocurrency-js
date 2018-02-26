@@ -174,11 +174,11 @@ bool validate_work(const uint8_t* const block_hash, uint8_t* const work) {
 
 const uint64_t MIN_UINT64 = 0x0000000000000000;
 const uint64_t MAX_UINT64 = 0xffffffffffffffff;
-void work(const uint8_t* const block_hash, const uint8_t worker_number, const uint8_t worker_count, uint8_t* const dst) {
+void work(const uint8_t* const block_hash, const uint8_t worker_index, const uint8_t worker_count, uint8_t* const dst) {
   const uint64_t interval = (MAX_UINT64 - MIN_UINT64) / worker_count;
 
-  const uint64_t lower_bound = MIN_UINT64 + (worker_number * interval);
-  const uint64_t upper_bound = (worker_number != worker_count - 1) ? lower_bound + interval : MAX_UINT64;
+  const uint64_t lower_bound = MIN_UINT64 + (worker_index * interval);
+  const uint64_t upper_bound = (worker_index != worker_count - 1) ? lower_bound + interval : MAX_UINT64;
 
   uint64_t work = lower_bound;
   uint8_t work_bytes[WORK_LENGTH];
@@ -199,7 +199,7 @@ void work(const uint8_t* const block_hash, const uint8_t worker_number, const ui
   }
 }
 
-void compute_secret_key(const uint8_t* const seed, const uint32_t index, uint8_t* const dst) {
+void derive_secret_key(const uint8_t* const seed, const uint32_t index, uint8_t* const dst) {
   blake2b_state hash;
 
   uint8_t index_bytes[4];
@@ -211,14 +211,14 @@ void compute_secret_key(const uint8_t* const seed, const uint32_t index, uint8_t
   blake2b_final(&hash, dst, SECRET_KEY_LENGTH);
 }
 
-void compute_public_key(const uint8_t* const secret_key, uint8_t* const dst) {
+void derive_public_key(const uint8_t* const secret_key, uint8_t* const dst) {
   ed25519_derive_public_from_secret(secret_key, dst);
 }
 
 const uint16_t PUBLIC_KEY_BIT_LENGTH = PUBLIC_KEY_LENGTH * 8;
 const uint8_t PUBLIC_KEY_BIT_PADDING_LENGTH = 4;
 const uint16_t PUBLIC_KEY_BIT_LENGTH_WITH_PADDING = PUBLIC_KEY_BIT_LENGTH + PUBLIC_KEY_BIT_PADDING_LENGTH;
-void compute_public_key_from_address(const std::string& address, uint8_t* const dst) {
+void derive_public_key_from_address(const std::string& address, uint8_t* const dst) {
   const std::string public_key_base_32 = address.substr(ADDRESS_PREFIX_LENGTH, address.length() - (ADDRESS_PREFIX_LENGTH + ADDRESS_CHECKSUM_LENGTH));
   bool public_key_with_padding_bit_array[PUBLIC_KEY_BIT_LENGTH_WITH_PADDING];
   base32_to_bit_array(public_key_base_32, public_key_with_padding_bit_array);
@@ -228,7 +228,7 @@ void compute_public_key_from_address(const std::string& address, uint8_t* const 
 }
 
 const uint8_t ADDRESS_CHECKSUM_BIT_LENGTH = ADDRESS_CHECKSUM_LENGTH * 8;
-std::string compute_address(const uint8_t* const public_key) {
+std::string derive_address(const uint8_t* const public_key) {
   bool public_key_bit_array[PUBLIC_KEY_BIT_LENGTH_WITH_PADDING];
 
   for (unsigned int i = 0; i < PUBLIC_KEY_BIT_PADDING_LENGTH; i++) {
@@ -298,7 +298,7 @@ void hash_receive_block(const uint8_t* const previous, const uint8_t* const sour
 
 void sign_block(const uint8_t* const block_hash, const uint8_t* const secret_key, uint8_t* const dst) {
   uint8_t public_key[PUBLIC_KEY_LENGTH];
-  compute_public_key(secret_key, public_key);
+  derive_public_key(secret_key, public_key);
 
   ed25519_sign(dst, block_hash, BLOCK_HASH_LENGTH, public_key, secret_key);
 }
@@ -327,7 +327,7 @@ extern "C" {
   }
 
   EMSCRIPTEN_KEEPALIVE
-  const char* emscripten_work(const char* const block_hash_hex, const uint8_t worker_number, const uint8_t worker_count) {
+  const char* emscripten_work(const char* const block_hash_hex, const uint8_t worker_index, const uint8_t worker_count) {
     const std::string block_hash_hex_string(block_hash_hex);
     uint8_t block_hash_bytes[BLOCK_HASH_LENGTH];
     hex_to_bytes(block_hash_hex_string, block_hash_bytes);
@@ -336,45 +336,45 @@ extern "C" {
     for (unsigned int i = 0; i < WORK_LENGTH; i++) {
       work_[i] = 0;
     }
-    work(block_hash_bytes, worker_number, worker_count, work_);
+    work(block_hash_bytes, worker_index, worker_count, work_);
     stack_string = bytes_to_hex(work_, WORK_LENGTH);
 
     return stack_string.c_str();
   }
 
   EMSCRIPTEN_KEEPALIVE
-  const char* emscripten_compute_secret_key(const char* const seed_hex, const uint32_t index) {
+  const char* emscripten_derive_secret_key(const char* const seed_hex, const uint32_t index) {
     const std::string seed_hex_string(seed_hex);
     uint8_t seed_bytes[SEED_LENGTH];
     hex_to_bytes(seed_hex_string, seed_bytes);
 
     uint8_t secret_key[SECRET_KEY_LENGTH];
-    compute_secret_key(seed_bytes, index, secret_key);
+    derive_secret_key(seed_bytes, index, secret_key);
     stack_string = bytes_to_hex(secret_key, SECRET_KEY_LENGTH);
 
     return stack_string.c_str();
   }
 
   EMSCRIPTEN_KEEPALIVE
-  const char* emscripten_compute_public_key(const char* const secret_key_hex) {
+  const char* emscripten_derive_public_key(const char* const secret_key_hex) {
     const std::string secret_key_hex_string(secret_key_hex);
     uint8_t secret_key_bytes[SECRET_KEY_LENGTH];
     hex_to_bytes(secret_key_hex_string, secret_key_bytes);
 
     uint8_t public_key[PUBLIC_KEY_LENGTH];
-    compute_public_key(secret_key_bytes, public_key);
+    derive_public_key(secret_key_bytes, public_key);
     stack_string = bytes_to_hex(public_key, PUBLIC_KEY_LENGTH);
 
     return stack_string.c_str();
   }
 
   EMSCRIPTEN_KEEPALIVE
-  const char* emscripten_compute_address(const char* const public_key_hex) {
+  const char* emscripten_derive_address(const char* const public_key_hex) {
     const std::string public_key_hex_string(public_key_hex);
     uint8_t public_key_bytes[PUBLIC_KEY_LENGTH];
     hex_to_bytes(public_key_hex_string, public_key_bytes);
 
-    stack_string = compute_address(public_key_bytes);
+    stack_string = derive_address(public_key_bytes);
 
     return stack_string.c_str();
   }
@@ -403,10 +403,10 @@ extern "C" {
     hex_to_bytes(source_hex_string, source_bytes);
 
     uint8_t representative_public_key[PUBLIC_KEY_LENGTH];
-    compute_public_key_from_address(representative_address, representative_public_key);
+    derive_public_key_from_address(representative_address, representative_public_key);
 
     uint8_t account_public_key[PUBLIC_KEY_LENGTH];
-    compute_public_key_from_address(account_address, account_public_key);
+    derive_public_key_from_address(account_address, account_public_key);
 
     uint8_t block_hash[BLOCK_HASH_LENGTH];
     hash_open_block(source_bytes, representative_public_key, account_public_key, block_hash);
@@ -422,7 +422,7 @@ extern "C" {
     hex_to_bytes(previous_hex_string, previous_bytes);
 
     uint8_t representative_public_key[PUBLIC_KEY_LENGTH];
-    compute_public_key_from_address(representative_address, representative_public_key);
+    derive_public_key_from_address(representative_address, representative_public_key);
 
     uint8_t block_hash[BLOCK_HASH_LENGTH];
     hash_change_block(previous_bytes, representative_public_key, block_hash);
@@ -438,7 +438,7 @@ extern "C" {
     hex_to_bytes(previous_hex_string, previous_bytes);
 
     uint8_t destination_public_key[PUBLIC_KEY_LENGTH];
-    compute_public_key_from_address(destination_address, destination_public_key);
+    derive_public_key_from_address(destination_address, destination_public_key);
 
     const std::string balance_string(balance);
     uint8_t balance_bytes[AMOUNT_LENGTH];

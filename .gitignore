@@ -1,8 +1,7 @@
 ### App ###
 
 /dist/
-/tmp/*
-!/tmp/.gitkeep
+/*.tmp.js
 
 ### Node ###
 

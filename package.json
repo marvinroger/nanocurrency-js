@@ -69,7 +69,6 @@
     "prepublishOnly": "yarn build:prod:js",
     "semantic-release": "semantic-release",
     "test": "jest",
-    "travis-deploy-once": "travis-deploy-once",
-    "generate-docs": "jsdoc2md src/**/*.js > DOCUMENTATION.md"
+    "travis-deploy-once": "travis-deploy-once"
   }
 }

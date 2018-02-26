@@ -51,17 +51,21 @@
     "url": "https://github.com/marvinroger/nanocurrency-js.git"
   },
   "scripts": {
-    "build": "yarn build:native && yarn build:js",
-    "build:js": "rollup -c",
-    "build:native": "cross-os build:native__cross",
-    "build:native__common": "cross-var docker run --rm -v $PWD:/src trzeci/emscripten emcc -o native.tmp.js -O3 --closure 1 --llvm-lto 3 -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[\\\"cwrap\\\"]\" src/native/functions.cpp src/native/uint128_t/uint128_t.cpp src/native/blake2/ref/blake2b-ref.c src/native/ed25519/src/ge.c src/native/ed25519/src/fe.c src/native/ed25519/src/sc.c src/native/ed25519/src/keypair.c src/native/ed25519/src/sign.c src/native/ed25519/src/verify.c",
+    "build:dev": "yarn build:dev:native && yarn build:dev:js",
+    "build:dev:js": "cross-env NODE_ENV=development rollup -c",
+    "build:dev:native": "cross-env EMCC_ARGS=\"\" cross-os build:native__cross",
+    "build:native__common": "cross-var docker run --rm -v $PWD:/src trzeci/emscripten emcc -o native.tmp.js $EMCC_ARGS -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[\\\"cwrap\\\"]\" src/native/functions.cpp src/native/uint128_t/uint128_t.cpp src/native/blake2/ref/blake2b-ref.c src/native/ed25519/src/ge.c src/native/ed25519/src/fe.c src/native/ed25519/src/sc.c src/native/ed25519/src/keypair.c src/native/ed25519/src/sign.c src/native/ed25519/src/verify.c",
     "build:native__cross": {
       "darwin": "cross-env PWD=\"$(pwd)\" yarn build:native__common",
       "linux": "cross-env PWD=\"$(pwd)\" yarn build:native__common",
       "win32": "cross-env PWD=\"%cd%\" yarn build:native__common"
     },
+    "build:prod": "yarn build:prod:native && yarn build:prod:js",
+    "build:prod:js": "cross-env NODE_ENV=production rollup -c",
+    "build:prod:native": "cross-env EMCC_ARGS=\"-O3 --closure 1 --llvm-lto 3\" cross-os build:native__cross",
     "generate-docs": "jsdoc2md src/**/*.js > DOCUMENTATION.md",
     "lint": "standard",
+    "prepublishOnly": "yarn build:prod:js",
     "semantic-release": "semantic-release",
     "test": "jest",
     "travis-deploy-once": "travis-deploy-once"

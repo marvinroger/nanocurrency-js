@@ -4,9 +4,11 @@ import uglify from 'rollup-plugin-uglify'
 import license from 'rollup-plugin-license'
 import pkg from './package.json'
 
+const ENV = process.env.NODE_ENV
+
 const licenseBanner = `
 /*!
-* nanocurrency-js: A toolkit for the Nano cryptocurrency.
+* nanocurrency-js v${pkg.version}: A toolkit for the Nano cryptocurrency.
 * Copyright (c) <%= moment().format('YYYY') %> Marvin ROGER <dev at marvinroger dot fr>
 * Licensed under GPL-3.0 (https://git.io/vAZsK)
 */
@@ -14,7 +16,7 @@ const licenseBanner = `
 
 const globals = { fs: 'fs', path: 'path' }
 
-export default [
+const config = [
   {
     input: 'src/index.js',
     external: ['fs', 'path'],
@@ -25,11 +27,16 @@ export default [
     ],
     plugins: [
       resolve(),
-      commonjs(),
-      uglify(),
-      license({
-        banner: licenseBanner
-      })
+      commonjs()
     ]
   }
 ]
+
+if (ENV === 'production') {
+  config[0].plugins.push(uglify())
+  config[0].plugins.push(license({
+    banner: licenseBanner
+  }))
+}
+
+export default config

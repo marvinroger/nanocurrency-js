@@ -19,7 +19,7 @@ The documentation is available in the [DOCUMENTATION.md](DOCUMENTATION.md) file.
 
 Contributions are very welcome. To develop, make use of the following commands (using [Yarn](https://yarnpkg.com)):
 
-* `yarn build`: build the C++ code to WebAssembly and bundle the production files into the `dist` directory
+* `yarn build:dev`: build the C++ code to WebAssembly and bundle the files into the `dist` directory, without optimization so that it is fast while developing
 
 * `yarn test`: test the code
 

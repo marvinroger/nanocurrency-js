@@ -1,7 +1,7 @@
 /* eslint-env worker */
 /* global NanoCurrency:false */
 
-importScripts('https://cdn.jsdelivr.net/npm/nanocurrency@^1.0.0/dist/nanocurrency.umd.js')
+importScripts('https://cdn.jsdelivr.net/npm/nanocurrency@^1.3.0/dist/nanocurrency.umd.js')
 
 onmessage = async function ({data}) {
   const {blockHash, workerNumber, workerCount} = data

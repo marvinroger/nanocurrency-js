@@ -14,7 +14,7 @@ branches:
 install:
   - yarn
 script:
-  - yarn build
+  - yarn build:prod
   - yarn test
 after_success:
   - yarn travis-deploy-once "yarn semantic-release"

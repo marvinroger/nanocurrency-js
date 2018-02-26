@@ -41,9 +41,9 @@ export function init () {
         instance = native
         _work = instance.cwrap('emscripten_work', 'string', ['string', 'number', 'number'])
         _validateWork = instance.cwrap('emscripten_validate_work', 'number', ['string', 'string'])
-        _deriveSecretKey = instance.cwrap('emscripten_derive_secret_key', 'string', ['string', 'number'])
-        _derivePublicKey = instance.cwrap('emscripten_derive_public_key', 'string', ['string'])
-        _deriveAddress = instance.cwrap('emscripten_derive_address', 'string', ['string'])
+        _computeSecretKey = instance.cwrap('emscripten_compute_secret_key', 'string', ['string', 'number'])
+        _computePublicKey = instance.cwrap('emscripten_compute_public_key', 'string', ['string'])
+        _computeAddress = instance.cwrap('emscripten_compute_address', 'string', ['string'])
         _hashReceiveBlock = instance.cwrap('emscripten_hash_receive_block', 'string', ['string', 'string'])
         _hashOpenBlock = instance.cwrap('emscripten_hash_open_block', 'string', ['string', 'string', 'string'])
         _hashChangeBlock = instance.cwrap('emscripten_hash_change_block', 'string', ['string', 'string'])
@@ -51,19 +51,12 @@ export function init () {
         _signBlock = instance.cwrap('emscripten_sign_block', 'string', ['string', 'string'])
         _verifyBlock = instance.cwrap('emscripten_verify_block', 'number', ['string', 'string', 'string'])
 
-  const native = await Native()
-  instance = native
-  _work = instance.cwrap('emscripten_work', 'string', ['string', 'number', 'number'])
-  _validateWork = instance.cwrap('emscripten_validate_work', 'number', ['string', 'string'])
-  _computeSecretKey = instance.cwrap('emscripten_compute_secret_key', 'string', ['string', 'number'])
-  _computePublicKey = instance.cwrap('emscripten_compute_public_key', 'string', ['string'])
-  _computeAddress = instance.cwrap('emscripten_compute_address', 'string', ['string'])
-  _hashReceiveBlock = instance.cwrap('emscripten_hash_receive_block', 'string', ['string', 'string'])
-  _hashOpenBlock = instance.cwrap('emscripten_hash_open_block', 'string', ['string', 'string', 'string'])
-  _hashChangeBlock = instance.cwrap('emscripten_hash_change_block', 'string', ['string', 'string'])
-  _hashSendBlock = instance.cwrap('emscripten_hash_send_block', 'string', ['string', 'string', 'string'])
-  _signBlock = instance.cwrap('emscripten_sign_block', 'string', ['string', 'string'])
-  _verifyBlock = instance.cwrap('emscripten_verify_block', 'number', ['string', 'string', 'string'])
+        resolve()
+      })
+    } catch (err) {
+      reject(err)
+    }
+  })
 }
 
 /**

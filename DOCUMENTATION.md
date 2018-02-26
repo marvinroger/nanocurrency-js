@@ -14,9 +14,9 @@
     * [.work(blockHash, [workerIndex], [workerCount])](#module_nanoCurrency.work) ⇒ <code>string</code>
     * [.validateWork(blockHash, work)](#module_nanoCurrency.validateWork) ⇒ <code>boolean</code>
     * [.generateSeed()](#module_nanoCurrency.generateSeed) ⇒ <code>Promise.&lt;string&gt;</code>
-    * [.computeSecretKey(seed, index)](#module_nanoCurrency.computeSecretKey) ⇒ <code>string</code>
-    * [.computePublicKey(secretKey)](#module_nanoCurrency.computePublicKey) ⇒ <code>string</code>
-    * [.computeAddress(publicKey)](#module_nanoCurrency.computeAddress) ⇒ <code>string</code>
+    * [.deriveSecretKey(seed, index)](#module_nanoCurrency.deriveSecretKey) ⇒ <code>string</code>
+    * [.derivePublicKey(secretKey)](#module_nanoCurrency.derivePublicKey) ⇒ <code>string</code>
+    * [.deriveAddress(publicKey)](#module_nanoCurrency.deriveAddress) ⇒ <code>string</code>
     * [.hashReceiveBlock(previous, source)](#module_nanoCurrency.hashReceiveBlock) ⇒ <code>string</code>
     * [.hashOpenBlock(source, representative, account)](#module_nanoCurrency.hashOpenBlock) ⇒ <code>string</code>
     * [.hashChangeBlock(previous, representative)](#module_nanoCurrency.hashChangeBlock) ⇒ <code>string</code>
@@ -146,10 +146,10 @@ Generate a cryptographically secure seed.
 
 **Kind**: static method of [<code>nanoCurrency</code>](#module_nanoCurrency)  
 **Returns**: <code>Promise.&lt;string&gt;</code> - Seed, in hexadecimal format  
-<a name="module_nanoCurrency.computeSecretKey"></a>
+<a name="module_nanoCurrency.deriveSecretKey"></a>
 
-### nanoCurrency.computeSecretKey(seed, index) ⇒ <code>string</code>
-Compute a secret key from a seed, given an index.
+### nanoCurrency.deriveSecretKey(seed, index) ⇒ <code>string</code>
+Derive a secret key from a seed, given an index.
 
 **Kind**: static method of [<code>nanoCurrency</code>](#module_nanoCurrency)  
 **Returns**: <code>string</code> - Secret key, in hexadecimal format  
@@ -159,10 +159,10 @@ Compute a secret key from a seed, given an index.
 | seed | <code>string</code> | The seed to generate the secret key from, in hexadecimal format |
 | index | <code>number</code> | The index to generate the secret key from |
 
-<a name="module_nanoCurrency.computePublicKey"></a>
+<a name="module_nanoCurrency.derivePublicKey"></a>
 
-### nanoCurrency.computePublicKey(secretKey) ⇒ <code>string</code>
-Compute a public key from a secret key.
+### nanoCurrency.derivePublicKey(secretKey) ⇒ <code>string</code>
+Derive a public key from a secret key.
 
 **Kind**: static method of [<code>nanoCurrency</code>](#module_nanoCurrency)  
 **Returns**: <code>string</code> - Public key, in hexadecimal format  
@@ -171,10 +171,10 @@ Compute a public key from a secret key.
 | --- | --- | --- |
 | secretKey | <code>string</code> | The secret key to generate the secret key from, in hexadecimal format |
 
-<a name="module_nanoCurrency.computeAddress"></a>
+<a name="module_nanoCurrency.deriveAddress"></a>
 
-### nanoCurrency.computeAddress(publicKey) ⇒ <code>string</code>
-Compute address from a public key.
+### nanoCurrency.deriveAddress(publicKey) ⇒ <code>string</code>
+Derive address from a public key.
 
 **Kind**: static method of [<code>nanoCurrency</code>](#module_nanoCurrency)  
 **Returns**: <code>string</code> - Address  

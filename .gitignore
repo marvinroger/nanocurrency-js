@@ -1,7 +1,8 @@
 ### App ###
 
 /dist/
-/*.tmp.js
+/*.tmp.*
+/_test.js
 
 ### Node ###
 

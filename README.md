@@ -37,7 +37,7 @@ Contributions are very welcome. To develop, make use of the following commands (
 
 * Ed25519 portable implementation from Orson PETERS, used for keypair/signing: https://github.com/orlp/ed25519. **Note: The library has been modified to use BLAKE2b instead of SHA-512**
 
-* uint128_t from Jason LEE, used for amount representation: https://github.com/calccrypto/uint128_t
+* tiny-bignum-c from kokke, used for amount representation: https://github.com/kokke/tiny-bignum-c
 
 ## Donations
 

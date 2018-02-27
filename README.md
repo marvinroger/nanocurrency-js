@@ -15,6 +15,13 @@ The documentation is available in the [DOCUMENTATION.md](DOCUMENTATION.md) file.
 
 ---
 
+## Usage
+
+```
+npm install nanocurrency
+# or yarn add nanocurrency
+```
+
 ## Contribute
 
 Contributions are very welcome. To develop, make use of the following commands (using [Yarn](https://yarnpkg.com)):

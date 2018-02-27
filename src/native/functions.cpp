@@ -7,9 +7,15 @@
 
 #include <emscripten.h>
 
-#include "uint128_t/uint128_t.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include "tiny-bignum-c/bn.h"
 #include "blake2/ref/blake2.h"
 #include "ed25519/src/ed25519.h"
+#ifdef __cplusplus
+}
+#endif
 
 const uint64_t WORK_THRESHOLD = 0xffffffc000000000;
 const uint8_t BLOCK_HASH_LENGTH = 32;
@@ -33,10 +39,11 @@ void hex_to_bytes(const std::string& hex, uint8_t* const dst) {
 }
 
 const uint8_t UINT128_LENGTH = 16;
-void uint128_to_bytes(const uint128_t src, uint8_t* const dst) {
-  for (unsigned int i = 0; i < UINT128_LENGTH; i++) {
-    dst[i] = uint8_t((src >> 8 * ((UINT128_LENGTH - 1) - i)) & 0xFF);
-  }
+void uint128_to_bytes(struct bn& src, uint8_t* const dst) {
+  char buf[8192];
+  bignum_to_string(&src, buf, sizeof(buf));
+  const std::string buf_string(buf);
+  hex_to_bytes(buf_string, dst + (UINT128_LENGTH - (buf_string.length() / 2)));
 }
 
 const uint8_t UINT64_LENGTH = 8;
@@ -148,9 +155,20 @@ void base32_to_bit_array(const std::string& base32, bool* const dst) {
 }
 
 void amount_to_bytes(const std::string& amount, uint8_t* const dst) {
-  uint128_t value = 0;
+  struct bn value;
+  struct bn ten;
+  struct bn to_add;
+  struct bn tmp;
+  bignum_init(&value);
+  bignum_from_int(&ten, 10);
+  bignum_init(&to_add);
+
+  char buf[8192];
+
   for (unsigned int i = 0; i < amount.length(); i++) {
-    value = (value * 10) + amount[i] - '0';
+    bignum_mul(&value, &ten, &tmp);
+    bignum_from_int(&to_add, amount[i] - '0');
+    bignum_add(&tmp, &to_add, &value);
   }
 
   uint128_to_bytes(value, dst);

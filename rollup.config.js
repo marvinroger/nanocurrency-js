@@ -1,3 +1,4 @@
+import wasm from 'rollup-plugin-wasm'
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import uglify from 'rollup-plugin-uglify'
@@ -26,6 +27,7 @@ const config = [
       { file: pkg.module, format: 'es', globals }
     ],
     plugins: [
+      // wasm(),
       resolve(),
       commonjs()
     ]

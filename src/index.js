@@ -6,8 +6,7 @@
 /** @module nanoCurrency */
 import Native from '../native.tmp'
 
-const IS_NODE = Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]'
-let fillRandom = null
+import {getRandomBytes} from './helpers'
 
 let instance = null
 let _work = null
@@ -30,13 +29,6 @@ let _verifyBlock = null
 export function init () {
   return new Promise((resolve, reject) => {
     try {
-      if (!IS_NODE) {
-        fillRandom = self.crypto.getRandomValues // eslint-disable-line
-      } else {
-        const {promisify} = require('util')
-        fillRandom = promisify(require('crypto').randomFill)
-      }
-
       Native().then(native => {
         instance = native
         _work = instance.cwrap('emscripten_work', 'string', ['string', 'number', 'number'])
@@ -178,8 +170,7 @@ export function validateWork (blockHash, work) {
 export async function generateSeed () {
   checkNotInitialized()
 
-  const seed = new Uint8Array(32)
-  await fillRandom(seed)
+  const seed = await getRandomBytes(32)
 
   return seed.reduce(function (hex, i) {
     return hex + ('0' + i.toString(16)).slice(-2)

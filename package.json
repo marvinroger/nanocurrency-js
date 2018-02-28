@@ -65,7 +65,7 @@
     "build:prod:js": "cross-env NODE_ENV=production rollup -c",
     "build:prod:native": "cross-env EMCC_ARGS=\"-O3 --closure 1 --llvm-lto 3\" cross-os build:native__cross",
     "generate-docs": "jsdoc2md src/**/*.js > DOCUMENTATION.md",
-    "lint": "standard",
+    "lint": "standard src/**/*.js",
     "prepublishOnly": "yarn build:prod:js",
     "semantic-release": "semantic-release",
     "test": "jest",

@@ -1,4 +1,5 @@
 import wasm from 'rollup-plugin-wasm'
+import babel from 'rollup-plugin-babel'
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import uglify from 'rollup-plugin-uglify'
@@ -22,14 +23,17 @@ const config = [
     input: 'src/index.js',
     external: ['fs', 'path'],
     output: [
-      { name: 'NanoCurrency', file: pkg.browser, format: 'umd', globals },
+      { name: 'NanoCurrency', file: 'dist/nanocurrency.umd.js', format: 'umd', globals },
       { file: pkg.main, format: 'cjs', globals },
       { file: pkg.module, format: 'es', globals }
     ],
     plugins: [
       // wasm(),
       resolve(),
-      commonjs()
+      commonjs(),
+      babel({
+        exclude: 'node_modules/**'
+      })
     ]
   }
 ]

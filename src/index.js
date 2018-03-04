@@ -343,6 +343,7 @@ export function verifyBlock (blockHash, signature, publicKey) {
  * @return {Object} Block
  */
 export function createOpenBlock (secretKey, { source, representative, account }) {
+  const previous = derivePublicKey(secretKey)
   const hash = hashOpenBlock(source, representative, account)
   const signature = signBlock(hash, secretKey)
 
@@ -350,6 +351,7 @@ export function createOpenBlock (secretKey, { source, representative, account })
     hash,
     block: {
       type: 'open',
+      previous,
       source,
       representative,
       account,

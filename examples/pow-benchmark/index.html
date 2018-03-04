@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+
+  <body>
+    <pre id="status"></pre>
+    <script src="https://cdn.jsdelivr.net/npm/nanocurrency@1.6.1/dist/nanocurrency.umd.js"></script>
+    <script>
+      (function () {
+        const ITERATION_COUNT = 100;
+
+        async function main () {
+          await NanoCurrency.init()
+
+          const globalStart = new Date()
+
+          const statusEl = document.getElementById('status')
+          const statuses = []
+          const setStatus = msg => {
+            statuses.push(msg)
+            statusEl.innerHTML = statuses.join('\n')
+          }
+
+          // some browsers (e.g. iOS) don't export hardwareConcurrency
+          const hardwareConcurrency = window.navigator.hardwareConcurrency || 4
+          const workerCount = Math.max(hardwareConcurrency - 1, 1)
+
+          setStatus(`Started using ${workerCount} workers`)
+
+          let minTime = Number.MAX_VALUE
+          let maxTime = 0
+          for (let iterations = 0; iterations < ITERATION_COUNT; iterations++) {
+            const hash = await NanoCurrency.generateSeed()
+            const start = new Date()
+            setStatus(`Starting iteration ${iterations}.`)
+
+            const work = () => new Promise(resolve => {
+              const workerList = []
+              for (let i = 0; i < workerCount; i++) {
+                const worker = new Worker('worker.js')
+                worker.postMessage({
+                  blockHash: hash,
+                  workerNumber: i,
+                  workerCount
+                })
+                worker.onmessage = ({data}) => {
+                  const {type} = data
+
+                  if (type !== 'done') return
+
+                  const end = new Date()
+                  const time = (end - start) / 1000
+
+                  if (time < minTime) minTime = time
+                  if (time > maxTime) maxTime = time
+
+                  setStatus(`Iteration ${iterations} done in ${time}s (hash: ${hash} - work: ${data.work}).`)
+
+                  for (let workerIndex in workerList) {
+                    workerList[workerIndex].terminate()
+                  }
+
+                  resolve()
+                }
+                workerList.push(worker)
+              }
+            })
+
+            await work()
+          }
+
+          const globalEnd = new Date()
+          const globalTime = (globalEnd - globalStart) / 1000
+          const globalAverage = globalTime / ITERATION_COUNT
+
+          setStatus(`Benchmark done.`)
+          setStatus(`${ITERATION_COUNT} iterations done in ${globalTime}s.`)
+          setStatus(`Average of ${globalAverage}s per hash.`)
+          setStatus(`Minimum: ${minTime}s, Maximum: ${maxTime}s`)
+        }
+
+        main()
+      })()
+    </script>
+  </body>
+</html>

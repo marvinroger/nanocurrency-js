@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-/** @module nanoCurrency */
+/** @module NanoCurrency */
 import Native from '../native.tmp'
 
 import {getRandomBytes} from './helpers'
@@ -52,7 +52,7 @@ export function init () {
 }
 
 /**
- * Get whether or not the library is ready to be used ({@link #module_nanoCurrency.init} has been called).
+ * Get whether or not the library is ready to be used ({@link #module_NanoCurrency.init} has been called).
  *
  * @return {boolean}
  */
@@ -66,7 +66,25 @@ const checkNotInitialized = () => {
 const checkString = candidate => typeof candidate === 'string'
 
 /**
+ * Check if the given balance is valid.
+ * Does not require initialization.
+ *
+ * @function
+ * @param {string} balance - The balance to check
+ * @return {boolean} Valid
+ */
+const checkBalance = balance => {
+  if (!checkString(balance) || balance.length > 39) return false
+  for (let char of balance) {
+    if (char < '0' || char > '9') return false
+  }
+
+  return true
+}
+
+/**
  * Check if the given seed is valid.
+ * Does not require initialization.
  *
  * @function
  * @param {string} seed - The seed to check
@@ -76,6 +94,7 @@ export const checkSeed = seed => checkString(seed) && seed.match(/[0-9a-fA-F]{64
 
 /**
  * Check if the given hash is valid.
+ * Does not require initialization.
  *
  * @function
  * @param {string} hash - The hash to check
@@ -85,6 +104,7 @@ export const checkHash = checkSeed
 
 /**
  * Check if the given public or secret key is valid.
+ * Does not require initialization.
  *
  * @function
  * @param {string} key - The key to check
@@ -94,6 +114,7 @@ export const checkKey = checkSeed
 
 /**
  * Check if the given address is valid.
+ * Does not require initialization.
  *
  * @function
  * @param {string} address - The address to check
@@ -103,6 +124,7 @@ export const checkAddress = address => checkString(address) && address.match(/xr
 
 /**
  * Check if the given work is valid.
+ * Does not require initialization.
  *
  * @function
  * @param {string} work - The work to check
@@ -112,6 +134,7 @@ export const checkWork = work => checkString(work) && work.match(/[0-9a-fA-F]{16
 
 /**
  * Check if the given signature is valid.
+ * Does not require initialization.
  *
  * @function
  * @param {string} signature - The signature to check
@@ -121,6 +144,7 @@ export const checkSignature = signature => checkString(signature) && signature.m
 
 /**
  * Find a work value that meets the difficulty for the given hash.
+ * Requires initialization.
  *
  * @param {string} blockHash - The hash to find a work for
  * @param {number} [workerIndex=0] - The current worker index, starting at 0
@@ -146,6 +170,7 @@ export function work (blockHash, workerIndex = 0, workerCount = 1) {
 
 /**
  * Validate whether or not the work value meets the difficulty for the given hash.
+ * Requires initialization.
  *
  * @param {string} blockHash - The hash to validate the work against
  * @param {string} work - The work to validate
@@ -164,12 +189,11 @@ export function validateWork (blockHash, work) {
 
 /**
  * Generate a cryptographically secure seed.
+ * Does not require initialization.
  *
  * @return {Promise<string>} Seed, in hexadecimal format
  */
 export async function generateSeed () {
-  checkNotInitialized()
-
   const seed = await getRandomBytes(32)
 
   return seed.reduce(function (hex, i) {
@@ -179,6 +203,7 @@ export async function generateSeed () {
 
 /**
  * Derive a secret key from a seed, given an index.
+ * Requires initialization.
  *
  * @param {string} seed - The seed to generate the secret key from, in hexadecimal format
  * @param {number} index - The index to generate the secret key from
@@ -198,6 +223,7 @@ export function deriveSecretKey (seed, index) {
 
 /**
  * Derive a public key from a secret key.
+ * Requires initialization.
  *
  * @param {string} secretKey - The secret key to generate the secret key from, in hexadecimal format
  * @return {string} Public key, in hexadecimal format
@@ -212,6 +238,7 @@ export function derivePublicKey (secretKey) {
 
 /**
  * Derive address from a public key.
+ * Requires initialization.
  *
  * @param {string} publicKey - The public key to generate the address from, in hexadecimal format
  * @return {string} Address
@@ -226,9 +253,10 @@ export function deriveAddress (publicKey) {
 
 /**
  * Hash a receive block.
+ * Requires initialization.
  *
- * @param {string} previous - The previous hash of the block, in hexadecimal format
- * @param {string} source - The source hash of the block, in hexadecimal format
+ * @param {string} previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param {string} source - The hash of the send block that is being received, in hexadecimal format
  * @return {string} Hash, in hexadecimal format
  */
 export function hashReceiveBlock (previous, source) {
@@ -242,10 +270,11 @@ export function hashReceiveBlock (previous, source) {
 
 /**
  * Hash an open block.
+ * Requires initialization.
  *
- * @param {string} source - The source hash of the block, in hexadecimal format
- * @param {string} representative - The representative address of the block
- * @param {string} account - The account address of the block
+ * @param {string} source - The hash of the send block that is being received, in hexadecimal format
+ * @param {string} representative - The representative address
+ * @param {string} account - The account address
  * @return {string} Hash, in hexadecimal format
  */
 export function hashOpenBlock (source, representative, account) {
@@ -260,9 +289,10 @@ export function hashOpenBlock (source, representative, account) {
 
 /**
  * Hash a change block.
+ * Requires initialization.
  *
- * @param {string} previous - The previous hash of the block, in hexadecimal format
- * @param {string} representative - The representative address of the block
+ * @param {string} previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param {string} representative - The representative address
  * @return {string} Hash, in hexadecimal format
  */
 export function hashChangeBlock (previous, representative) {
@@ -276,10 +306,11 @@ export function hashChangeBlock (previous, representative) {
 
 /**
  * Hash a send block.
+ * Requires initialization.
  *
- * @param {string} previous - The previous hash of the block, in hexadecimal format
- * @param {string} destination - The destination address of the block
- * @param {string} balance - The balance of the block, in raw
+ * @param {string} previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param {string} destination - The destination address
+ * @param {string} balance - The balance, in raw
  * @return {string} Hash, in hexadecimal format
  */
 export function hashSendBlock (previous, destination, balance) {
@@ -287,17 +318,14 @@ export function hashSendBlock (previous, destination, balance) {
 
   if (!checkHash(previous)) throw new Error('Previous is not valid')
   if (!checkAddress(destination)) throw new Error('Destination is not valid')
-  const balanceError = new Error('Balance is not valid')
-  if (!checkString(balance) || balance.length > 39) throw balanceError
-  for (let char of balance) {
-    if (char < '0' || char > '9') throw balanceError
-  }
+  if (!checkBalance(balance)) throw new Error('Balance is not valid')
 
   return _hashSendBlock(previous, destination, balance)
 }
 
 /**
  * Sign a block.
+ * Requires initialization.
  *
  * @param {string} blockHash - The hash of the block to sign
  * @param {string} secretKey - The secret key to sign the block with, in hexadecimal format
@@ -314,6 +342,7 @@ export function signBlock (blockHash, secretKey) {
 
 /**
  * Verify a block against a public key.
+ * Requires initialization.
  *
  * @param {string} blockHash - The hash of the block to verify
  * @param {string} signature - The signature of the block to verify, in hexadecimal format
@@ -333,17 +362,26 @@ export function verifyBlock (blockHash, signature, publicKey) {
 }
 
 /**
- * Create an open block. You will have to inject the PoW.
+ * Create an open block.
+ * Requires initialization.
  *
  * @param {string} secretKey - The secret key to create the block from, in hexadecimal format
  * @param {Object} data - Block data
- * @param {string} data.source - The source hash of the block, in hexadecimal format
- * @param {string} data.representative - The representative address of the block
- * @param {string} data.account - The account address of the block
+ * @param {string} data.work - The PoW
+ * @param {string} data.source - The hash of the send block that is being received, in hexadecimal format
+ * @param {string} data.representative - The representative address
  * @return {Object} Block
  */
-export function createOpenBlock (secretKey, { source, representative, account }) {
+export function createOpenBlock (secretKey, { work, source, representative }) {
+  checkNotInitialized()
+
+  if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
+  if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
+  if (!checkHash(source)) throw new Error('Source is not valid')
+  if (!checkAddress(representative)) throw new Error('Representative is not valid')
+
   const previous = derivePublicKey(secretKey)
+  const account = deriveAddress(previous)
   const hash = hashOpenBlock(source, representative, account)
   const signature = signBlock(hash, secretKey)
 
@@ -355,22 +393,31 @@ export function createOpenBlock (secretKey, { source, representative, account })
       source,
       representative,
       account,
-      work: null,
+      work,
       signature
     }
   }
 }
 
 /**
- * Create a receive block. You will have to inject the PoW.
+ * Create a receive block.
+ * Requires initialization.
  *
  * @param {string} secretKey - The secret key to create the block from, in hexadecimal format
  * @param {Object} data - Block data
- * @param {string} data.previous - The previous hash of the block, in hexadecimal format
- * @param {string} data.source - The source hash of the block, in hexadecimal format
+ * @param {string} data.work - The PoW
+ * @param {string} data.previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param {string} data.source - The hash of the send block that is being received, in hexadecimal format
  * @return {Object} Block
  */
-export function createReceiveBlock (secretKey, { previous, source }) {
+export function createReceiveBlock (secretKey, { work, previous, source }) {
+  checkNotInitialized()
+
+  if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
+  if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
+  if (!checkHash(previous)) throw new Error('Previous is not valid')
+  if (!checkHash(source)) throw new Error('Source is not valid')
+
   const hash = hashReceiveBlock(previous, source)
   const signature = signBlock(hash, secretKey)
 
@@ -380,23 +427,33 @@ export function createReceiveBlock (secretKey, { previous, source }) {
       type: 'receive',
       previous,
       source,
-      work: null,
+      work,
       signature
     }
   }
 }
 
 /**
- * Create a send block. You will have to inject the PoW.
+ * Create a send block.
+ * Requires initialization.
  *
  * @param {string} secretKey - The secret key to create the block from, in hexadecimal format
  * @param {Object} data - Block data
- * @param {string} data.previous - The previous hash of the block, in hexadecimal format
- * @param {string} data.destination - The destination address of the block
- * @param {string} data.balance - The balance of the block, in raw
+ * @param {string} data.work - The PoW
+ * @param {string} data.previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param {string} data.destination - The destination address
+ * @param {string} data.balance - The balance, in raw
  * @return {Object} Block
  */
-export function createSendBlock (secretKey, { previous, destination, balance }) {
+export function createSendBlock (secretKey, { work, previous, destination, balance }) {
+  checkNotInitialized()
+
+  if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
+  if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
+  if (!checkHash(previous)) throw new Error('Previous is not valid')
+  if (!checkAddress(destination)) throw new Error('Destination is not valid')
+  if (!checkBalance(balance)) throw new Error('Balance is not valid')
+
   const hash = hashSendBlock(previous, destination, balance)
   const signature = signBlock(hash, secretKey)
 
@@ -407,22 +464,31 @@ export function createSendBlock (secretKey, { previous, destination, balance }) 
       previous,
       destination,
       balance,
-      work: null,
+      work,
       signature
     }
   }
 }
 
 /**
- * Create a change block. You will have to inject the PoW.
+ * Create a change block.
+ * Requires initialization.
  *
  * @param {string} secretKey - The secret key to create the block from, in hexadecimal format
  * @param {Object} data - Block data
- * @param {string} data.previous - The previous hash of the block, in hexadecimal format
- * @param {string} data.representative - The representative address of the block
+ * @param {string} data.work - The PoW
+ * @param {string} data.previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param {string} data.representative - The representative address
  * @return {Object} Block
  */
-export function createChangeBlock (secretKey, { previous, representative }) {
+export function createChangeBlock (secretKey, { work, previous, representative }) {
+  checkNotInitialized()
+
+  if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
+  if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
+  if (!checkHash(previous)) throw new Error('Previous is not valid')
+  if (!checkAddress(representative)) throw new Error('Representative is not valid')
+
   const hash = hashChangeBlock(previous, representative)
   const signature = signBlock(hash, secretKey)
 
@@ -432,7 +498,7 @@ export function createChangeBlock (secretKey, { previous, representative }) {
       type: 'change',
       previous,
       representative,
-      work: null,
+      work,
       signature
     }
   }

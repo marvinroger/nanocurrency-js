@@ -8,7 +8,10 @@
     "url": "https://www.marvinroger.fr"
   },
   "browser": {
+    "path": false,
     "fs": false,
+    "crypto": false,
+    "util": false,
     "./dist/nanocurrency.cjs.js": "./dist/nanocurrency.umd.js"
   },
   "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",

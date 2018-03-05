@@ -73,7 +73,7 @@ const checkString = candidate => typeof candidate === 'string'
  * @param {string} balance - The balance to check
  * @return {boolean} Valid
  */
-const checkBalance = balance => {
+export const checkBalance = balance => {
   if (!checkString(balance) || balance.length > 39) return false
   for (let char of balance) {
     if (char < '0' || char > '9') return false

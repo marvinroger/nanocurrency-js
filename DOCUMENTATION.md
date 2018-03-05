@@ -3,33 +3,31 @@
 ## NanoCurrency
 
 * [NanoCurrency](#module_NanoCurrency)
-    * _static_
-        * [.init()](#module_NanoCurrency.init) ⇒ <code>Promise.&lt;void&gt;</code>
-        * [.isReady()](#module_NanoCurrency.isReady) ⇒ <code>boolean</code>
-        * [.checkSeed(seed)](#module_NanoCurrency.checkSeed) ⇒ <code>boolean</code>
-        * [.checkHash(hash)](#module_NanoCurrency.checkHash) ⇒ <code>boolean</code>
-        * [.checkKey(key)](#module_NanoCurrency.checkKey) ⇒ <code>boolean</code>
-        * [.checkAddress(address)](#module_NanoCurrency.checkAddress) ⇒ <code>boolean</code>
-        * [.checkWork(work)](#module_NanoCurrency.checkWork) ⇒ <code>boolean</code>
-        * [.checkSignature(signature)](#module_NanoCurrency.checkSignature) ⇒ <code>boolean</code>
-        * [.work(blockHash, [workerIndex], [workerCount])](#module_NanoCurrency.work) ⇒ <code>string</code>
-        * [.validateWork(blockHash, work)](#module_NanoCurrency.validateWork) ⇒ <code>boolean</code>
-        * [.generateSeed()](#module_NanoCurrency.generateSeed) ⇒ <code>Promise.&lt;string&gt;</code>
-        * [.deriveSecretKey(seed, index)](#module_NanoCurrency.deriveSecretKey) ⇒ <code>string</code>
-        * [.derivePublicKey(secretKey)](#module_NanoCurrency.derivePublicKey) ⇒ <code>string</code>
-        * [.deriveAddress(publicKey)](#module_NanoCurrency.deriveAddress) ⇒ <code>string</code>
-        * [.hashReceiveBlock(previous, source)](#module_NanoCurrency.hashReceiveBlock) ⇒ <code>string</code>
-        * [.hashOpenBlock(source, representative, account)](#module_NanoCurrency.hashOpenBlock) ⇒ <code>string</code>
-        * [.hashChangeBlock(previous, representative)](#module_NanoCurrency.hashChangeBlock) ⇒ <code>string</code>
-        * [.hashSendBlock(previous, destination, balance)](#module_NanoCurrency.hashSendBlock) ⇒ <code>string</code>
-        * [.signBlock(blockHash, secretKey)](#module_NanoCurrency.signBlock) ⇒ <code>string</code>
-        * [.verifyBlock(blockHash, signature, publicKey)](#module_NanoCurrency.verifyBlock) ⇒ <code>boolean</code>
-        * [.createOpenBlock(secretKey, data)](#module_NanoCurrency.createOpenBlock) ⇒ <code>Object</code>
-        * [.createReceiveBlock(secretKey, data)](#module_NanoCurrency.createReceiveBlock) ⇒ <code>Object</code>
-        * [.createSendBlock(secretKey, data)](#module_NanoCurrency.createSendBlock) ⇒ <code>Object</code>
-        * [.createChangeBlock(secretKey, data)](#module_NanoCurrency.createChangeBlock) ⇒ <code>Object</code>
-    * _inner_
-        * [~checkBalance(balance)](#module_NanoCurrency..checkBalance) ⇒ <code>boolean</code>
+    * [.init()](#module_NanoCurrency.init) ⇒ <code>Promise.&lt;void&gt;</code>
+    * [.isReady()](#module_NanoCurrency.isReady) ⇒ <code>boolean</code>
+    * [.checkBalance(balance)](#module_NanoCurrency.checkBalance) ⇒ <code>boolean</code>
+    * [.checkSeed(seed)](#module_NanoCurrency.checkSeed) ⇒ <code>boolean</code>
+    * [.checkHash(hash)](#module_NanoCurrency.checkHash) ⇒ <code>boolean</code>
+    * [.checkKey(key)](#module_NanoCurrency.checkKey) ⇒ <code>boolean</code>
+    * [.checkAddress(address)](#module_NanoCurrency.checkAddress) ⇒ <code>boolean</code>
+    * [.checkWork(work)](#module_NanoCurrency.checkWork) ⇒ <code>boolean</code>
+    * [.checkSignature(signature)](#module_NanoCurrency.checkSignature) ⇒ <code>boolean</code>
+    * [.work(blockHash, [workerIndex], [workerCount])](#module_NanoCurrency.work) ⇒ <code>string</code>
+    * [.validateWork(blockHash, work)](#module_NanoCurrency.validateWork) ⇒ <code>boolean</code>
+    * [.generateSeed()](#module_NanoCurrency.generateSeed) ⇒ <code>Promise.&lt;string&gt;</code>
+    * [.deriveSecretKey(seed, index)](#module_NanoCurrency.deriveSecretKey) ⇒ <code>string</code>
+    * [.derivePublicKey(secretKey)](#module_NanoCurrency.derivePublicKey) ⇒ <code>string</code>
+    * [.deriveAddress(publicKey)](#module_NanoCurrency.deriveAddress) ⇒ <code>string</code>
+    * [.hashReceiveBlock(previous, source)](#module_NanoCurrency.hashReceiveBlock) ⇒ <code>string</code>
+    * [.hashOpenBlock(source, representative, account)](#module_NanoCurrency.hashOpenBlock) ⇒ <code>string</code>
+    * [.hashChangeBlock(previous, representative)](#module_NanoCurrency.hashChangeBlock) ⇒ <code>string</code>
+    * [.hashSendBlock(previous, destination, balance)](#module_NanoCurrency.hashSendBlock) ⇒ <code>string</code>
+    * [.signBlock(blockHash, secretKey)](#module_NanoCurrency.signBlock) ⇒ <code>string</code>
+    * [.verifyBlock(blockHash, signature, publicKey)](#module_NanoCurrency.verifyBlock) ⇒ <code>boolean</code>
+    * [.createOpenBlock(secretKey, data)](#module_NanoCurrency.createOpenBlock) ⇒ <code>Object</code>
+    * [.createReceiveBlock(secretKey, data)](#module_NanoCurrency.createReceiveBlock) ⇒ <code>Object</code>
+    * [.createSendBlock(secretKey, data)](#module_NanoCurrency.createSendBlock) ⇒ <code>Object</code>
+    * [.createChangeBlock(secretKey, data)](#module_NanoCurrency.createChangeBlock) ⇒ <code>Object</code>
 
 <a name="module_NanoCurrency.init"></a>
 
@@ -43,6 +41,19 @@ Initialize the library.
 Get whether or not the library is ready to be used ([#module_NanoCurrency.init](#module_NanoCurrency.init) has been called).
 
 **Kind**: static method of [<code>NanoCurrency</code>](#module_NanoCurrency)  
+<a name="module_NanoCurrency.checkBalance"></a>
+
+### NanoCurrency.checkBalance(balance) ⇒ <code>boolean</code>
+Check if the given balance is valid.
+Does not require initialization.
+
+**Kind**: static method of [<code>NanoCurrency</code>](#module_NanoCurrency)  
+**Returns**: <code>boolean</code> - Valid  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| balance | <code>string</code> | The balance to check |
+
 <a name="module_NanoCurrency.checkSeed"></a>
 
 ### NanoCurrency.checkSeed(seed) ⇒ <code>boolean</code>
@@ -353,17 +364,4 @@ Requires initialization.
 | data.work | <code>string</code> | The PoW |
 | data.previous | <code>string</code> | The hash of the previous block on the account chain, in hexadecimal format |
 | data.representative | <code>string</code> | The representative address |
-
-<a name="module_NanoCurrency..checkBalance"></a>
-
-### NanoCurrency~checkBalance(balance) ⇒ <code>boolean</code>
-Check if the given balance is valid.
-Does not require initialization.
-
-**Kind**: inner method of [<code>NanoCurrency</code>](#module_NanoCurrency)  
-**Returns**: <code>boolean</code> - Valid  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| balance | <code>string</code> | The balance to check |
 

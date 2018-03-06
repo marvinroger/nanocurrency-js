@@ -1,5 +1,5 @@
-import wasm from 'rollup-plugin-wasm'
-import babel from 'rollup-plugin-babel'
+// import wasm from 'rollup-plugin-wasm'
+import buble from 'rollup-plugin-buble'
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import uglify from 'rollup-plugin-uglify'
@@ -31,9 +31,10 @@ const config = [
       // wasm(),
       resolve(),
       commonjs(),
-      babel({
-        exclude: 'node_modules/**',
-        plugins: ['external-helpers']
+      buble({
+        transforms: {
+          dangerousForOf: true
+        }
       })
     ]
   }

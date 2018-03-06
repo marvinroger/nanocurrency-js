@@ -20,6 +20,7 @@ let _hashChangeBlock = null
 let _hashSendBlock = null
 let _signBlock = null
 let _verifyBlock = null
+let _convertAmountDecimalIntegerToHex = null
 
 /**
  * Initialize the library.
@@ -42,6 +43,7 @@ export function init () {
         _hashSendBlock = instance.cwrap('emscripten_hash_send_block', 'string', ['string', 'string', 'string'])
         _signBlock = instance.cwrap('emscripten_sign_block', 'string', ['string', 'string'])
         _verifyBlock = instance.cwrap('emscripten_verify_block', 'number', ['string', 'string', 'string'])
+        _convertAmountDecimalIntegerToHex = instance.cwrap('emscripten_convert_amount_decimal_integer_to_hex', 'string', ['string'])
 
         resolve()
       })
@@ -73,7 +75,8 @@ const checkString = candidate => typeof candidate === 'string'
  * @param {string} balance - The balance to check
  * @return {boolean} Valid
  */
-const checkBalance = balance => {
+export const checkBalance = balance => {
+  // TODO(breaking): checkAmount instead
   if (!checkString(balance) || balance.length > 39) return false
   for (let char of balance) {
     if (char < '0' || char > '9') return false
@@ -90,7 +93,7 @@ const checkBalance = balance => {
  * @param {string} seed - The seed to check
  * @return {boolean} Valid
  */
-export const checkSeed = seed => checkString(seed) && seed.match(/[0-9a-fA-F]{64}/)
+export const checkSeed = seed => checkString(seed) && /[0-9a-fA-F]{64}/.test(seed)
 
 /**
  * Check if the given hash is valid.
@@ -120,7 +123,7 @@ export const checkKey = checkSeed
  * @param {string} address - The address to check
  * @return {boolean} Valid
  */
-export const checkAddress = address => checkString(address) && address.match(/xrb_[13][0-9a-km-uw-z]{59}/)
+export const checkAddress = address => checkString(address) && /xrb_[13][0-9a-km-uw-z]{59}/.test(address)
 
 /**
  * Check if the given work is valid.
@@ -130,7 +133,7 @@ export const checkAddress = address => checkString(address) && address.match(/xr
  * @param {string} work - The work to check
  * @return {boolean} Valid
  */
-export const checkWork = work => checkString(work) && work.match(/[0-9a-fA-F]{16}/)
+export const checkWork = work => checkString(work) && /[0-9a-fA-F]{16}/.test(work)
 
 /**
  * Check if the given signature is valid.
@@ -140,7 +143,7 @@ export const checkWork = work => checkString(work) && work.match(/[0-9a-fA-F]{16
  * @param {string} signature - The signature to check
  * @return {boolean} Valid
  */
-export const checkSignature = signature => checkString(signature) && signature.match(/[0-9a-fA-F]{128}/)
+export const checkSignature = signature => checkString(signature) && /[0-9a-fA-F]{128}/.test(signature)
 
 /**
  * Find a work value that meets the difficulty for the given hash.
@@ -193,12 +196,18 @@ export function validateWork (blockHash, work) {
  *
  * @return {Promise<string>} Seed, in hexadecimal format
  */
-export async function generateSeed () {
-  const seed = await getRandomBytes(32)
+export function generateSeed () {
+  return new Promise((resolve, reject) => {
+    getRandomBytes(32)
+      .then(seed => {
+        const seedHex = seed.reduce(function (hex, i) {
+          return hex + ('0' + i.toString(16)).slice(-2)
+        }, '')
 
-  return seed.reduce(function (hex, i) {
-    return hex + ('0' + i.toString(16)).slice(-2)
-  }, '')
+        resolve(seedHex)
+      })
+      .catch(reject)
+  })
 }
 
 /**
@@ -389,7 +398,6 @@ export function createOpenBlock (secretKey, { work, source, representative }) {
     hash,
     block: {
       type: 'open',
-      previous,
       source,
       representative,
       account,
@@ -456,6 +464,7 @@ export function createSendBlock (secretKey, { work, previous, destination, balan
 
   const hash = hashSendBlock(previous, destination, balance)
   const signature = signBlock(hash, secretKey)
+  const balanceHex = _convertAmountDecimalIntegerToHex(balance)
 
   return {
     hash,
@@ -463,7 +472,7 @@ export function createSendBlock (secretKey, { work, previous, destination, balan
       type: 'send',
       previous,
       destination,
-      balance,
+      balance: balanceHex,
       work,
       signature
     }

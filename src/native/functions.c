@@ -41,6 +41,10 @@ const uint8_t UINT128_LENGTH = 16;
 void uint128_to_bytes(struct bn* src, uint8_t* const dst) {
   char buf[8192];
   bignum_to_string(src, buf, sizeof(buf));
+
+  for (unsigned int i = 0; i < UINT128_LENGTH; i++) {
+    dst[i] = 0;
+  }
   hex_to_bytes(buf, dst + (UINT128_LENGTH - (strlen(buf) / 2)));
 }
 
@@ -160,8 +164,6 @@ void amount_to_bytes(const char* const amount, uint8_t* const dst) {
   bignum_init(&value);
   bignum_from_int(&ten, 10);
   bignum_init(&to_add);
-
-  char buf[8192];
 
   for (unsigned int i = 0; i < strlen(amount); i++) {
     bignum_mul(&value, &ten, &tmp);
@@ -490,4 +492,14 @@ uint8_t emscripten_verify_block(const char* const block_hash_hex, const char* co
   const bool valid = verify_block(block_hash_bytes, signature_bytes, public_key_bytes);
 
   return valid ? 1 : 0;
+}
+
+EMSCRIPTEN_KEEPALIVE
+const char* emscripten_convert_amount_decimal_integer_to_hex(const char* const amount) {
+  uint8_t amount_bytes[AMOUNT_LENGTH];
+  amount_to_bytes(amount, amount_bytes);
+
+  bytes_to_hex(amount_bytes, AMOUNT_LENGTH, stack_string);
+
+  return stack_string;
 }

@@ -28,8 +28,12 @@ beforeAll(nano.init)
 
 describe('seeds', () => {
   test('generates different seeds', async () => {
+    expect.assertions(3)
     const seed1 = await nano.generateSeed()
     const seed2 = await nano.generateSeed()
+
+    expect(nano.checkSeed(seed1)).toBe(true)
+    expect(nano.checkSeed(seed2)).toBe(true)
     expect(seed1).not.toBe(seed2)
   })
 })

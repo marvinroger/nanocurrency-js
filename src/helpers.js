@@ -2,9 +2,9 @@ const IS_NODE = Object.prototype.toString.call(typeof process !== 'undefined' ? 
 
 let fillRandom = null
 if (!IS_NODE) {
-  fillRandom = () => {
+  fillRandom = bytes => {
     return new Promise(resolve => {
-      self.crypto.getRandomValues.bind(self.crypto) // eslint-disable-line
+      self.crypto.getRandomValues(bytes) // eslint-disable-line
       resolve()
     })
   }

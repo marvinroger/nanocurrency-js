@@ -42,10 +42,18 @@ void uint128_to_bytes(struct bn* src, uint8_t* const dst) {
   char buf[8192];
   bignum_to_string(src, buf, sizeof(buf));
 
+  char padded_string[(2 * UINT128_LENGTH) + 1];
+  if (strlen(buf) % 2 == 0) {
+    strcpy(padded_string, buf);
+  } else {
+    strcpy(padded_string, "0");
+    strcat(padded_string, buf);
+  }
+
   for (unsigned int i = 0; i < UINT128_LENGTH; i++) {
     dst[i] = 0;
   }
-  hex_to_bytes(buf, dst + (UINT128_LENGTH - (strlen(buf) / 2)));
+  hex_to_bytes(padded_string, dst + (UINT128_LENGTH - (strlen(padded_string) / 2)));
 }
 
 const uint8_t UINT64_LENGTH = 8;

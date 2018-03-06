@@ -70,14 +70,13 @@ const checkString = candidate => typeof candidate === 'string'
  * Does not require initialization.
  *
  * @function
- * @param {string} balance - The balance to check
+ * @param {string} balance - The balance to check. Balance must contain a 16 byte, zero-filled hex value.
  * @return {boolean} Valid
  */
 export const checkBalance = balance => {
-  if (!checkString(balance) || balance.length > 39) return false
-  for (let char of balance) {
-    if (char < '0' || char > '9') return false
-  }
+  const isSixteenByteHex = balance.length === 32 && balance.match(/([0-9]|[a-f])/gi).length === balance.length
+
+  if (!checkString(balance) || !isSixteenByteHex) return false
 
   return true
 }

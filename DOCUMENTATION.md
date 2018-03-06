@@ -44,7 +44,7 @@ Get whether or not the library is ready to be used ([#module_NanoCurrency.init](
 <a name="module_NanoCurrency.checkBalance"></a>
 
 ### NanoCurrency.checkBalance(balance) ⇒ <code>boolean</code>
-Check if the given balance is valid.
+Check if the given balance is valid. 
 Does not require initialization.
 
 **Kind**: static method of [<code>NanoCurrency</code>](#module_NanoCurrency)  
@@ -52,7 +52,7 @@ Does not require initialization.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| balance | <code>string</code> | The balance to check |
+| balance | <code>string</code> | The balance to check. Balance must contain a 16 byte, zero-filled hex value. |
 
 <a name="module_NanoCurrency.checkSeed"></a>
 

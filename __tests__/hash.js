@@ -36,7 +36,7 @@ const VALID_RECEIVE_BLOCK = {
 beforeAll(nano.init)
 
 describe('send', () => {
-  test('creates correct send block', () => {
+  test('creates correct send hash', () => {
     expect(
       nano.hashSendBlock(
         VALID_SEND_BLOCK.previous,
@@ -87,7 +87,7 @@ describe('send', () => {
 })
 
 describe('open', () => {
-  test('creates correct open block', () => {
+  test('creates correct open hash', () => {
     expect(
       nano.hashOpenBlock(
         VALID_OPEN_BLOCK.source,
@@ -138,7 +138,7 @@ describe('open', () => {
 })
 
 describe('change', () => {
-  test('creates correct change block', () => {
+  test('creates correct change hash', () => {
     expect(
       nano.hashChangeBlock(
         VALID_CHANGE_BLOCK.previous,
@@ -173,7 +173,7 @@ describe('change', () => {
 })
 
 describe('receive', () => {
-  test('creates correct receive block', () => {
+  test('creates correct receive hash', () => {
     expect(
       nano.hashReceiveBlock(
         VALID_RECEIVE_BLOCK.previous,

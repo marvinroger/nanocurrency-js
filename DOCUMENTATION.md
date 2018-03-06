@@ -364,4 +364,3 @@ Requires initialization.
 | data.work | <code>string</code> | The PoW |
 | data.previous | <code>string</code> | The hash of the previous block on the account chain, in hexadecimal format |
 | data.representative | <code>string</code> | The representative address |
-

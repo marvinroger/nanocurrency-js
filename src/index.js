@@ -116,9 +116,9 @@ export function checkHash (hash) {
  * @param {string} key - The key to check
  * @return {boolean} Valid
  */
- export function checkKey (key) {
-   return checkSeed(key)
- }
+export function checkKey (key) {
+  return checkSeed(key)
+}
 
 /**
  * Check if the given address is valid.
@@ -146,7 +146,6 @@ export function checkWork (work) {
  * Check if the given signature is valid.
  * Does not require initialization.
  *
- * @function
  * @param {string} signature - The signature to check
  * @return {boolean} Valid
  */

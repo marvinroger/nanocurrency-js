@@ -23,6 +23,7 @@
     "doxdox": "^2.0.3",
     "jest": "^22.3.0",
     "jsdoc-to-markdown": "^4.0.1",
+    "puppeteer": "^1.1.1",
     "rollup": "^0.56.1",
     "rollup-plugin-buble": "^0.19.2",
     "rollup-plugin-commonjs": "^9.0.0",

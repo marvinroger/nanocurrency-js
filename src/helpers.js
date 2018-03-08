@@ -1,3 +1,8 @@
+/*!
+ * nanocurrency-js: A toolkit for the Nano cryptocurrency.
+ * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
+ * Licensed under GPL-3.0 (https://git.io/vAZsK)
+ */
 const IS_NODE = Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]'
 
 let fillRandom = null

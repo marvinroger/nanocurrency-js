@@ -62,20 +62,22 @@ export function isReady () {
   return instance !== null
 }
 
-const checkNotInitialized = () => {
+function checkNotInitialized () {
   if (!isReady()) throw new Error('NanoCurrency is not initialized')
 }
-const checkString = candidate => typeof candidate === 'string'
+
+function checkString (candidate) {
+  return typeof candidate === 'string'
+}
 
 /**
  * Check if the given balance is valid.
  * Does not require initialization.
  *
- * @function
  * @param {string} balance - The balance to check
  * @return {boolean} Valid
  */
-export const checkBalance = balance => {
+export function checkBalance (balance) {
   // TODO(breaking): checkAmount instead
   if (!checkString(balance) || balance.length > 39) return false
   for (let char of balance) {
@@ -89,51 +91,56 @@ export const checkBalance = balance => {
  * Check if the given seed is valid.
  * Does not require initialization.
  *
- * @function
  * @param {string} seed - The seed to check
  * @return {boolean} Valid
  */
-export const checkSeed = seed => checkString(seed) && /[0-9a-fA-F]{64}/.test(seed)
+export function checkSeed (seed) {
+  return checkString(seed) && /[0-9a-fA-F]{64}/.test(seed)
+}
 
 /**
  * Check if the given hash is valid.
  * Does not require initialization.
  *
- * @function
  * @param {string} hash - The hash to check
  * @return {boolean} Valid
  */
-export const checkHash = checkSeed
+export function checkHash (hash) {
+  return checkSeed(hash)
+}
 
 /**
  * Check if the given public or secret key is valid.
  * Does not require initialization.
  *
- * @function
  * @param {string} key - The key to check
  * @return {boolean} Valid
  */
-export const checkKey = checkSeed
+ export function checkKey (key) {
+   return checkSeed(key)
+ }
 
 /**
  * Check if the given address is valid.
  * Does not require initialization.
  *
- * @function
  * @param {string} address - The address to check
  * @return {boolean} Valid
  */
-export const checkAddress = address => checkString(address) && /xrb_[13][0-9a-km-uw-z]{59}/.test(address)
+export function checkAddress (address) {
+  return checkString(address) && /xrb_[13][0-9a-km-uw-z]{59}/.test(address)
+}
 
 /**
  * Check if the given work is valid.
  * Does not require initialization.
  *
- * @function
  * @param {string} work - The work to check
  * @return {boolean} Valid
  */
-export const checkWork = work => checkString(work) && /[0-9a-fA-F]{16}/.test(work)
+export function checkWork (work) {
+  return checkString(work) && /[0-9a-fA-F]{16}/.test(work)
+}
 
 /**
  * Check if the given signature is valid.
@@ -143,7 +150,9 @@ export const checkWork = work => checkString(work) && /[0-9a-fA-F]{16}/.test(wor
  * @param {string} signature - The signature to check
  * @return {boolean} Valid
  */
-export const checkSignature = signature => checkString(signature) && /[0-9a-fA-F]{128}/.test(signature)
+export function checkSignature (signature) {
+  return checkString(signature) && /[0-9a-fA-F]{128}/.test(signature)
+}
 
 /**
  * Find a work value that meets the difficulty for the given hash.

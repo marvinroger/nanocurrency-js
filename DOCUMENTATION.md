@@ -2,210 +2,43 @@
 
 ### Table of Contents
 
--   [generateSeed][1]
--   [hashReceiveBlock][2]
--   [signBlock][3]
--   [work][4]
--   [init][5]
--   [verifyBlock][6]
--   [createOpenBlock][7]
--   [hashOpenBlock][8]
--   [deriveSecretKey][9]
--   [validateWork][10]
--   [hashChangeBlock][11]
--   [isReady][12]
--   [derivePublicKey][13]
--   [hashSendBlock][14]
--   [createReceiveBlock][15]
--   [deriveAddress][16]
--   [checkBalance][17]
--   [checkSeed][18]
--   [checkHash][19]
--   [createSendBlock][20]
--   [checkKey][21]
--   [checkAddress][22]
--   [checkWork][23]
--   [createChangeBlock][24]
--   [checkSignature][25]
-
-## generateSeed
-
-Generate a cryptographically secure seed.
-Does not require initialization.
-
-Returns **[Promise][26]&lt;[string][27]>** Seed, in hexadecimal format
-
-## hashReceiveBlock
-
-Hash a receive block.
-Requires initialization.
-
-**Parameters**
-
--   `previous` **[string][27]** The hash of the previous block on the account chain, in hexadecimal format
--   `source` **[string][27]** The hash of the send block that is being received, in hexadecimal format
-
-Returns **[string][27]** Hash, in hexadecimal format
-
-## signBlock
-
-Sign a block.
-Requires initialization.
-
-**Parameters**
-
--   `blockHash` **[string][27]** The hash of the block to sign
--   `secretKey` **[string][27]** The secret key to sign the block with, in hexadecimal format
-
-Returns **[string][27]** Signature, in hexadecimal format
-
-## work
-
-Find a work value that meets the difficulty for the given hash.
-Requires initialization.
-
-**Parameters**
-
--   `blockHash` **[string][27]** The hash to find a work for
--   `workerIndex` **[number][28]** The current worker index, starting at 0 (optional, default `0`)
--   `workerCount` **[number][28]** The count of worker (optional, default `1`)
-
-Returns **[string][27]** Work, in hexadecimal format
+-   [init][1]
+-   [isReady][2]
+-   [checkBalance][3]
+-   [checkSeed][4]
+-   [checkHash][5]
+-   [checkKey][6]
+-   [checkAddress][7]
+-   [checkWork][8]
+-   [checkSignature][9]
+-   [generateSeed][10]
+-   [deriveSecretKey][11]
+-   [derivePublicKey][12]
+-   [deriveAddress][13]
+-   [hashReceiveBlock][14]
+-   [hashOpenBlock][15]
+-   [hashChangeBlock][16]
+-   [hashSendBlock][17]
+-   [signBlock][18]
+-   [verifyBlock][19]
+-   [work][20]
+-   [validateWork][21]
+-   [createOpenBlock][22]
+-   [createReceiveBlock][23]
+-   [createSendBlock][24]
+-   [createChangeBlock][25]
 
 ## init
 
-## verifyBlock
+Initialize the library.
 
-Verify a block against a public key.
-Requires initialization.
-
-**Parameters**
-
--   `blockHash` **[string][27]** The hash of the block to verify
--   `signature` **[string][27]** The signature of the block to verify, in hexadecimal format
--   `publicKey` **[string][27]** The public key to verify the block against, in hexadecimal format
-
-Returns **[boolean][29]** Valid
-
-## createOpenBlock
-
-Create an open block.
-Requires initialization.
-
-**Parameters**
-
--   `secretKey` **[string][27]** The secret key to create the block from, in hexadecimal format
--   `data` **[Object][30]** Block data
-    -   `data.work` **[string][27]** The PoW
-    -   `data.source` **[string][27]** The hash of the send block that is being received, in hexadecimal format
-    -   `data.representative` **[string][27]** The representative address
-
-Returns **[Object][30]** Block
-
-## hashOpenBlock
-
-Hash an open block.
-Requires initialization.
-
-**Parameters**
-
--   `source` **[string][27]** The hash of the send block that is being received, in hexadecimal format
--   `representative` **[string][27]** The representative address
--   `account` **[string][27]** The account address
-
-Returns **[string][27]** Hash, in hexadecimal format
-
-## deriveSecretKey
-
-Derive a secret key from a seed, given an index.
-Requires initialization.
-
-**Parameters**
-
--   `seed` **[string][27]** The seed to generate the secret key from, in hexadecimal format
--   `index` **[number][28]** The index to generate the secret key from
-
-Returns **[string][27]** Secret key, in hexadecimal format
-
-## validateWork
-
-Validate whether or not the work value meets the difficulty for the given hash.
-Requires initialization.
-
-**Parameters**
-
--   `blockHash` **[string][27]** The hash to validate the work against
--   `work` **[string][27]** The work to validate
-
-Returns **[boolean][29]** Valid
-
-## hashChangeBlock
-
-Hash a change block.
-Requires initialization.
-
-**Parameters**
-
--   `previous` **[string][27]** The hash of the previous block on the account chain, in hexadecimal format
--   `representative` **[string][27]** The representative address
-
-Returns **[string][27]** Hash, in hexadecimal format
+Returns **[Promise][26]&lt;void>** 
 
 ## isReady
 
-Get whether or not the library is ready to be used ([#module_NanoCurrency.init][31] has been called).
+Get whether or not the library is ready to be used ([#init][1] has been called).
 
-Returns **[boolean][29]** 
-
-## derivePublicKey
-
-Derive a public key from a secret key.
-Requires initialization.
-
-**Parameters**
-
--   `secretKey` **[string][27]** The secret key to generate the secret key from, in hexadecimal format
-
-Returns **[string][27]** Public key, in hexadecimal format
-
-## hashSendBlock
-
-Hash a send block.
-Requires initialization.
-
-**Parameters**
-
--   `previous` **[string][27]** The hash of the previous block on the account chain, in hexadecimal format
--   `destination` **[string][27]** The destination address
--   `balance` **[string][27]** The balance, in raw
-
-Returns **[string][27]** Hash, in hexadecimal format
-
-## createReceiveBlock
-
-Create a receive block.
-Requires initialization.
-
-**Parameters**
-
--   `secretKey` **[string][27]** The secret key to create the block from, in hexadecimal format
--   `data` **[Object][30]** Block data
-    -   `data.work` **[string][27]** The PoW
-    -   `data.previous` **[string][27]** The hash of the previous block on the account chain, in hexadecimal format
-    -   `data.source` **[string][27]** The hash of the send block that is being received, in hexadecimal format
-
-Returns **[Object][30]** Block
-
-## deriveAddress
-
-Derive address from a public key.
-Requires initialization.
-
-**Parameters**
-
--   `publicKey` **[string][27]** The public key to generate the address from, in hexadecimal format
-
-Returns **[string][27]** Address
+Returns **[boolean][27]** 
 
 ## checkBalance
 
@@ -214,9 +47,9 @@ Does not require initialization.
 
 **Parameters**
 
--   `balance` **[string][27]** The balance to check
+-   `balance` **[string][28]** The balance to check
 
-Returns **[boolean][29]** Valid
+Returns **[boolean][27]** Valid
 
 ## checkSeed
 
@@ -225,9 +58,9 @@ Does not require initialization.
 
 **Parameters**
 
--   `seed` **[string][27]** The seed to check
+-   `seed` **[string][28]** The seed to check
 
-Returns **[boolean][29]** Valid
+Returns **[boolean][27]** Valid
 
 ## checkHash
 
@@ -236,25 +69,9 @@ Does not require initialization.
 
 **Parameters**
 
--   `hash` **[string][27]** The hash to check
+-   `hash` **[string][28]** The hash to check
 
-Returns **[boolean][29]** Valid
-
-## createSendBlock
-
-Create a send block.
-Requires initialization.
-
-**Parameters**
-
--   `secretKey` **[string][27]** The secret key to create the block from, in hexadecimal format
--   `data` **[Object][30]** Block data
-    -   `data.work` **[string][27]** The PoW
-    -   `data.previous` **[string][27]** The hash of the previous block on the account chain, in hexadecimal format
-    -   `data.destination` **[string][27]** The destination address
-    -   `data.balance` **[string][27]** The balance, in raw
-
-Returns **[Object][30]** Block
+Returns **[boolean][27]** Valid
 
 ## checkKey
 
@@ -263,9 +80,9 @@ Does not require initialization.
 
 **Parameters**
 
--   `key` **[string][27]** The key to check
+-   `key` **[string][28]** The key to check
 
-Returns **[boolean][29]** Valid
+Returns **[boolean][27]** Valid
 
 ## checkAddress
 
@@ -274,9 +91,9 @@ Does not require initialization.
 
 **Parameters**
 
--   `address` **[string][27]** The address to check
+-   `address` **[string][28]** The address to check
 
-Returns **[boolean][29]** Valid
+Returns **[boolean][27]** Valid
 
 ## checkWork
 
@@ -285,24 +102,9 @@ Does not require initialization.
 
 **Parameters**
 
--   `work` **[string][27]** The work to check
+-   `work` **[string][28]** The work to check
 
-Returns **[boolean][29]** Valid
-
-## createChangeBlock
-
-Create a change block.
-Requires initialization.
-
-**Parameters**
-
--   `secretKey` **[string][27]** The secret key to create the block from, in hexadecimal format
--   `data` **[Object][30]** Block data
-    -   `data.work` **[string][27]** The PoW
-    -   `data.previous` **[string][27]** The hash of the previous block on the account chain, in hexadecimal format
-    -   `data.representative` **[string][27]** The representative address
-
-Returns **[Object][30]** Block
+Returns **[boolean][27]** Valid
 
 ## checkSignature
 
@@ -311,68 +113,272 @@ Does not require initialization.
 
 **Parameters**
 
--   `signature` **[string][27]** The signature to check
+-   `signature` **[string][28]** The signature to check
 
-Returns **[boolean][29]** Valid
+Returns **[boolean][27]** Valid
 
-[1]: #generateseed
+## generateSeed
 
-[2]: #hashreceiveblock
+Generate a cryptographically secure seed.
+Does not require initialization.
 
-[3]: #signblock
+Returns **[Promise][26]&lt;[string][28]>** Seed, in hexadecimal format
 
-[4]: #work
+## deriveSecretKey
 
-[5]: #init
+Derive a secret key from a seed, given an index.
+Requires initialization.
 
-[6]: #verifyblock
+**Parameters**
 
-[7]: #createopenblock
+-   `seed` **[string][28]** The seed to generate the secret key from, in hexadecimal format
+-   `index` **[number][29]** The index to generate the secret key from
 
-[8]: #hashopenblock
+Returns **[string][28]** Secret key, in hexadecimal format
 
-[9]: #derivesecretkey
+## derivePublicKey
 
-[10]: #validatework
+Derive a public key from a secret key.
+Requires initialization.
 
-[11]: #hashchangeblock
+**Parameters**
 
-[12]: #isready
+-   `secretKey` **[string][28]** The secret key to generate the secret key from, in hexadecimal format
 
-[13]: #derivepublickey
+Returns **[string][28]** Public key, in hexadecimal format
 
-[14]: #hashsendblock
+## deriveAddress
 
-[15]: #createreceiveblock
+Derive address from a public key.
+Requires initialization.
 
-[16]: #deriveaddress
+**Parameters**
 
-[17]: #checkbalance
+-   `publicKey` **[string][28]** The public key to generate the address from, in hexadecimal format
 
-[18]: #checkseed
+Returns **[string][28]** Address
 
-[19]: #checkhash
+## hashReceiveBlock
 
-[20]: #createsendblock
+Hash a receive block.
+Requires initialization.
 
-[21]: #checkkey
+**Parameters**
 
-[22]: #checkaddress
+-   `previous` **[string][28]** The hash of the previous block on the account chain, in hexadecimal format
+-   `source` **[string][28]** The hash of the send block that is being received, in hexadecimal format
 
-[23]: #checkwork
+Returns **[string][28]** Hash, in hexadecimal format
 
-[24]: #createchangeblock
+## hashOpenBlock
 
-[25]: #checksignature
+Hash an open block.
+Requires initialization.
+
+**Parameters**
+
+-   `source` **[string][28]** The hash of the send block that is being received, in hexadecimal format
+-   `representative` **[string][28]** The representative address
+-   `account` **[string][28]** The account address
+
+Returns **[string][28]** Hash, in hexadecimal format
+
+## hashChangeBlock
+
+Hash a change block.
+Requires initialization.
+
+**Parameters**
+
+-   `previous` **[string][28]** The hash of the previous block on the account chain, in hexadecimal format
+-   `representative` **[string][28]** The representative address
+
+Returns **[string][28]** Hash, in hexadecimal format
+
+## hashSendBlock
+
+Hash a send block.
+Requires initialization.
+
+**Parameters**
+
+-   `previous` **[string][28]** The hash of the previous block on the account chain, in hexadecimal format
+-   `destination` **[string][28]** The destination address
+-   `balance` **[string][28]** The balance, in raw
+
+Returns **[string][28]** Hash, in hexadecimal format
+
+## signBlock
+
+Sign a block.
+Requires initialization.
+
+**Parameters**
+
+-   `blockHash` **[string][28]** The hash of the block to sign
+-   `secretKey` **[string][28]** The secret key to sign the block with, in hexadecimal format
+
+Returns **[string][28]** Signature, in hexadecimal format
+
+## verifyBlock
+
+Verify a block against a public key.
+Requires initialization.
+
+**Parameters**
+
+-   `blockHash` **[string][28]** The hash of the block to verify
+-   `signature` **[string][28]** The signature of the block to verify, in hexadecimal format
+-   `publicKey` **[string][28]** The public key to verify the block against, in hexadecimal format
+
+Returns **[boolean][27]** Valid
+
+## work
+
+Find a work value that meets the difficulty for the given hash.
+Requires initialization.
+
+**Parameters**
+
+-   `blockHash` **[string][28]** The hash to find a work for
+-   `workerIndex` **[number][29]** The current worker index, starting at 0 (optional, default `0`)
+-   `workerCount` **[number][29]** The count of worker (optional, default `1`)
+
+Returns **[string][28]** Work, in hexadecimal format
+
+## validateWork
+
+Validate whether or not the work value meets the difficulty for the given hash.
+Requires initialization.
+
+**Parameters**
+
+-   `blockHash` **[string][28]** The hash to validate the work against
+-   `work` **[string][28]** The work to validate
+
+Returns **[boolean][27]** Valid
+
+## createOpenBlock
+
+Create an open block.
+Requires initialization.
+
+**Parameters**
+
+-   `secretKey` **[string][28]** The secret key to create the block from, in hexadecimal format
+-   `ref`  
+-   `data` **[Object][30]** Block data
+    -   `data.work` **[string][28]** The PoW
+    -   `data.source` **[string][28]** The hash of the send block that is being received, in hexadecimal format
+    -   `data.representative` **[string][28]** The representative address
+
+Returns **[Object][30]** Block
+
+## createReceiveBlock
+
+Create a receive block.
+Requires initialization.
+
+**Parameters**
+
+-   `secretKey` **[string][28]** The secret key to create the block from, in hexadecimal format
+-   `ref`  
+-   `data` **[Object][30]** Block data
+    -   `data.work` **[string][28]** The PoW
+    -   `data.previous` **[string][28]** The hash of the previous block on the account chain, in hexadecimal format
+    -   `data.source` **[string][28]** The hash of the send block that is being received, in hexadecimal format
+
+Returns **[Object][30]** Block
+
+## createSendBlock
+
+Create a send block.
+Requires initialization.
+
+**Parameters**
+
+-   `secretKey` **[string][28]** The secret key to create the block from, in hexadecimal format
+-   `ref`  
+-   `data` **[Object][30]** Block data
+    -   `data.work` **[string][28]** The PoW
+    -   `data.previous` **[string][28]** The hash of the previous block on the account chain, in hexadecimal format
+    -   `data.destination` **[string][28]** The destination address
+    -   `data.balance` **[string][28]** The balance, in raw
+
+Returns **[Object][30]** Block
+
+## createChangeBlock
+
+Create a change block.
+Requires initialization.
+
+**Parameters**
+
+-   `secretKey` **[string][28]** The secret key to create the block from, in hexadecimal format
+-   `ref`  
+-   `data` **[Object][30]** Block data
+    -   `data.work` **[string][28]** The PoW
+    -   `data.previous` **[string][28]** The hash of the previous block on the account chain, in hexadecimal format
+    -   `data.representative` **[string][28]** The representative address
+
+Returns **[Object][30]** Block
+
+[1]: #init
+
+[2]: #isready
+
+[3]: #checkbalance
+
+[4]: #checkseed
+
+[5]: #checkhash
+
+[6]: #checkkey
+
+[7]: #checkaddress
+
+[8]: #checkwork
+
+[9]: #checksignature
+
+[10]: #generateseed
+
+[11]: #derivesecretkey
+
+[12]: #derivepublickey
+
+[13]: #deriveaddress
+
+[14]: #hashreceiveblock
+
+[15]: #hashopenblock
+
+[16]: #hashchangeblock
+
+[17]: #hashsendblock
+
+[18]: #signblock
+
+[19]: #verifyblock
+
+[20]: #work
+
+[21]: #validatework
+
+[22]: #createopenblock
+
+[23]: #createreceiveblock
+
+[24]: #createsendblock
+
+[25]: #createchangeblock
 
 [26]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
-[27]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[27]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 
-[28]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[28]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
-[29]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[29]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
 
 [30]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
-
-[31]: #module_NanoCurrency.init

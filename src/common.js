@@ -24,7 +24,7 @@ export const C_BINDING = {
 /**
  * Initialize the library.
  *
- * @return {Promise<undefined>}
+ * @return {Promise<void>}
  */
 export function init () {
   return new Promise((resolve, reject) => {
@@ -53,7 +53,7 @@ export function init () {
 }
 
 /**
- * Get whether or not the library is ready to be used ({@link #module_NanoCurrency.init} has been called).
+ * Get whether or not the library is ready to be used ({@link #init} has been called).
  *
  * @return {boolean}
  */

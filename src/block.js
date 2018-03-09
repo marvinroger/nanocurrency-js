@@ -12,10 +12,7 @@ import {
   checkBalance
 } from './common'
 
-import {
-  derivePublicKey,
-  deriveAddress
-} from './keys'
+import { derivePublicKey, deriveAddress } from './keys'
 
 import {
   hashOpenBlock,
@@ -43,7 +40,9 @@ export function createOpenBlock (secretKey, { work, source, representative }) {
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
   if (!checkHash(source)) throw new Error('Source is not valid')
-  if (!checkAddress(representative)) throw new Error('Representative is not valid')
+  if (!checkAddress(representative)) {
+    throw new Error('Representative is not valid')
+  }
 
   const previous = derivePublicKey(secretKey)
   const account = deriveAddress(previous)
@@ -109,7 +108,10 @@ export function createReceiveBlock (secretKey, { work, previous, source }) {
  * @param {string} data.balance - The balance, in raw
  * @return {Object} Block
  */
-export function createSendBlock (secretKey, { work, previous, destination, balance }) {
+export function createSendBlock (
+  secretKey,
+  { work, previous, destination, balance }
+) {
   checkNotInitialized()
 
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
@@ -146,13 +148,18 @@ export function createSendBlock (secretKey, { work, previous, destination, balan
  * @param {string} data.representative - The representative address
  * @return {Object} Block
  */
-export function createChangeBlock (secretKey, { work, previous, representative }) {
+export function createChangeBlock (
+  secretKey,
+  { work, previous, representative }
+) {
   checkNotInitialized()
 
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
   if (!checkHash(previous)) throw new Error('Previous is not valid')
-  if (!checkAddress(representative)) throw new Error('Representative is not valid')
+  if (!checkAddress(representative)) {
+    throw new Error('Representative is not valid')
+  }
 
   const hash = hashChangeBlock(previous, representative)
   const signature = signBlock(hash, secretKey)

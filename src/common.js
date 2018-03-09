@@ -24,25 +24,72 @@ export const C_BINDING = {
 /**
  * Initialize the library.
  *
- * @return {Promise<void>}
+ * @return {Promise<void>} Promise
  */
 export function init () {
   return new Promise((resolve, reject) => {
     try {
       Native().then(native => {
         C_BINDING.instance_ = native
-        C_BINDING.work = native.cwrap('emscripten_work', 'string', ['string', 'number', 'number'])
-        C_BINDING.validateWork = native.cwrap('emscripten_validate_work', 'number', ['string', 'string'])
-        C_BINDING.deriveSecretKey = native.cwrap('emscripten_derive_secret_key', 'string', ['string', 'number'])
-        C_BINDING.derivePublicKey = native.cwrap('emscripten_derive_public_key', 'string', ['string'])
-        C_BINDING.deriveAddress = native.cwrap('emscripten_derive_address', 'string', ['string'])
-        C_BINDING.hashReceiveBlock = native.cwrap('emscripten_hash_receive_block', 'string', ['string', 'string'])
-        C_BINDING.hashOpenBlock = native.cwrap('emscripten_hash_open_block', 'string', ['string', 'string', 'string'])
-        C_BINDING.hashChangeBlock = native.cwrap('emscripten_hash_change_block', 'string', ['string', 'string'])
-        C_BINDING.hashSendBlock = native.cwrap('emscripten_hash_send_block', 'string', ['string', 'string', 'string'])
-        C_BINDING.signBlock = native.cwrap('emscripten_sign_block', 'string', ['string', 'string'])
-        C_BINDING.verifyBlock = native.cwrap('emscripten_verify_block', 'number', ['string', 'string', 'string'])
-        C_BINDING.convertAmountDecimalIntegerToHex = native.cwrap('emscripten_convert_amount_decimal_integer_to_hex', 'string', ['string'])
+        C_BINDING.work = native.cwrap('emscripten_work', 'string', [
+          'string',
+          'number',
+          'number'
+        ])
+        C_BINDING.validateWork = native.cwrap(
+          'emscripten_validate_work',
+          'number',
+          ['string', 'string']
+        )
+        C_BINDING.deriveSecretKey = native.cwrap(
+          'emscripten_derive_secret_key',
+          'string',
+          ['string', 'number']
+        )
+        C_BINDING.derivePublicKey = native.cwrap(
+          'emscripten_derive_public_key',
+          'string',
+          ['string']
+        )
+        C_BINDING.deriveAddress = native.cwrap(
+          'emscripten_derive_address',
+          'string',
+          ['string']
+        )
+        C_BINDING.hashReceiveBlock = native.cwrap(
+          'emscripten_hash_receive_block',
+          'string',
+          ['string', 'string']
+        )
+        C_BINDING.hashOpenBlock = native.cwrap(
+          'emscripten_hash_open_block',
+          'string',
+          ['string', 'string', 'string']
+        )
+        C_BINDING.hashChangeBlock = native.cwrap(
+          'emscripten_hash_change_block',
+          'string',
+          ['string', 'string']
+        )
+        C_BINDING.hashSendBlock = native.cwrap(
+          'emscripten_hash_send_block',
+          'string',
+          ['string', 'string', 'string']
+        )
+        C_BINDING.signBlock = native.cwrap('emscripten_sign_block', 'string', [
+          'string',
+          'string'
+        ])
+        C_BINDING.verifyBlock = native.cwrap(
+          'emscripten_verify_block',
+          'number',
+          ['string', 'string', 'string']
+        )
+        C_BINDING.convertAmountDecimalIntegerToHex = native.cwrap(
+          'emscripten_convert_amount_decimal_integer_to_hex',
+          'string',
+          ['string']
+        )
 
         resolve()
       })
@@ -55,7 +102,7 @@ export function init () {
 /**
  * Get whether or not the library is ready to be used ({@link #init} has been called).
  *
- * @return {boolean}
+ * @return {boolean} Ready
  */
 export function isReady () {
   return C_BINDING.instance_ !== null
@@ -65,8 +112,22 @@ export function checkNotInitialized () {
   if (!isReady()) throw new Error('NanoCurrency is not initialized')
 }
 
-function checkString (candidate) {
+export function checkString (candidate) {
   return typeof candidate === 'string'
+}
+
+export function checkNumber (number) {
+  if (!checkString(number)) return false
+  if (number.startsWith('.') || number.endsWith('.')) return false
+
+  let numberWithoutDot = number.replace('.', '')
+  // more than one '.'
+  if (number.length - numberWithoutDot.length > 1) return false
+  for (let char of numberWithoutDot) {
+    if (char < '0' || char > '9') return false
+  }
+
+  return true
 }
 
 /**

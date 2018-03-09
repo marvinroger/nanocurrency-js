@@ -3,12 +3,7 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import {
-  C_BINDING,
-  checkNotInitialized,
-  checkWork,
-  checkHash
-} from './common'
+import { C_BINDING, checkNotInitialized, checkWork, checkHash } from './common'
 
 /**
  * Find a work value that meets the difficulty for the given hash.
@@ -29,7 +24,9 @@ export function work (blockHash, workerIndex = 0, workerCount = 1) {
     workerIndex < 0 ||
     workerCount < 1 ||
     workerIndex > workerCount - 1
-  ) throw new Error('Worker parameters are not valid')
+  ) {
+    throw new Error('Worker parameters are not valid')
+  }
 
   const work = C_BINDING.work(blockHash, workerIndex, workerCount)
 

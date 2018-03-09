@@ -3,12 +3,7 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import {
-  C_BINDING,
-  checkNotInitialized,
-  checkSeed,
-  checkKey
-} from './common'
+import { C_BINDING, checkNotInitialized, checkSeed, checkKey } from './common'
 
 import { getRandomBytes } from './helpers'
 
@@ -44,10 +39,9 @@ export function deriveSecretKey (seed, index) {
   checkNotInitialized()
 
   if (!checkSeed(seed)) throw new Error('Seed is not valid')
-  if (
-    !Number.isInteger(index) ||
-    index < 0
-  ) throw new Error('Index is not valid')
+  if (!Number.isInteger(index) || index < 0) {
+    throw new Error('Index is not valid')
+  }
 
   return C_BINDING.deriveSecretKey(seed, index)
 }

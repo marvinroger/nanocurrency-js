@@ -41,7 +41,9 @@ export function hashOpenBlock (source, representative, account) {
   checkNotInitialized()
 
   if (!checkHash(source)) throw new Error('Source is not valid')
-  if (!checkAddress(representative)) throw new Error('Representative is not valid')
+  if (!checkAddress(representative)) {
+    throw new Error('Representative is not valid')
+  }
   if (!checkAddress(account)) throw new Error('Account is not valid')
 
   return C_BINDING.hashOpenBlock(source, representative, account)
@@ -59,7 +61,9 @@ export function hashChangeBlock (previous, representative) {
   checkNotInitialized()
 
   if (!checkHash(previous)) throw new Error('Previous is not valid')
-  if (!checkAddress(representative)) throw new Error('Representative is not valid')
+  if (!checkAddress(representative)) {
+    throw new Error('Representative is not valid')
+  }
 
   return C_BINDING.hashChangeBlock(previous, representative)
 }

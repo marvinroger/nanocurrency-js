@@ -18,6 +18,8 @@ export {
   checkSignature
 } from './common'
 
+export { convert } from './conversion'
+
 export {
   generateSeed,
   deriveSecretKey,
@@ -32,15 +34,9 @@ export {
   hashChangeBlock
 } from './hash'
 
-export {
-  signBlock,
-  verifyBlock
-} from './signature'
+export { signBlock, verifyBlock } from './signature'
 
-export {
-  work,
-  validateWork
-} from './work'
+export { work, validateWork } from './work'
 
 export {
   createOpenBlock,

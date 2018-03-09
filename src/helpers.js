@@ -3,7 +3,10 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-const IS_NODE = Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]'
+const IS_NODE =
+  Object.prototype.toString.call(
+    typeof process !== 'undefined' ? process : 0
+  ) === '[object process]'
 
 let fillRandom = null
 if (!IS_NODE) {
@@ -14,7 +17,7 @@ if (!IS_NODE) {
     })
   }
 } else {
-  const {promisify} = require('util')
+  const { promisify } = require('util')
   fillRandom = promisify(require('crypto').randomFill)
 }
 

@@ -35,6 +35,10 @@ Does not require initialization.</p>
 <dd><p>Check if the given signature is valid.
 Does not require initialization.</p>
 </dd>
+<dt><a href="#convert">convert(value, units)</a> ⇒ <code>string</code></dt>
+<dd><p>Convert a value from one Nano unit to another.
+Does not require initialization.</p>
+</dd>
 <dt><a href="#generateSeed">generateSeed()</a> ⇒ <code>Promise.&lt;string&gt;</code></dt>
 <dd><p>Generate a cryptographically secure seed.
 Does not require initialization.</p>
@@ -107,12 +111,14 @@ Requires initialization.</p>
 Initialize the library.
 
 **Kind**: global function  
+**Returns**: <code>Promise.&lt;void&gt;</code> - Promise  
 <a name="isReady"></a>
 
 ## isReady() ⇒ <code>boolean</code>
 Get whether or not the library is ready to be used ([#init](#init) has been called).
 
 **Kind**: global function  
+**Returns**: <code>boolean</code> - Ready  
 <a name="checkBalance"></a>
 
 ## checkBalance(balance) ⇒ <code>boolean</code>
@@ -203,6 +209,22 @@ Does not require initialization.
 | Param | Type | Description |
 | --- | --- | --- |
 | signature | <code>string</code> | The signature to check |
+
+<a name="convert"></a>
+
+## convert(value, units) ⇒ <code>string</code>
+Convert a value from one Nano unit to another.
+Does not require initialization.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - Converted number  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>string</code> | The value to convert |
+| units | <code>Object</code> | Units |
+| units.from | <code>string</code> | The unit to convert the value from. One of 'raw', 'nano', 'knano', 'Nano', 'NANO', 'KNano', 'MNano' |
+| units.to | <code>string</code> | The unit to convert the value to. Same units as units.from |
 
 <a name="generateSeed"></a>
 

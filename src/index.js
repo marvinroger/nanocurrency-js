@@ -3,7 +3,9 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-/** @module NanoCurrency */
+/**
+ * @module NanoCurrency
+ */
 export {
   init,
   isReady,

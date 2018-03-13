@@ -219,12 +219,12 @@ Does not require initialization.
 **Kind**: global function  
 **Returns**: <code>string</code> - Converted number  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| value | <code>string</code> | The value to convert |
-| units | <code>Object</code> | Units |
-| units.from | <code>string</code> | The unit to convert the value from. One of 'raw', 'nano', 'knano', 'Nano', 'NANO', 'KNano', 'MNano' |
-| units.to | <code>string</code> | The unit to convert the value to. Same units as units.from |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| value | <code>string</code> |  | The value to convert |
+| units | <code>Object</code> |  | Units |
+| [units.from] | <code>string</code> | <code>&quot;Nano&quot;</code> | The unit to convert the value from. One of 'raw', 'nano', 'knano', 'Nano', 'NANO', 'KNano', 'MNano' |
+| [units.to] | <code>string</code> | <code>&quot;raw&quot;</code> | The unit to convert the value to. Same units as units.from |
 
 <a name="generateSeed"></a>
 

@@ -61,6 +61,18 @@ function normalizeNumber (value) {
     value = normalizeNumber(value).value // might start with 0 after shift
   }
 
+  // count last zeroes to add to shift
+  while (true && value.length > 1) {
+    let char = value[value.length - 1]
+
+    if (char === '0') {
+      shift--
+      value = value.slice(0, -1)
+    } else {
+      break
+    }
+  }
+
   return {
     value,
     shift
@@ -73,23 +85,23 @@ function normalizeNumber (value) {
  *
  * @param {string} value - The value to convert
  * @param {Object} units - Units
- * @param {string} units.from - The unit to convert the value from. One of 'raw', 'nano', 'knano', 'Nano', 'NANO', 'KNano', 'MNano'
- * @param {string} units.to - The unit to convert the value to. Same units as units.from
+ * @param {string} [units.from=Nano] - The unit to convert the value from. One of 'raw', 'nano', 'knano', 'Nano', 'NANO', 'KNano', 'MNano'
+ * @param {string} [units.to=raw] - The unit to convert the value to. Same units as units.from
  * @return {string} Converted number
  */
-export function convert (value, { from, to } = {}) {
+export function convert (value, { from = 'Nano', to = 'raw' } = {}) {
   if (!checkNumber(value)) throw new Error('Value is not valid')
 
   const fromZeroes = ZEROES[from]
   const toZeroes = ZEROES[to]
 
   if (typeof fromZeroes === 'undefined' || typeof toZeroes === 'undefined') {
-    throw new Exception('From or to is not valid')
+    throw new Error('From or to is not valid')
   }
 
-  let { value: normalizedValue, shift } = normalizeNumber(value)
+  if (value === '0') return '0'
 
-  const decimalMultiplicator = 0
+  let { value: normalizedValue, shift } = normalizeNumber(value)
 
   const difference = fromZeroes - toZeroes - shift
 

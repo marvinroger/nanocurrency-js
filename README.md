@@ -43,6 +43,8 @@ Contributions are very welcome. To develop, make use of the following commands (
 
 * `yarn lint`: lint the code against [JavaScript Standard Style](https://standardjs.com)
 
+* `yarn format`: format the code with [Prettier](https://prettier.io)
+
 * `yarn generate-docs`: generate the `DOCUMENTATION.md` file from the [JSDoc](http://usejsdoc.org) annotations
 
 ---
@@ -50,12 +52,6 @@ Contributions are very welcome. To develop, make use of the following commands (
 ## Helpful materials
 
 * Article about seed / secret key / public key / address generation: https://medium.com/@benkray/raiblocks-deterministic-keys-8cb869cc6046
-
-* BLAKE2 reference implementation, used for hashing: https://github.com/BLAKE2/BLAKE2
-
-* Ed25519 portable implementation from Orson PETERS, used for keypair/signing: https://github.com/orlp/ed25519. **Note: The library has been modified to use BLAKE2b instead of SHA-512**
-
-* tiny-bignum-c from kokke, used for amount representation: https://github.com/kokke/tiny-bignum-c
 
 ---
 

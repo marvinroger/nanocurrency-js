@@ -78,7 +78,12 @@ export function byteArrayToBase32 (byteArray) {
 }
 
 export function base32ToByteArray (base32) {
-  const mapped = base32.split('').map(c => Object.keys(BASE32_MAPPING).find(key => BASE32_MAPPING[key] === c)).join('')
+  const mapped = base32
+    .split('')
+    .map(c =>
+      Object.keys(BASE32_MAPPING).find(key => BASE32_MAPPING[key] === c)
+    )
+    .join('')
 
   const decoded = base32Decode(mapped, 'RFC4648')
 

@@ -6,14 +6,51 @@
 import BigNumber from 'bignumber.js'
 import { blake2bInit, blake2bUpdate, blake2bFinal } from 'blakejs'
 
-import { C_BINDING, checkNotInitialized, checkWork, checkHash } from './common'
+import { checkWork, checkHash } from './check'
 
-import {
-  hexToByteArray,
-  byteArrayToHex
-} from './helpers'
+import { hexToByteArray, byteArrayToHex } from './utils'
+
+import Native from '../native.tmp'
 
 const WORK_THRESHOLD = new BigNumber('0xffffffc000000000')
+
+export const C_BINDING = {
+  instance_: null,
+  work: null
+}
+
+/**
+ * Initialize the library. This basically loads the WebAssembly used by `work`.
+ *
+ * @return {Promise<void>} Promise
+ */
+export function init () {
+  return new Promise((resolve, reject) => {
+    try {
+      Native().then(native => {
+        C_BINDING.instance_ = native
+        C_BINDING.work = native.cwrap('emscripten_work', 'string', [
+          'string',
+          'number',
+          'number'
+        ])
+
+        resolve()
+      })
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+
+/**
+ * Get whether or not `work` is ready to be used ({@link #init} has been called).
+ *
+ * @return {boolean} Ready
+ */
+export function isReady () {
+  return C_BINDING.instance_ !== null
+}
 
 /**
  * Find a work value that meets the difficulty for the given hash.
@@ -25,8 +62,7 @@ const WORK_THRESHOLD = new BigNumber('0xffffffc000000000')
  * @return {string} Work, in hexadecimal format
  */
 export function work (blockHash, workerIndex = 0, workerCount = 1) {
-  checkNotInitialized()
-
+  if (!isReady()) throw new Error('NanoCurrency is not initialized')
   if (!checkHash(blockHash)) throw new Error('Hash is not valid')
   if (
     !Number.isInteger(workerIndex) ||

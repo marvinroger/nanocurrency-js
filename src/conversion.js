@@ -5,9 +5,9 @@
  */
 import BigNumber from 'bignumber.js'
 
-import { checkNumber, checkBalance } from './common'
+import { checkNumber, checkBalance } from './check'
 
-const TunedBigNumber = BigNumber.clone({ EXPONENTIAL_AT: 1e+9 })
+const TunedBigNumber = BigNumber.clone({ EXPONENTIAL_AT: 1e9 })
 
 const ZEROES = {
   hex: 0,
@@ -31,7 +31,9 @@ const ZEROES = {
  * @return {string} Converted number
  */
 export function convert (value, { from = 'Nano', to = 'raw' } = {}) {
-  if ((from === 'hex' && !checkAmount(value)) || !checkNumber(value)) throw new Error('Value is not valid')
+  if ((from === 'hex' && !checkBalance(value)) || !checkNumber(value)) {
+    throw new Error('Value is not valid')
+  }
 
   const fromZeroes = ZEROES[from]
   const toZeroes = ZEROES[to]

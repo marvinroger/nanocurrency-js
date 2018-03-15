@@ -5,7 +5,7 @@
  */
 import { blake2b, blake2bInit, blake2bUpdate, blake2bFinal } from 'blakejs'
 
-import { checkSeed, checkKey, checkAddress } from './common'
+import { checkSeed, checkKey, checkAddress } from './check'
 import { derivePublicFromSecret } from './nacl'
 import {
   getRandomBytes,
@@ -13,7 +13,7 @@ import {
   byteArrayToHex,
   byteArrayToBase32,
   base32ToByteArray
-} from './helpers'
+} from './utils'
 
 /**
  * Generate a cryptographically secure seed.
@@ -73,7 +73,9 @@ export function deriveSecretKey (seed, index) {
 export function derivePublicKey (secretKeyOrAddress) {
   const isSecretKey = checkKey(secretKeyOrAddress)
   const isAddress = checkAddress(secretKeyOrAddress)
-  if (!isSecretKey && !isAddress) throw new Error('Secret key or address is not valid')
+  if (!isSecretKey && !isAddress) {
+    throw new Error('Secret key or address is not valid')
+  }
 
   if (isSecretKey) {
     const secretKeyBytes = hexToByteArray(secretKeyOrAddress)

@@ -3,50 +3,6 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import Native from '../native.tmp'
-
-export const C_BINDING = {
-  instance_: null,
-  work: null
-}
-
-/**
- * Initialize the library.
- *
- * @return {Promise<void>} Promise
- */
-export function init () {
-  return new Promise((resolve, reject) => {
-    try {
-      Native().then(native => {
-        C_BINDING.instance_ = native
-        C_BINDING.work = native.cwrap('emscripten_work', 'string', [
-          'string',
-          'number',
-          'number'
-        ])
-
-        resolve()
-      })
-    } catch (err) {
-      reject(err)
-    }
-  })
-}
-
-/**
- * Get whether or not the library is ready to be used ({@link #init} has been called).
- *
- * @return {boolean} Ready
- */
-export function isReady () {
-  return C_BINDING.instance_ !== null
-}
-
-export function checkNotInitialized () {
-  if (!isReady()) throw new Error('NanoCurrency is not initialized')
-}
-
 export function checkString (candidate) {
   return typeof candidate === 'string'
 }

@@ -7,8 +7,6 @@
  * @module NanoCurrency
  */
 export {
-  init,
-  isReady,
   checkBalance,
   checkSeed,
   checkHash,
@@ -16,7 +14,7 @@ export {
   checkAddress,
   checkWork,
   checkSignature
-} from './common'
+} from './check'
 
 export { convert } from './conversion'
 
@@ -36,7 +34,7 @@ export {
 
 export { signBlock, verifyBlock } from './signature'
 
-export { work, validateWork } from './work'
+export { init, isReady, work, validateWork } from './work'
 
 export {
   createOpenBlock,

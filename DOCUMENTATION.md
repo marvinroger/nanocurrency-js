@@ -1,12 +1,6 @@
 ## Functions
 
 <dl>
-<dt><a href="#init">init()</a> ⇒ <code>Promise.&lt;void&gt;</code></dt>
-<dd><p>Initialize the library.</p>
-</dd>
-<dt><a href="#isReady">isReady()</a> ⇒ <code>boolean</code></dt>
-<dd><p>Get whether or not the library is ready to be used (<a href="#init">#init</a> has been called).</p>
-</dd>
 <dt><a href="#checkBalance">checkBalance(balance)</a> ⇒ <code>boolean</code></dt>
 <dd><p>Check if the given balance is valid.
 Does not require initialization.</p>
@@ -79,6 +73,12 @@ Does not require initialization.</p>
 <dd><p>Verify a block against a public key.
 Does not require initialization.</p>
 </dd>
+<dt><a href="#init">init()</a> ⇒ <code>Promise.&lt;void&gt;</code></dt>
+<dd><p>Initialize the library. This basically loads the WebAssembly used by <code>work</code>.</p>
+</dd>
+<dt><a href="#isReady">isReady()</a> ⇒ <code>boolean</code></dt>
+<dd><p>Get whether or not <code>work</code> is ready to be used (<a href="#init">#init</a> has been called).</p>
+</dd>
 <dt><a href="#work">work(blockHash, [workerIndex], [workerCount])</a> ⇒ <code>string</code></dt>
 <dd><p>Find a work value that meets the difficulty for the given hash.
 Requires initialization.</p>
@@ -105,20 +105,6 @@ Does not require initialization.</p>
 </dd>
 </dl>
 
-<a name="init"></a>
-
-## init() ⇒ <code>Promise.&lt;void&gt;</code>
-Initialize the library.
-
-**Kind**: global function  
-**Returns**: <code>Promise.&lt;void&gt;</code> - Promise  
-<a name="isReady"></a>
-
-## isReady() ⇒ <code>boolean</code>
-Get whether or not the library is ready to be used ([#init](#init) has been called).
-
-**Kind**: global function  
-**Returns**: <code>boolean</code> - Ready  
 <a name="checkBalance"></a>
 
 ## checkBalance(balance) ⇒ <code>boolean</code>
@@ -223,7 +209,7 @@ Does not require initialization.
 | --- | --- | --- | --- |
 | value | <code>string</code> |  | The value to convert |
 | units | <code>Object</code> |  | Units |
-| [units.from] | <code>string</code> | <code>&quot;Nano&quot;</code> | The unit to convert the value from. One of 'raw', 'nano', 'knano', 'Nano', 'NANO', 'KNano', 'MNano' |
+| [units.from] | <code>string</code> | <code>&quot;Nano&quot;</code> | The unit to convert the value from. One of 'hex', 'raw', 'nano', 'knano', 'Nano', 'NANO', 'KNano', 'MNano' |
 | [units.to] | <code>string</code> | <code>&quot;raw&quot;</code> | The unit to convert the value to. Same units as units.from |
 
 <a name="generateSeed"></a>
@@ -361,6 +347,20 @@ Does not require initialization.
 | signature | <code>string</code> | The signature of the block to verify, in hexadecimal format |
 | publicKey | <code>string</code> | The public key to verify the block against, in hexadecimal format |
 
+<a name="init"></a>
+
+## init() ⇒ <code>Promise.&lt;void&gt;</code>
+Initialize the library. This basically loads the WebAssembly used by `work`.
+
+**Kind**: global function  
+**Returns**: <code>Promise.&lt;void&gt;</code> - Promise  
+<a name="isReady"></a>
+
+## isReady() ⇒ <code>boolean</code>
+Get whether or not `work` is ready to be used ([#init](#init) has been called).
+
+**Kind**: global function  
+**Returns**: <code>boolean</code> - Ready  
 <a name="work"></a>
 
 ## work(blockHash, [workerIndex], [workerCount]) ⇒ <code>string</code>

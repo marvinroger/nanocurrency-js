@@ -3,26 +3,15 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import { blake2b, blake2bInit, blake2bUpdate, blake2bFinal } from 'blakejs'
+import { blake2bInit, blake2bUpdate, blake2bFinal } from 'blakejs'
 
-import {
-  checkHash,
-  checkAddress,
-  checkBalance
-} from './common'
+import { checkHash, checkAddress, checkBalance } from './check'
 
 import { convert } from './conversion'
 
-import {
-  getRandomBytes,
-  hexToByteArray,
-  byteArrayToHex,
-  byteArrayToBase32
-} from './helpers'
+import { hexToByteArray, byteArrayToHex } from './utils'
 
-import {
-  derivePublicKey
-} from './keys'
+import { derivePublicKey } from './keys'
 
 /**
  * Hash a receive block.
@@ -91,7 +80,7 @@ export function hashChangeBlock (previous, representative) {
   }
 
   const previousBytes = hexToByteArray(previous)
-  const representativeBytes =  hexToByteArray(derivePublicKey(representative))
+  const representativeBytes = hexToByteArray(derivePublicKey(representative))
 
   const context = blake2bInit(32)
   blake2bUpdate(context, previousBytes)
@@ -116,7 +105,7 @@ export function hashSendBlock (previous, destination, balance) {
   if (!checkBalance(balance)) throw new Error('Balance is not valid')
 
   const previousBytes = hexToByteArray(previous)
-  const destinationBytes =  hexToByteArray(derivePublicKey(destination))
+  const destinationBytes = hexToByteArray(derivePublicKey(destination))
   const balanceHex = convert(balance, { from: 'raw', to: 'hex' })
   const balanceBytes = hexToByteArray(balanceHex)
 

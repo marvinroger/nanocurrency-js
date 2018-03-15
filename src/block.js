@@ -3,12 +3,7 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import {
-  checkKey,
-  checkHash,
-  checkAddress,
-  checkBalance
-} from './common'
+import { checkKey, checkHash, checkAddress, checkBalance } from './check'
 
 import { convert } from './conversion'
 

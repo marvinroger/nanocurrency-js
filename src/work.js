@@ -3,7 +3,54 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import { C_BINDING, checkNotInitialized, checkWork, checkHash } from './common'
+import BigNumber from 'bignumber.js'
+import { blake2bInit, blake2bUpdate, blake2bFinal } from 'blakejs'
+
+import { checkWork, checkHash } from './check'
+
+import { hexToByteArray, byteArrayToHex } from './utils'
+
+import Native from '../native.tmp'
+
+const WORK_THRESHOLD = new BigNumber('0xffffffc000000000')
+
+export const C_BINDING = {
+  instance_: null,
+  work: null
+}
+
+/**
+ * Initialize the library. This basically loads the WebAssembly used by `work`.
+ *
+ * @return {Promise<void>} Promise
+ */
+export function init () {
+  return new Promise((resolve, reject) => {
+    try {
+      Native().then(native => {
+        C_BINDING.instance_ = native
+        C_BINDING.work = native.cwrap('emscripten_work', 'string', [
+          'string',
+          'number',
+          'number'
+        ])
+
+        resolve()
+      })
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+
+/**
+ * Get whether or not `work` is ready to be used ({@link #init} has been called).
+ *
+ * @return {boolean} Ready
+ */
+export function isReady () {
+  return C_BINDING.instance_ !== null
+}
 
 /**
  * Find a work value that meets the difficulty for the given hash.
@@ -15,8 +62,7 @@ import { C_BINDING, checkNotInitialized, checkWork, checkHash } from './common'
  * @return {string} Work, in hexadecimal format
  */
 export function work (blockHash, workerIndex = 0, workerCount = 1) {
-  checkNotInitialized()
-
+  if (!isReady()) throw new Error('NanoCurrency is not initialized')
   if (!checkHash(blockHash)) throw new Error('Hash is not valid')
   if (
     !Number.isInteger(workerIndex) ||
@@ -35,19 +81,25 @@ export function work (blockHash, workerIndex = 0, workerCount = 1) {
 
 /**
  * Validate whether or not the work value meets the difficulty for the given hash.
- * Requires initialization.
+ * Does not require initialization.
  *
  * @param {string} blockHash - The hash to validate the work against
  * @param {string} work - The work to validate
  * @return {boolean} Valid
  */
 export function validateWork (blockHash, work) {
-  checkNotInitialized()
-
   if (!checkHash(blockHash)) throw new Error('Hash is not valid')
   if (!checkWork(work)) throw new Error('Work is not valid')
 
-  const valid = C_BINDING.validateWork(blockHash, work) === 1
+  const hashBytes = hexToByteArray(blockHash)
+  const workBytes = hexToByteArray(work).reverse()
 
-  return valid
+  const context = blake2bInit(8)
+  blake2bUpdate(context, workBytes)
+  blake2bUpdate(context, hashBytes)
+  const output = blake2bFinal(context).reverse()
+  const outputHex = byteArrayToHex(output)
+  const outputBigNumber = new BigNumber('0x' + outputHex)
+
+  return outputBigNumber.isGreaterThanOrEqualTo(WORK_THRESHOLD)
 }

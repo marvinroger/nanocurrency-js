@@ -5,6 +5,7 @@ const {
   INVALID_SEEDS,
   INVALID_INDEXES,
   INVALID_SECRET_KEYS,
+  INVALID_ADDRESSES,
   INVALID_PUBLIC_KEYS
 } = require('./common/data')
 
@@ -12,19 +13,17 @@ const SEED = 'b947ee0115014a4d49a804e7fc7248e31690b80033ce7a6e3a07bdf93b2584ff'
 const KEYS = [
   {
     index: 0,
-    secretKey: '23b5e95b4c4325ed5af109bfe4acde782dbab0163591d9052963723ae8e72a09',
-    publicKey: '4d312f604f638adf19afac6308ecbbc5881e1b6cd6f53d382775c686bca7535b',
+    secretKey: '23B5E95B4C4325ED5AF109BFE4ACDE782DBAB0163591D9052963723AE8E72A09',
+    publicKey: '4D312F604F638ADF19AFAC6308ECBBC5881E1B6CD6F53D382775C686BCA7535B',
     address: 'xrb_1mbj7xi6yrwcuwetzd5535pdqjea5rfpsoqo9nw4gxg8itycgntucp49i1nz'
   },
   {
     index: 1,
-    secretKey: 'feb6959738d43f9b0e6cdcc778bcd2f3384e6f1255510db6f48e2b99ba059f0f',
-    publicKey: 'fffadbb9e15d553101e1db0c67f20f6984836dc1bb513ff1d0e4a0af89ce5291',
+    secretKey: 'FEB6959738D43F9B0E6CDCC778BCD2F3384E6F1255510DB6F48E2B99BA059F0F',
+    publicKey: 'FFFADBB9E15D553101E1DB0C67F20F6984836DC1BB513FF1D0E4A0AF89CE5291',
     address: 'xrb_3zztugwy4qco861y5preezs1yte6ifpw5gtj9zrx3s71oy6wwnnj5en5oo5a'
   }
 ]
-
-beforeAll(nano.init)
 
 describe('seeds', () => {
   test('generates different seeds', async () => {
@@ -66,10 +65,17 @@ describe('secret keys', () => {
 })
 
 describe('public keys', () => {
-  test('creates correct public keys', () => {
+  test('creates correct public keys from secret keys', () => {
     expect.assertions(KEYS.length)
     for (let key of KEYS) {
       expect(nano.derivePublicKey(key.secretKey)).toBe(key.publicKey)
+    }
+  })
+
+  test('creates correct public keys from addresses', () => {
+    expect.assertions(KEYS.length)
+    for (let key of KEYS) {
+      expect(nano.derivePublicKey(key.address)).toBe(key.publicKey)
     }
   })
 
@@ -78,7 +84,16 @@ describe('public keys', () => {
     for (let invalidSecretKey of INVALID_SECRET_KEYS) {
       expect(
         () => nano.derivePublicKey(invalidSecretKey)
-      ).toThrowError('Secret key is not valid')
+      ).toThrowError('Secret key or address is not valid')
+    }
+  })
+
+  test('throws with invalid addresses', () => {
+    expect.assertions(INVALID_ADDRESSES.length)
+    for (let invalidAddress of INVALID_ADDRESSES) {
+      expect(
+        () => nano.derivePublicKey(invalidAddress)
+      ).toThrowError('Secret key or address is not valid')
     }
   })
 })

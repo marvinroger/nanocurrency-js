@@ -1,12 +1,6 @@
 ## Functions
 
 <dl>
-<dt><a href="#init">init()</a> ⇒ <code>Promise.&lt;void&gt;</code></dt>
-<dd><p>Initialize the library.</p>
-</dd>
-<dt><a href="#isReady">isReady()</a> ⇒ <code>boolean</code></dt>
-<dd><p>Get whether or not the library is ready to be used (<a href="#init">#init</a> has been called).</p>
-</dd>
 <dt><a href="#checkBalance">checkBalance(balance)</a> ⇒ <code>boolean</code></dt>
 <dd><p>Check if the given balance is valid.
 Does not require initialization.</p>
@@ -45,39 +39,45 @@ Does not require initialization.</p>
 </dd>
 <dt><a href="#deriveSecretKey">deriveSecretKey(seed, index)</a> ⇒ <code>string</code></dt>
 <dd><p>Derive a secret key from a seed, given an index.
-Requires initialization.</p>
+Does not require initialization.</p>
 </dd>
-<dt><a href="#derivePublicKey">derivePublicKey(secretKey)</a> ⇒ <code>string</code></dt>
+<dt><a href="#derivePublicKey">derivePublicKey(secretKeyOrAddress)</a> ⇒ <code>string</code></dt>
 <dd><p>Derive a public key from a secret key.
-Requires initialization.</p>
+Does not require initialization.</p>
 </dd>
 <dt><a href="#deriveAddress">deriveAddress(publicKey)</a> ⇒ <code>string</code></dt>
 <dd><p>Derive address from a public key.
-Requires initialization.</p>
+Does not require initialization.</p>
 </dd>
 <dt><a href="#hashReceiveBlock">hashReceiveBlock(previous, source)</a> ⇒ <code>string</code></dt>
 <dd><p>Hash a receive block.
-Requires initialization.</p>
+Does not require initialization.</p>
 </dd>
 <dt><a href="#hashOpenBlock">hashOpenBlock(source, representative, account)</a> ⇒ <code>string</code></dt>
 <dd><p>Hash an open block.
-Requires initialization.</p>
+Does not require initialization.</p>
 </dd>
 <dt><a href="#hashChangeBlock">hashChangeBlock(previous, representative)</a> ⇒ <code>string</code></dt>
 <dd><p>Hash a change block.
-Requires initialization.</p>
+Does not require initialization.</p>
 </dd>
 <dt><a href="#hashSendBlock">hashSendBlock(previous, destination, balance)</a> ⇒ <code>string</code></dt>
 <dd><p>Hash a send block.
-Requires initialization.</p>
+Does not require initialization.</p>
 </dd>
 <dt><a href="#signBlock">signBlock(blockHash, secretKey)</a> ⇒ <code>string</code></dt>
 <dd><p>Sign a block.
-Requires initialization.</p>
+Does not require initialization.</p>
 </dd>
 <dt><a href="#verifyBlock">verifyBlock(blockHash, signature, publicKey)</a> ⇒ <code>boolean</code></dt>
 <dd><p>Verify a block against a public key.
-Requires initialization.</p>
+Does not require initialization.</p>
+</dd>
+<dt><a href="#init">init()</a> ⇒ <code>Promise.&lt;void&gt;</code></dt>
+<dd><p>Initialize the library. This basically loads the WebAssembly used by <code>work</code>.</p>
+</dd>
+<dt><a href="#isReady">isReady()</a> ⇒ <code>boolean</code></dt>
+<dd><p>Get whether or not <code>work</code> is ready to be used (<a href="#init">#init</a> has been called).</p>
 </dd>
 <dt><a href="#work">work(blockHash, [workerIndex], [workerCount])</a> ⇒ <code>string</code></dt>
 <dd><p>Find a work value that meets the difficulty for the given hash.
@@ -85,40 +85,26 @@ Requires initialization.</p>
 </dd>
 <dt><a href="#validateWork">validateWork(blockHash, work)</a> ⇒ <code>boolean</code></dt>
 <dd><p>Validate whether or not the work value meets the difficulty for the given hash.
-Requires initialization.</p>
+Does not require initialization.</p>
 </dd>
 <dt><a href="#createOpenBlock">createOpenBlock(secretKey, data)</a> ⇒ <code>Object</code></dt>
 <dd><p>Create an open block.
-Requires initialization.</p>
+Does not require initialization.</p>
 </dd>
 <dt><a href="#createReceiveBlock">createReceiveBlock(secretKey, data)</a> ⇒ <code>Object</code></dt>
 <dd><p>Create a receive block.
-Requires initialization.</p>
+Does not require initialization.</p>
 </dd>
 <dt><a href="#createSendBlock">createSendBlock(secretKey, data)</a> ⇒ <code>Object</code></dt>
 <dd><p>Create a send block.
-Requires initialization.</p>
+Does not require initialization.</p>
 </dd>
 <dt><a href="#createChangeBlock">createChangeBlock(secretKey, data)</a> ⇒ <code>Object</code></dt>
 <dd><p>Create a change block.
-Requires initialization.</p>
+Does not require initialization.</p>
 </dd>
 </dl>
 
-<a name="init"></a>
-
-## init() ⇒ <code>Promise.&lt;void&gt;</code>
-Initialize the library.
-
-**Kind**: global function  
-**Returns**: <code>Promise.&lt;void&gt;</code> - Promise  
-<a name="isReady"></a>
-
-## isReady() ⇒ <code>boolean</code>
-Get whether or not the library is ready to be used ([#init](#init) has been called).
-
-**Kind**: global function  
-**Returns**: <code>boolean</code> - Ready  
 <a name="checkBalance"></a>
 
 ## checkBalance(balance) ⇒ <code>boolean</code>
@@ -223,7 +209,7 @@ Does not require initialization.
 | --- | --- | --- | --- |
 | value | <code>string</code> |  | The value to convert |
 | units | <code>Object</code> |  | Units |
-| [units.from] | <code>string</code> | <code>&quot;Nano&quot;</code> | The unit to convert the value from. One of 'raw', 'nano', 'knano', 'Nano', 'NANO', 'KNano', 'MNano' |
+| [units.from] | <code>string</code> | <code>&quot;Nano&quot;</code> | The unit to convert the value from. One of 'hex', 'raw', 'nano', 'knano', 'Nano', 'NANO', 'KNano', 'MNano' |
 | [units.to] | <code>string</code> | <code>&quot;raw&quot;</code> | The unit to convert the value to. Same units as units.from |
 
 <a name="generateSeed"></a>
@@ -238,7 +224,7 @@ Does not require initialization.
 
 ## deriveSecretKey(seed, index) ⇒ <code>string</code>
 Derive a secret key from a seed, given an index.
-Requires initialization.
+Does not require initialization.
 
 **Kind**: global function  
 **Returns**: <code>string</code> - Secret key, in hexadecimal format  
@@ -250,22 +236,22 @@ Requires initialization.
 
 <a name="derivePublicKey"></a>
 
-## derivePublicKey(secretKey) ⇒ <code>string</code>
+## derivePublicKey(secretKeyOrAddress) ⇒ <code>string</code>
 Derive a public key from a secret key.
-Requires initialization.
+Does not require initialization.
 
 **Kind**: global function  
 **Returns**: <code>string</code> - Public key, in hexadecimal format  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| secretKey | <code>string</code> | The secret key to generate the secret key from, in hexadecimal format |
+| secretKeyOrAddress | <code>string</code> | The secret key or address to generate the public key from, in hexadecimal or address format |
 
 <a name="deriveAddress"></a>
 
 ## deriveAddress(publicKey) ⇒ <code>string</code>
 Derive address from a public key.
-Requires initialization.
+Does not require initialization.
 
 **Kind**: global function  
 **Returns**: <code>string</code> - Address  
@@ -278,7 +264,7 @@ Requires initialization.
 
 ## hashReceiveBlock(previous, source) ⇒ <code>string</code>
 Hash a receive block.
-Requires initialization.
+Does not require initialization.
 
 **Kind**: global function  
 **Returns**: <code>string</code> - Hash, in hexadecimal format  
@@ -292,7 +278,7 @@ Requires initialization.
 
 ## hashOpenBlock(source, representative, account) ⇒ <code>string</code>
 Hash an open block.
-Requires initialization.
+Does not require initialization.
 
 **Kind**: global function  
 **Returns**: <code>string</code> - Hash, in hexadecimal format  
@@ -307,7 +293,7 @@ Requires initialization.
 
 ## hashChangeBlock(previous, representative) ⇒ <code>string</code>
 Hash a change block.
-Requires initialization.
+Does not require initialization.
 
 **Kind**: global function  
 **Returns**: <code>string</code> - Hash, in hexadecimal format  
@@ -321,7 +307,7 @@ Requires initialization.
 
 ## hashSendBlock(previous, destination, balance) ⇒ <code>string</code>
 Hash a send block.
-Requires initialization.
+Does not require initialization.
 
 **Kind**: global function  
 **Returns**: <code>string</code> - Hash, in hexadecimal format  
@@ -336,7 +322,7 @@ Requires initialization.
 
 ## signBlock(blockHash, secretKey) ⇒ <code>string</code>
 Sign a block.
-Requires initialization.
+Does not require initialization.
 
 **Kind**: global function  
 **Returns**: <code>string</code> - Signature, in hexadecimal format  
@@ -350,7 +336,7 @@ Requires initialization.
 
 ## verifyBlock(blockHash, signature, publicKey) ⇒ <code>boolean</code>
 Verify a block against a public key.
-Requires initialization.
+Does not require initialization.
 
 **Kind**: global function  
 **Returns**: <code>boolean</code> - Valid  
@@ -361,6 +347,20 @@ Requires initialization.
 | signature | <code>string</code> | The signature of the block to verify, in hexadecimal format |
 | publicKey | <code>string</code> | The public key to verify the block against, in hexadecimal format |
 
+<a name="init"></a>
+
+## init() ⇒ <code>Promise.&lt;void&gt;</code>
+Initialize the library. This basically loads the WebAssembly used by `work`.
+
+**Kind**: global function  
+**Returns**: <code>Promise.&lt;void&gt;</code> - Promise  
+<a name="isReady"></a>
+
+## isReady() ⇒ <code>boolean</code>
+Get whether or not `work` is ready to be used ([#init](#init) has been called).
+
+**Kind**: global function  
+**Returns**: <code>boolean</code> - Ready  
 <a name="work"></a>
 
 ## work(blockHash, [workerIndex], [workerCount]) ⇒ <code>string</code>
@@ -380,7 +380,7 @@ Requires initialization.
 
 ## validateWork(blockHash, work) ⇒ <code>boolean</code>
 Validate whether or not the work value meets the difficulty for the given hash.
-Requires initialization.
+Does not require initialization.
 
 **Kind**: global function  
 **Returns**: <code>boolean</code> - Valid  
@@ -394,7 +394,7 @@ Requires initialization.
 
 ## createOpenBlock(secretKey, data) ⇒ <code>Object</code>
 Create an open block.
-Requires initialization.
+Does not require initialization.
 
 **Kind**: global function  
 **Returns**: <code>Object</code> - Block  
@@ -411,7 +411,7 @@ Requires initialization.
 
 ## createReceiveBlock(secretKey, data) ⇒ <code>Object</code>
 Create a receive block.
-Requires initialization.
+Does not require initialization.
 
 **Kind**: global function  
 **Returns**: <code>Object</code> - Block  
@@ -428,7 +428,7 @@ Requires initialization.
 
 ## createSendBlock(secretKey, data) ⇒ <code>Object</code>
 Create a send block.
-Requires initialization.
+Does not require initialization.
 
 **Kind**: global function  
 **Returns**: <code>Object</code> - Block  
@@ -446,7 +446,7 @@ Requires initialization.
 
 ## createChangeBlock(secretKey, data) ⇒ <code>Object</code>
 Create a change block.
-Requires initialization.
+Does not require initialization.
 
 **Kind**: global function  
 **Returns**: <code>Object</code> - Block  

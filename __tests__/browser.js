@@ -19,19 +19,12 @@ afterAll(() => browser.close())
 
 describe('browser', () => {
   test('works in browser', async () => {
-    expect.assertions(3)
+    expect.assertions(2)
 
     // load NanoCurrency
     await page.evaluate(umdScript)
 
     let result = null
-
-    // init
-    result = await page.evaluate(async function () {
-      await NanoCurrency.init()
-      return true
-    })
-    expect(result).toBe(true)
 
     // seed generation
     result = await page.evaluate(async function () {
@@ -43,9 +36,9 @@ describe('browser', () => {
 
     // webassembly test
     result = await page.evaluate(async function () {
-      const publicKey = NanoCurrency.derivePublicKey('23b5e95b4c4325ed5af109bfe4acde782dbab0163591d9052963723ae8e72a09')
+      const publicKey = NanoCurrency.derivePublicKey('23B5E95B4C4325ED5AF109BFE4ACDE782DBAB0163591D9052963723AE8E72A09')
       return publicKey
     })
-    expect(result).toBe('4d312f604f638adf19afac6308ecbbc5881e1b6cd6f53d382775c686bca7535b')
+    expect(result).toBe('4D312F604F638ADF19AFAC6308ECBBC5881E1B6CD6F53D382775C686BCA7535B')
   })
 })

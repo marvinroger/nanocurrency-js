@@ -24,8 +24,6 @@ const KEYS = [
   }
 ]
 
-beforeAll(nano.init)
-
 describe('seeds', () => {
   test('generates different seeds', async () => {
     expect.assertions(3)

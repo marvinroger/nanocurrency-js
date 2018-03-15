@@ -16,8 +16,6 @@ const INVALID_WORK = {
   work: 'bb6737f2daf01a2c'
 }
 
-beforeAll(nano.init)
-
 describe('validation', () => {
   test('validates correct work', () => {
     expect(nano.validateWork(VALID_WORK.hash, VALID_WORK.work))
@@ -49,6 +47,8 @@ describe('validation', () => {
 })
 
 describe('generation', () => {
+  beforeAll(nano.init)
+
   test('computes deterministic work', () => {
     expect(nano.work(VALID_WORK.hash))
       .toBe(VALID_WORK.work)

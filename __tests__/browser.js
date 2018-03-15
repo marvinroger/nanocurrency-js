@@ -19,19 +19,12 @@ afterAll(() => browser.close())
 
 describe('browser', () => {
   test('works in browser', async () => {
-    expect.assertions(3)
+    expect.assertions(2)
 
     // load NanoCurrency
     await page.evaluate(umdScript)
 
     let result = null
-
-    // init
-    result = await page.evaluate(async function () {
-      await NanoCurrency.init()
-      return true
-    })
-    expect(result).toBe(true)
 
     // seed generation
     result = await page.evaluate(async function () {

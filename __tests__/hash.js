@@ -33,8 +33,6 @@ const VALID_RECEIVE_BLOCK = {
   hash: 'AD93AE771E883680C18502A7AEBA7B63465F2FB3830F0833DD49A54A5AE133BB'
 }
 
-beforeAll(nano.init)
-
 describe('send', () => {
   test('creates correct send hash', () => {
     expect(

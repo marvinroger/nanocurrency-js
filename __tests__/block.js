@@ -85,8 +85,6 @@ const VALID_CHANGE_BLOCK = {
   }
 }
 
-beforeAll(nano.init)
-
 describe('open', () => {
   test('creates correct open block', async () => {
     const result = nano.createOpenBlock(SECRET_KEY, {

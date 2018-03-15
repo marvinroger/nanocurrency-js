@@ -4,9 +4,9 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import { blake2b, blake2bInit, blake2bUpdate, blake2bFinal } from 'blakejs'
-import nacl from '../3rd/nacl-fast'
 
 import { checkSeed, checkKey, checkAddress } from './common'
+import { derivePublicFromSecret } from './nacl'
 import {
   getRandomBytes,
   hexToByteArray,
@@ -77,7 +77,7 @@ export function derivePublicKey (secretKeyOrAddress) {
 
   if (isSecretKey) {
     const secretKeyBytes = hexToByteArray(secretKeyOrAddress)
-    const publicKeyBytes = nacl.box.keyPair.fromSecretKey(secretKeyBytes).publicKey
+    const publicKeyBytes = derivePublicFromSecret(secretKeyBytes)
 
     return byteArrayToHex(publicKeyBytes)
   } else if (isAddress) {

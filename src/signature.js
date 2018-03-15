@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import nacl from '../3rd/nacl-fast'
+import { signDetached, verifyDetached } from './nacl'
 
 import {
   checkKey,
@@ -32,7 +32,7 @@ export function signBlock (blockHash, secretKey) {
   const blockHashBytes = hexToByteArray(blockHash)
   const secretKeyBytes = hexToByteArray(secretKey)
 
-  const signatureBytes = nacl.sign.detached(blockHashBytes, secretKeyBytes)
+  const signatureBytes = signDetached(blockHashBytes, secretKeyBytes)
 
   return byteArrayToHex(signatureBytes)
 }
@@ -55,5 +55,5 @@ export function verifyBlock (blockHash, signature, publicKey) {
   const signatureBytes = hexToByteArray(signature)
   const publicKeyBytes = hexToByteArray(publicKey)
 
-  return nacl.sign.detached.verify(blockHashBytes, signatureBytes, publicKeyBytes)
+  return verifyDetached(blockHashBytes, signatureBytes, publicKeyBytes)
 }

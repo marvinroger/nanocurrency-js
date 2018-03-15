@@ -5,6 +5,7 @@ const {
   INVALID_SEEDS,
   INVALID_INDEXES,
   INVALID_SECRET_KEYS,
+  INVALID_ADDRESSES,
   INVALID_PUBLIC_KEYS
 } = require('./common/data')
 
@@ -64,10 +65,17 @@ describe('secret keys', () => {
 })
 
 describe('public keys', () => {
-  test('creates correct public keys', () => {
+  test('creates correct public keys from secret keys', () => {
     expect.assertions(KEYS.length)
     for (let key of KEYS) {
       expect(nano.derivePublicKey(key.secretKey)).toBe(key.publicKey)
+    }
+  })
+
+  test('creates correct public keys from addresses', () => {
+    expect.assertions(KEYS.length)
+    for (let key of KEYS) {
+      expect(nano.derivePublicKey(key.address)).toBe(key.publicKey)
     }
   })
 
@@ -76,7 +84,16 @@ describe('public keys', () => {
     for (let invalidSecretKey of INVALID_SECRET_KEYS) {
       expect(
         () => nano.derivePublicKey(invalidSecretKey)
-      ).toThrowError('Secret key is not valid')
+      ).toThrowError('Secret key or address is not valid')
+    }
+  })
+
+  test('throws with invalid addresses', () => {
+    expect.assertions(INVALID_ADDRESSES.length)
+    for (let invalidAddress of INVALID_ADDRESSES) {
+      expect(
+        () => nano.derivePublicKey(invalidAddress)
+      ).toThrowError('Secret key or address is not valid')
     }
   })
 })

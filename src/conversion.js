@@ -99,9 +99,9 @@ export function convert (value, { from = 'Nano', to = 'raw' } = {}) {
     throw new Error('From or to is not valid')
   }
 
-  if (value === '0') return '0'
-
   let { value: normalizedValue, shift } = normalizeNumber(value)
+
+  if (normalizedValue === '0') return '0'
 
   const difference = fromZeroes - toZeroes - shift
 

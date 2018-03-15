@@ -73,7 +73,7 @@ export function deriveSecretKey (seed, index) {
 export function derivePublicKey (secretKeyOrAddress) {
   const isSecretKey = checkKey(secretKeyOrAddress)
   const isAddress = checkAddress(secretKeyOrAddress)
-  if (!isSecretKey && !isAddress) throw new Error('Secret key is not valid')
+  if (!isSecretKey && !isAddress) throw new Error('Secret key or address is not valid')
 
   if (isSecretKey) {
     const secretKeyBytes = hexToByteArray(secretKeyOrAddress)

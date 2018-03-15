@@ -34,6 +34,12 @@ const VALID_CONVERSIONS = [
     result: '0'
   },
   {
+    value: '000.000',
+    from: 'Nano',
+    to: 'KNano',
+    result: '0'
+  },
+  {
     value: '000.00900',
     from: 'KNano',
     to: 'Nano',

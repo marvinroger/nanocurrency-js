@@ -3,9 +3,9 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
+import BigNumber from 'bignumber.js'
+
 import {
-  C_BINDING,
-  checkNotInitialized,
   checkKey,
   checkHash,
   checkAddress,
@@ -25,7 +25,7 @@ import { signBlock } from './signature'
 
 /**
  * Create an open block.
- * Requires initialization.
+ * Does not require initialization.
  *
  * @param {string} secretKey - The secret key to create the block from, in hexadecimal format
  * @param {Object} data - Block data
@@ -35,8 +35,6 @@ import { signBlock } from './signature'
  * @return {Object} Block
  */
 export function createOpenBlock (secretKey, { work, source, representative }) {
-  checkNotInitialized()
-
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
   if (!checkHash(source)) throw new Error('Source is not valid')
@@ -64,7 +62,7 @@ export function createOpenBlock (secretKey, { work, source, representative }) {
 
 /**
  * Create a receive block.
- * Requires initialization.
+ * Does not require initialization.
  *
  * @param {string} secretKey - The secret key to create the block from, in hexadecimal format
  * @param {Object} data - Block data
@@ -74,8 +72,6 @@ export function createOpenBlock (secretKey, { work, source, representative }) {
  * @return {Object} Block
  */
 export function createReceiveBlock (secretKey, { work, previous, source }) {
-  checkNotInitialized()
-
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
   if (!checkHash(previous)) throw new Error('Previous is not valid')
@@ -98,7 +94,7 @@ export function createReceiveBlock (secretKey, { work, previous, source }) {
 
 /**
  * Create a send block.
- * Requires initialization.
+ * Does not require initialization.
  *
  * @param {string} secretKey - The secret key to create the block from, in hexadecimal format
  * @param {Object} data - Block data
@@ -112,8 +108,6 @@ export function createSendBlock (
   secretKey,
   { work, previous, destination, balance }
 ) {
-  checkNotInitialized()
-
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
   if (!checkHash(previous)) throw new Error('Previous is not valid')
@@ -122,7 +116,7 @@ export function createSendBlock (
 
   const hash = hashSendBlock(previous, destination, balance)
   const signature = signBlock(hash, secretKey)
-  const balanceHex = C_BINDING.convertAmountDecimalIntegerToHex(balance)
+  const balanceHex = (new BigNumber(balance)).toString(16).padStart(32, '0')
 
   return {
     hash,
@@ -139,7 +133,7 @@ export function createSendBlock (
 
 /**
  * Create a change block.
- * Requires initialization.
+ * Does not require initialization.
  *
  * @param {string} secretKey - The secret key to create the block from, in hexadecimal format
  * @param {Object} data - Block data
@@ -152,8 +146,6 @@ export function createChangeBlock (
   secretKey,
   { work, previous, representative }
 ) {
-  checkNotInitialized()
-
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
   if (!checkHash(previous)) throw new Error('Previous is not valid')

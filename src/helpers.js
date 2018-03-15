@@ -4,6 +4,7 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import base32Encode from 'base32-encode'
+import base32Decode from 'base32-decode'
 
 const IS_NODE =
   Object.prototype.toString.call(
@@ -74,6 +75,14 @@ export function byteArrayToBase32 (byteArray) {
     .split('')
     .map(c => BASE32_MAPPING[c])
     .join('')
+}
+
+export function base32ToByteArray (base32) {
+  const mapped = base32.split('').map(c => Object.keys(BASE32_MAPPING).find(key => BASE32_MAPPING[key] === c)).join('')
+
+  const decoded = base32Decode(mapped, 'RFC4648')
+
+  return new Uint8Array(decoded)
 }
 
 export function byteArrayToHex (byteArray) {

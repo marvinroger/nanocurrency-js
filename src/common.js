@@ -7,16 +7,7 @@ import Native from '../native.tmp'
 
 export const C_BINDING = {
   instance_: null,
-  work: null,
-  validateWork: null,
-  deriveSecretKey: null,
-  hashReceiveBlock: null,
-  hashOpenBlock: null,
-  hashChangeBlock: null,
-  hashSendBlock: null,
-  signBlock: null,
-  verifyBlock: null,
-  convertAmountDecimalIntegerToHex: null
+  work: null
 }
 
 /**
@@ -34,50 +25,6 @@ export function init () {
           'number',
           'number'
         ])
-        C_BINDING.validateWork = native.cwrap(
-          'emscripten_validate_work',
-          'number',
-          ['string', 'string']
-        )
-        C_BINDING.deriveSecretKey = native.cwrap(
-          'emscripten_derive_secret_key',
-          'string',
-          ['string', 'number']
-        )
-        C_BINDING.hashReceiveBlock = native.cwrap(
-          'emscripten_hash_receive_block',
-          'string',
-          ['string', 'string']
-        )
-        C_BINDING.hashOpenBlock = native.cwrap(
-          'emscripten_hash_open_block',
-          'string',
-          ['string', 'string', 'string']
-        )
-        C_BINDING.hashChangeBlock = native.cwrap(
-          'emscripten_hash_change_block',
-          'string',
-          ['string', 'string']
-        )
-        C_BINDING.hashSendBlock = native.cwrap(
-          'emscripten_hash_send_block',
-          'string',
-          ['string', 'string', 'string']
-        )
-        C_BINDING.signBlock = native.cwrap('emscripten_sign_block', 'string', [
-          'string',
-          'string'
-        ])
-        C_BINDING.verifyBlock = native.cwrap(
-          'emscripten_verify_block',
-          'number',
-          ['string', 'string', 'string']
-        )
-        C_BINDING.convertAmountDecimalIntegerToHex = native.cwrap(
-          'emscripten_convert_amount_decimal_integer_to_hex',
-          'string',
-          ['string']
-        )
 
         resolve()
       })

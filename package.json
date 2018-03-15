@@ -18,8 +18,8 @@
   "dependencies": {
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.0.0",
-    "blakejs": "^1.1.0",
-    "tweetnacl-blake2b": "^1.0.1"
+    "bignumber.js": "^6.0.0",
+    "blakejs": "^1.1.0"
   },
   "devDependencies": {
     "cross-env": "^5.1.3",
@@ -72,7 +72,7 @@
     "build:dev": "yarn build:dev:native && yarn build:dev:js",
     "build:dev:js": "cross-env NODE_ENV=development rollup -c",
     "build:dev:native": "cross-env EMCC_ARGS=\"\" cross-os build:native__cross",
-    "build:native__common": "cross-var docker run --rm -v $PWD:/src trzeci/emscripten emcc -o native.tmp.js $EMCC_ARGS -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[\\\"cwrap\\\"]\" src/native/functions.c src/native/tiny-bignum-c/bn.c src/native/blake2/ref/blake2b-ref.c src/native/ed25519/src/ge.c src/native/ed25519/src/fe.c src/native/ed25519/src/sc.c src/native/ed25519/src/keypair.c src/native/ed25519/src/sign.c src/native/ed25519/src/verify.c",
+    "build:native__common": "cross-var docker run --rm -v $PWD:/src trzeci/emscripten emcc -o native.tmp.js $EMCC_ARGS -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[\\\"cwrap\\\"]\" src/native/functions.c src/native/blake2/ref/blake2b-ref.c",
     "build:native__cross": {
       "darwin": "cross-env PWD=\"$(pwd)\" yarn build:native__common",
       "linux": "cross-env PWD=\"$(pwd)\" yarn build:native__common",

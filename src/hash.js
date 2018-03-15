@@ -4,12 +4,14 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import { blake2b, blake2bInit, blake2bUpdate, blake2bFinal } from 'blakejs'
-import BigNumber from 'bignumber.js'
+
 import {
   checkHash,
   checkAddress,
   checkBalance
 } from './common'
+
+import { convert } from './conversion'
 
 import {
   getRandomBytes,
@@ -115,7 +117,7 @@ export function hashSendBlock (previous, destination, balance) {
 
   const previousBytes = hexToByteArray(previous)
   const destinationBytes =  hexToByteArray(derivePublicKey(destination))
-  const balanceHex = (new BigNumber(balance)).toString(16).padStart(32, '0')
+  const balanceHex = convert(balance, { from: 'raw', to: 'hex' })
   const balanceBytes = hexToByteArray(balanceHex)
 
   const context = blake2bInit(32)

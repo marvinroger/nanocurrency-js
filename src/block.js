@@ -3,14 +3,14 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import BigNumber from 'bignumber.js'
-
 import {
   checkKey,
   checkHash,
   checkAddress,
   checkBalance
 } from './common'
+
+import { convert } from './conversion'
 
 import { derivePublicKey, deriveAddress } from './keys'
 
@@ -116,7 +116,7 @@ export function createSendBlock (
 
   const hash = hashSendBlock(previous, destination, balance)
   const signature = signBlock(hash, secretKey)
-  const balanceHex = (new BigNumber(balance)).toString(16).padStart(32, '0')
+  const balanceHex = convert(balance, { from: 'raw', to: 'hex' })
 
   return {
     hash,

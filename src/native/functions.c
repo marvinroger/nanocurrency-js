@@ -108,20 +108,6 @@ void work(const uint8_t* const block_hash, const uint8_t worker_index, const uin
 char stack_string[BLOCK_HASH_LENGTH + 1];
 
 EMSCRIPTEN_KEEPALIVE
-uint8_t emscripten_validate_work(const char* const block_hash_hex, const char* const work_hex) {
-  uint8_t block_hash_bytes[BLOCK_HASH_LENGTH];
-  hex_to_bytes(block_hash_hex, block_hash_bytes);
-
-  uint8_t work_bytes[WORK_LENGTH];
-  hex_to_bytes(work_hex, work_bytes);
-  reverse_bytes(work_bytes, WORK_LENGTH);
-
-  const uint8_t valid = validate_work(block_hash_bytes, work_bytes);
-
-  return valid;
-}
-
-EMSCRIPTEN_KEEPALIVE
 const char* emscripten_work(const char* const block_hash_hex, const uint8_t worker_index, const uint8_t worker_count) {
   uint8_t block_hash_bytes[BLOCK_HASH_LENGTH];
   hex_to_bytes(block_hash_hex, block_hash_bytes);

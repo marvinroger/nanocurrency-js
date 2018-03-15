@@ -3,6 +3,8 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
+import base32Encode from 'base32-encode'
+
 const IS_NODE =
   Object.prototype.toString.call(
     typeof process !== 'undefined' ? process : 0
@@ -30,4 +32,74 @@ export function getRandomBytes (count) {
       })
       .catch(reject)
   })
+}
+
+const BASE32_MAPPING = {
+  A: '1',
+  B: '3',
+  C: '4',
+  D: '5',
+  E: '6',
+  F: '7',
+  G: '8',
+  H: '9',
+  I: 'a',
+  J: 'b',
+  K: 'c',
+  L: 'd',
+  M: 'e',
+  N: 'f',
+  O: 'g',
+  P: 'h',
+  Q: 'i',
+  R: 'j',
+  S: 'k',
+  T: 'm',
+  U: 'n',
+  V: 'o',
+  W: 'p',
+  X: 'q',
+  Y: 'r',
+  Z: 's',
+  2: 't',
+  3: 'u',
+  4: 'w',
+  5: 'x',
+  6: 'y',
+  7: 'z'
+}
+
+export function byteArrayToBase32 (byteArray) {
+  return base32Encode(byteArray, 'RFC4648')
+    .split('')
+    .map(c => BASE32_MAPPING[c])
+    .join('')
+}
+
+export function byteArrayToHex (byteArray) {
+  if (!byteArray) {
+    return ''
+  }
+
+  var hexStr = ''
+  for (var i = 0; i < byteArray.length; i++) {
+    var hex = (byteArray[i] & 0xff).toString(16)
+    hex = hex.length === 1 ? '0' + hex : hex
+    hexStr += hex
+  }
+
+  return hexStr.toUpperCase()
+}
+
+export function hexToByteArray (hex) {
+  if (!hex) {
+    return new Uint8Array()
+  }
+
+  var a = []
+  for (var i = 0, len = hex.length; i < len; i += 2) {
+    a.push(parseInt(hex.substr(i, 2), 16))
+  }
+
+  return new Uint8Array(a)
 }

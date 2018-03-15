@@ -10,8 +10,6 @@ export const C_BINDING = {
   work: null,
   validateWork: null,
   deriveSecretKey: null,
-  derivePublicKey: null,
-  deriveAddress: null,
   hashReceiveBlock: null,
   hashOpenBlock: null,
   hashChangeBlock: null,
@@ -45,16 +43,6 @@ export function init () {
           'emscripten_derive_secret_key',
           'string',
           ['string', 'number']
-        )
-        C_BINDING.derivePublicKey = native.cwrap(
-          'emscripten_derive_public_key',
-          'string',
-          ['string']
-        )
-        C_BINDING.deriveAddress = native.cwrap(
-          'emscripten_derive_address',
-          'string',
-          ['string']
         )
         C_BINDING.hashReceiveBlock = native.cwrap(
           'emscripten_hash_receive_block',

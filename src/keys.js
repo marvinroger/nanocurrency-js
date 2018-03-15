@@ -3,9 +3,16 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import { C_BINDING, checkNotInitialized, checkSeed, checkKey } from './common'
+import { blake2b } from 'blakejs'
+import nacl from 'tweetnacl-blake2b'
 
-import { getRandomBytes } from './helpers'
+import { C_BINDING, checkNotInitialized, checkSeed, checkKey } from './common'
+import {
+  getRandomBytes,
+  hexToByteArray,
+  byteArrayToHex,
+  byteArrayToBase32
+} from './helpers'
 
 /**
  * Generate a cryptographically secure seed.
@@ -48,30 +55,42 @@ export function deriveSecretKey (seed, index) {
 
 /**
  * Derive a public key from a secret key.
- * Requires initialization.
+ * Does not require initialization.
  *
  * @param {string} secretKey - The secret key to generate the secret key from, in hexadecimal format
  * @return {string} Public key, in hexadecimal format
  */
 export function derivePublicKey (secretKey) {
-  checkNotInitialized()
-
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
 
-  return C_BINDING.derivePublicKey(secretKey)
+  const secretKeyBytes = hexToByteArray(secretKey)
+
+  const publicKeyBytes = nacl.box.keyPair.fromSecretKey(secretKeyBytes)
+    .publicKey
+
+  // TODO
+
+  return byteArrayToHex(publicKeyBytes)
 }
 
 /**
  * Derive address from a public key.
- * Requires initialization.
+ * Does not require initialization.
  *
  * @param {string} publicKey - The public key to generate the address from, in hexadecimal format
  * @return {string} Address
  */
 export function deriveAddress (publicKey) {
-  checkNotInitialized()
-
   if (!checkKey(publicKey)) throw new Error('Public key is not valid')
 
-  return C_BINDING.deriveAddress(publicKey)
+  const publicKeyBytes = hexToByteArray(publicKey)
+  const paddedPublicKeyBytes = hexToByteArray('0' + publicKey + '0')
+
+  const encodedPublicKey = byteArrayToBase32(paddedPublicKeyBytes).slice(0, -1)
+
+  const checksum = blake2b(publicKeyBytes, null, 5).reverse()
+
+  const encodedChecksum = byteArrayToBase32(checksum)
+
+  return 'xrb_' + encodedPublicKey + encodedChecksum
 }

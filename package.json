@@ -34,7 +34,7 @@
     "jsdoc-to-markdown": "^4.0.1",
     "prettier-eslint-cli": "^4.7.1",
     "puppeteer": "^1.1.1",
-    "rollup": "^0.56.1",
+    "rollup": "^0.57.1",
     "rollup-plugin-buble": "^0.19.2",
     "rollup-plugin-commonjs": "^9.0.0",
     "rollup-plugin-license": "^0.6.0",

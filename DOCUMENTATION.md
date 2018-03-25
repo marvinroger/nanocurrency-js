@@ -65,6 +65,10 @@ Does not require initialization.</p>
 <dd><p>Hash a send block.
 Does not require initialization.</p>
 </dd>
+<dt><a href="#hashStateBlock">hashStateBlock(account, previous, representative, balance, link)</a> ⇒ <code>string</code></dt>
+<dd><p>Hash a state block.
+Does not require initialization.</p>
+</dd>
 <dt><a href="#signBlock">signBlock(blockHash, secretKey)</a> ⇒ <code>string</code></dt>
 <dd><p>Sign a block.
 Does not require initialization.</p>
@@ -317,6 +321,23 @@ Does not require initialization.
 | previous | <code>string</code> | The hash of the previous block on the account chain, in hexadecimal format |
 | destination | <code>string</code> | The destination address |
 | balance | <code>string</code> | The balance, in raw |
+
+<a name="hashStateBlock"></a>
+
+## hashStateBlock(account, previous, representative, balance, link) ⇒ <code>string</code>
+Hash a state block.
+Does not require initialization.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - Hash, in hexadecimal format  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| account | <code>string</code> | The account address |
+| previous | <code>string</code> | The hash of the previous block on the account chain, in hexadecimal format |
+| representative | <code>string</code> | The representative address |
+| balance | <code>string</code> | The balance, in raw |
+| link | <code>string</code> | The account or block hash meant as a link, in address or hexadecimal format |
 
 <a name="signBlock"></a>
 

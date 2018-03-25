@@ -117,3 +117,56 @@ export function hashSendBlock (previous, destination, balance) {
 
   return byteArrayToHex(hashBytes)
 }
+
+/**
+ * Hash a state block.
+ * Does not require initialization.
+ *
+ * @param {string} account - The account address
+ * @param {string} previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param {string} representative - The representative address
+ * @param {string} balance - The balance, in raw
+ * @param {string} link - The account or block hash meant as a link, in address or hexadecimal format
+ * @return {string} Hash, in hexadecimal format
+ */
+export function hashStateBlock (
+  account,
+  previous,
+  representative,
+  balance,
+  link
+) {
+  if (!checkAddress(account)) throw new Error('Account is not valid')
+  if (!checkHash(previous)) throw new Error('Previous is not valid')
+  if (!checkAddress(representative)) {
+    throw new Error('Representative is not valid')
+  }
+  if (!checkBalance(balance)) throw new Error('Balance is not valid')
+  let linkIsAddress = false
+  let linkIsBlockHash = false
+  if (checkAddress(link)) linkIsAddress = true
+  if (checkHash(link)) linkIsBlockHash = true
+  if (!linkIsAddress && !linkIsBlockHash) throw new Error('Link is not valid')
+
+  const accountBytes = hexToByteArray(derivePublicKey(account))
+  const previousBytes = hexToByteArray(previous)
+  const representativeBytes = hexToByteArray(derivePublicKey(representative))
+  const balanceHex = convert(balance, { from: 'raw', to: 'hex' })
+  const balanceBytes = hexToByteArray(balanceHex)
+  let linkBytes
+  if (linkIsAddress) {
+    linkBytes = hexToByteArray(derivePublicKey(link))
+  } else if (linkIsBlockHash) {
+    linkBytes = hexToByteArray(link)
+  }
+
+  const context = blake2bInit(32)
+  blake2bUpdate(context, accountBytes)
+  blake2bUpdate(context, previousBytes)
+  blake2bUpdate(context, representativeBytes)
+  blake2bUpdate(context, balanceBytes)
+  blake2bUpdate(context, linkBytes)
+  const hashBytes = blake2bFinal(context)
+
+  return byteArrayToHex(hashBytes)
+}

@@ -4,16 +4,11 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import { blake2b, blake2bInit, blake2bUpdate, blake2bFinal } from 'blakejs'
+import nanoBase32 from 'nano-base32'
 
 import { checkSeed, checkKey, checkAddress } from './check'
 import { derivePublicFromSecret } from './nacl'
-import {
-  getRandomBytes,
-  hexToByteArray,
-  byteArrayToHex,
-  byteArrayToBase32,
-  base32ToByteArray
-} from './utils'
+import { getRandomBytes, hexToByteArray, byteArrayToHex } from './utils'
 
 /**
  * Generate a cryptographically secure seed.
@@ -77,18 +72,15 @@ export function derivePublicKey (secretKeyOrAddress) {
     throw new Error('Secret key or address is not valid')
   }
 
+  let publicKeyBytes
   if (isSecretKey) {
     const secretKeyBytes = hexToByteArray(secretKeyOrAddress)
-    const publicKeyBytes = derivePublicFromSecret(secretKeyBytes)
-
-    return byteArrayToHex(publicKeyBytes)
+    publicKeyBytes = derivePublicFromSecret(secretKeyBytes)
   } else if (isAddress) {
-    const publicKeyPart = secretKeyOrAddress.substr(4, 52) + '1'
-    const paddedPublicKeyBytes = base32ToByteArray(publicKeyPart)
-    const publicKeyHex = byteArrayToHex(paddedPublicKeyBytes).substr(1, 64)
-
-    return publicKeyHex
+    publicKeyBytes = nanoBase32.decode(secretKeyOrAddress.substr(4, 52))
   }
+
+  return byteArrayToHex(publicKeyBytes)
 }
 
 /**
@@ -102,13 +94,13 @@ export function deriveAddress (publicKey) {
   if (!checkKey(publicKey)) throw new Error('Public key is not valid')
 
   const publicKeyBytes = hexToByteArray(publicKey)
-  const paddedPublicKeyBytes = hexToByteArray('0' + publicKey + '0')
+  const paddedPublicKeyBytes = hexToByteArray(publicKey)
 
-  const encodedPublicKey = byteArrayToBase32(paddedPublicKeyBytes).slice(0, -1)
+  const encodedPublicKey = nanoBase32.encode(paddedPublicKeyBytes)
 
   const checksum = blake2b(publicKeyBytes, null, 5).reverse()
 
-  const encodedChecksum = byteArrayToBase32(checksum)
+  const encodedChecksum = nanoBase32.encode(checksum)
 
   return 'xrb_' + encodedPublicKey + encodedChecksum
 }

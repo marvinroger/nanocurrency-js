@@ -1073,14 +1073,6 @@ balanced-match@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
 
-base32-decode@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/base32-decode/-/base32-decode-1.0.0.tgz#2a821d6a664890c872f20aa9aca95a4b4b80e2a7"
-
-base32-encode@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/base32-encode/-/base32-encode-1.0.0.tgz#8fda8e42ab5e213e8ec30e5c440a26ae0507eb03"
-
 base@^0.11.1:
   version "0.11.2"
   resolved "https://registry.yarnpkg.com/base/-/base-0.11.2.tgz#7bde5ced145b6d551a90db87f83c558b4eb48a8f"
@@ -4163,6 +4155,10 @@ mute-stream@0.0.7:
 nan@^2.3.0:
   version "2.9.2"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.9.2.tgz#f564d75f5f8f36a6d9456cca7a6c4fe488ab7866"
+
+nano-base32@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/nano-base32/-/nano-base32-1.0.0.tgz#eda445dba06aeb18cff786fdb9fa4f6c5f5c6791"
 
 nanomatch@^1.2.9:
   version "1.2.9"

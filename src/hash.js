@@ -145,8 +145,8 @@ export function hashStateBlock (
   let linkIsAddress = false
   let linkIsBlockHash = false
   if (checkAddress(link)) linkIsAddress = true
-  if (checkHash(link)) linkIsBlockHash = true
-  if (!linkIsAddress && !linkIsBlockHash) throw new Error('Link is not valid')
+  else if (checkHash(link)) linkIsBlockHash = true
+  else throw new Error('Link is not valid')
 
   const accountBytes = hexToByteArray(derivePublicKey(account))
   const previousBytes = hexToByteArray(previous)

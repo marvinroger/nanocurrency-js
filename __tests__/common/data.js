@@ -4,11 +4,7 @@ const INVALID_SEEDS = [
   'z947ee0115014a4d49a804e7fc7248e31690b80033ce7a6e3a07bdf93b2584ff'
 ]
 
-const INVALID_INDEXES = [
-  '0',
-  -1,
-  1.1
-]
+const INVALID_INDEXES = ['0', -1, 1.1]
 
 const INVALID_SECRET_KEYS = [
   12,
@@ -28,14 +24,11 @@ const INVALID_HASHES = [
   'zf7122e843b27524f4f1d6bd14aefd1c8f01d36ae8653d37417533c0d4bc2be6'
 ]
 
-const INVALID_WORKS = [
-  12,
-  '000000000995bc3',
-  'z000000000995bc3'
-]
+const INVALID_WORKS = [12, '000000000995bc3', 'z000000000995bc3']
 
 const INVALID_ADDRESSES = [
   12,
+  'xrb_1mbj7xi6yrwcuwetzd5535pdqjea5rfpsoqo9nw4gxg8itycgntucp49i1n4', // bad checksum
   'zrb_1mbj7xi6yrwcuwetzd5535pdqjea5rfpsoqo9nw4gxg8itycgntucp49i1nz',
   'xrb_2mbj7xi6yrwcuwetzd5535pdqjea5rfpsoqo9nw4gxg8itycgntucp49i1nz',
   'xrb_1mbj7xi6yrwcuwetzd5535pdqjea5rfpsoqo9nw4gxg8itycgntucp49i1n',

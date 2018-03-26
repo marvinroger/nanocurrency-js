@@ -3,6 +3,11 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
+import { blake2b } from 'blakejs'
+import nanoBase32 from 'nano-base32'
+
+import { compareArrays } from './utils'
+
 export function checkString (candidate) {
   return typeof candidate === 'string'
 }
@@ -79,7 +84,16 @@ export function checkKey (key) {
  * @return {boolean} Valid
  */
 export function checkAddress (address) {
-  return checkString(address) && /xrb_[13][0-9a-km-uw-z]{59}/.test(address)
+  if (!checkString(address) || !/xrb_[13][0-9a-km-uw-z]{59}/.test(address)) {
+    return false
+  }
+
+  const publicKeyBytes = nanoBase32.decode(address.substr(4, 52))
+  const checksumBytes = nanoBase32.decode(address.substr(56, 8))
+
+  const computedChecksumBytes = blake2b(publicKeyBytes, null, 5).reverse()
+
+  return compareArrays(checksumBytes, computedChecksumBytes)
 }
 
 /**

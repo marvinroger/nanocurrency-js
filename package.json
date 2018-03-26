@@ -16,10 +16,9 @@
   },
   "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",
   "dependencies": {
-    "base32-decode": "^1.0.0",
-    "base32-encode": "^1.0.0",
     "bignumber.js": "^6.0.0",
-    "blakejs": "^1.1.0"
+    "blakejs": "^1.1.0",
+    "nano-base32": "^1.0.0"
   },
   "devDependencies": {
     "cross-env": "^5.1.3",

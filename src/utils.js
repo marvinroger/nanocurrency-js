@@ -3,9 +3,6 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import base32Encode from 'base32-encode'
-import base32Decode from 'base32-decode'
-
 const IS_NODE =
   Object.prototype.toString.call(
     typeof process !== 'undefined' ? process : 0
@@ -35,61 +32,6 @@ export function getRandomBytes (count) {
   })
 }
 
-const BASE32_MAPPING = {
-  A: '1',
-  B: '3',
-  C: '4',
-  D: '5',
-  E: '6',
-  F: '7',
-  G: '8',
-  H: '9',
-  I: 'a',
-  J: 'b',
-  K: 'c',
-  L: 'd',
-  M: 'e',
-  N: 'f',
-  O: 'g',
-  P: 'h',
-  Q: 'i',
-  R: 'j',
-  S: 'k',
-  T: 'm',
-  U: 'n',
-  V: 'o',
-  W: 'p',
-  X: 'q',
-  Y: 'r',
-  Z: 's',
-  2: 't',
-  3: 'u',
-  4: 'w',
-  5: 'x',
-  6: 'y',
-  7: 'z'
-}
-
-export function byteArrayToBase32 (byteArray) {
-  return base32Encode(byteArray, 'RFC4648')
-    .split('')
-    .map(c => BASE32_MAPPING[c])
-    .join('')
-}
-
-export function base32ToByteArray (base32) {
-  const mapped = base32
-    .split('')
-    .map(c =>
-      Object.keys(BASE32_MAPPING).find(key => BASE32_MAPPING[key] === c)
-    )
-    .join('')
-
-  const decoded = base32Decode(mapped, 'RFC4648')
-
-  return new Uint8Array(decoded)
-}
-
 export function byteArrayToHex (byteArray) {
   if (!byteArray) {
     return ''
@@ -116,4 +58,12 @@ export function hexToByteArray (hex) {
   }
 
   return new Uint8Array(a)
+}
+
+export function compareArrays (array1, array2) {
+  for (let i = 0; i < array1.length; i++) {
+    if (array1[i] !== array2[i]) return false
+  }
+
+  return true
 }

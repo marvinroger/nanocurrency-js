@@ -13,7 +13,8 @@ import {
   hashOpenBlock,
   hashSendBlock,
   hashReceiveBlock,
-  hashChangeBlock
+  hashChangeBlock,
+  hashStateBlock
 } from './hash'
 
 import { signBlock } from './signature'
@@ -157,6 +158,54 @@ export function createChangeBlock (
       type: 'change',
       previous,
       representative,
+      work,
+      signature
+    }
+  }
+}
+
+/**
+ * Create a state block.
+ * Does not require initialization.
+ *
+ * @param {string} secretKey - The secret key to create the block from, in hexadecimal format
+ * @param {Object} data - Block data
+ * @param {string} data.work - The PoW
+ * @param {string} data.previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param {string} data.representative - The representative address
+ * @param {string} data.balance - The resulting balance
+ * @param {string} data.link - The link block hash or the link address, in hexadecimal or address format
+ * @return {Object} Block
+ */
+export function createStateBlock (
+  secretKey,
+  { work, previous, representative, balance, link }
+) {
+  if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
+  if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
+  if (!checkHash(previous)) throw new Error('Previous is not valid')
+  if (!checkAddress(representative)) {
+    throw new Error('Representative is not valid')
+  }
+  if (!checkBalance(balance)) throw new Error('Balance is not valid')
+  if (!checkAddress(link) && !checkHash(link)) {
+    throw new Error('Link is not valid')
+  }
+
+  const publicKey = derivePublicKey(secretKey)
+  const account = deriveAddress(publicKey)
+  const hash = hashStateBlock(account, previous, representative, balance, link)
+  const signature = signBlock(hash, secretKey)
+
+  return {
+    hash,
+    block: {
+      type: 'state',
+      account,
+      previous,
+      representative,
+      balance,
+      link,
       work,
       signature
     }

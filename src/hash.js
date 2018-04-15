@@ -13,6 +13,9 @@ import { hexToByteArray, byteArrayToHex } from './utils'
 
 import { derivePublicKey } from './keys'
 
+const STATE_BLOCK_PREAMBLE_BYTES = new Uint8Array(32)
+STATE_BLOCK_PREAMBLE_BYTES[31] = 6
+
 /**
  * Hash a receive block.
  * Does not require initialization.
@@ -161,6 +164,7 @@ export function hashStateBlock (
   }
 
   const context = blake2bInit(32)
+  blake2bUpdate(context, STATE_BLOCK_PREAMBLE_BYTES)
   blake2bUpdate(context, accountBytes)
   blake2bUpdate(context, previousBytes)
   blake2bUpdate(context, representativeBytes)

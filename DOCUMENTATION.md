@@ -107,6 +107,10 @@ Does not require initialization.</p>
 <dd><p>Create a change block.
 Does not require initialization.</p>
 </dd>
+<dt><a href="#createStateBlock">createStateBlock(secretKey, data)</a> ⇒ <code>Object</code></dt>
+<dd><p>Create a state block.
+Does not require initialization.</p>
+</dd>
 </dl>
 
 <a name="checkBalance"></a>
@@ -479,4 +483,23 @@ Does not require initialization.
 | data.work | <code>string</code> | The PoW |
 | data.previous | <code>string</code> | The hash of the previous block on the account chain, in hexadecimal format |
 | data.representative | <code>string</code> | The representative address |
+
+<a name="createStateBlock"></a>
+
+## createStateBlock(secretKey, data) ⇒ <code>Object</code>
+Create a state block.
+Does not require initialization.
+
+**Kind**: global function  
+**Returns**: <code>Object</code> - Block  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| secretKey | <code>string</code> | The secret key to create the block from, in hexadecimal format |
+| data | <code>Object</code> | Block data |
+| data.work | <code>string</code> | The PoW |
+| data.previous | <code>string</code> | The hash of the previous block on the account chain, in hexadecimal format |
+| data.representative | <code>string</code> | The representative address |
+| data.balance | <code>string</code> | The resulting balance |
+| data.link | <code>string</code> | The link block hash or the link address, in hexadecimal or address format |
 

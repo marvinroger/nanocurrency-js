@@ -41,5 +41,6 @@ export {
   createOpenBlock,
   createSendBlock,
   createReceiveBlock,
-  createChangeBlock
+  createChangeBlock,
+  createStateBlock
 } from './block'

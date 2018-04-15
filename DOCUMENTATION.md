@@ -65,6 +65,10 @@ Does not require initialization.</p>
 <dd><p>Hash a send block.
 Does not require initialization.</p>
 </dd>
+<dt><a href="#hashStateBlock">hashStateBlock(account, previous, representative, balance, link)</a> ⇒ <code>string</code></dt>
+<dd><p>Hash a state block.
+Does not require initialization.</p>
+</dd>
 <dt><a href="#signBlock">signBlock(blockHash, secretKey)</a> ⇒ <code>string</code></dt>
 <dd><p>Sign a block.
 Does not require initialization.</p>
@@ -101,6 +105,10 @@ Does not require initialization.</p>
 </dd>
 <dt><a href="#createChangeBlock">createChangeBlock(secretKey, data)</a> ⇒ <code>Object</code></dt>
 <dd><p>Create a change block.
+Does not require initialization.</p>
+</dd>
+<dt><a href="#createStateBlock">createStateBlock(secretKey, data)</a> ⇒ <code>Object</code></dt>
+<dd><p>Create a state block.
 Does not require initialization.</p>
 </dd>
 </dl>
@@ -318,6 +326,23 @@ Does not require initialization.
 | destination | <code>string</code> | The destination address |
 | balance | <code>string</code> | The balance, in raw |
 
+<a name="hashStateBlock"></a>
+
+## hashStateBlock(account, previous, representative, balance, link) ⇒ <code>string</code>
+Hash a state block.
+Does not require initialization.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - Hash, in hexadecimal format  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| account | <code>string</code> | The account address |
+| previous | <code>string</code> | The hash of the previous block on the account chain, in hexadecimal format |
+| representative | <code>string</code> | The representative address |
+| balance | <code>string</code> | The balance, in raw |
+| link | <code>string</code> | The account or block hash meant as a link, in address or hexadecimal format |
+
 <a name="signBlock"></a>
 
 ## signBlock(blockHash, secretKey) ⇒ <code>string</code>
@@ -458,4 +483,23 @@ Does not require initialization.
 | data.work | <code>string</code> | The PoW |
 | data.previous | <code>string</code> | The hash of the previous block on the account chain, in hexadecimal format |
 | data.representative | <code>string</code> | The representative address |
+
+<a name="createStateBlock"></a>
+
+## createStateBlock(secretKey, data) ⇒ <code>Object</code>
+Create a state block.
+Does not require initialization.
+
+**Kind**: global function  
+**Returns**: <code>Object</code> - Block  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| secretKey | <code>string</code> | The secret key to create the block from, in hexadecimal format |
+| data | <code>Object</code> | Block data |
+| data.work | <code>string</code> | The PoW |
+| data.previous | <code>string</code> | The hash of the previous block on the account chain, in hexadecimal format |
+| data.representative | <code>string</code> | The representative address |
+| data.balance | <code>string</code> | The resulting balance |
+| data.link | <code>string</code> | The link block hash or the link address, in hexadecimal or address format |
 

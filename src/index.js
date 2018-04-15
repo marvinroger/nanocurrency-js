@@ -29,7 +29,8 @@ export {
   hashOpenBlock,
   hashSendBlock,
   hashReceiveBlock,
-  hashChangeBlock
+  hashChangeBlock,
+  hashStateBlock
 } from './hash'
 
 export { signBlock, verifyBlock } from './signature'
@@ -40,5 +41,6 @@ export {
   createOpenBlock,
   createSendBlock,
   createReceiveBlock,
-  createChangeBlock
+  createChangeBlock,
+  createStateBlock
 } from './block'

@@ -6,7 +6,7 @@ const {
   INVALID_ADDRESSES,
   INVALID_HASHES_AND_ADDRESSES,
   INVALID_AMOUNTS
-} = require('./common/data')
+} = require('./data/invalid')
 
 const VALID_SEND_BLOCK = {
   previous: 'A286FD300598BF0C8CCC1196943B9CEB94F268CC89F2010B7F7EE4055CC6AB8C',
@@ -37,28 +37,8 @@ const VALID_RECEIVE_BLOCK = {
   hash: 'AD93AE771E883680C18502A7AEBA7B63465F2FB3830F0833DD49A54A5AE133BB'
 }
 
-const VALID_STATE_BLOCKS = [
-  {
-    account: 'xrb_3igf8hd4sjshoibbbkeitmgkp1o6ug4xads43j6e4gqkj5xk5o83j8ja9php',
-    previous:
-      'FC5A7FB777110A858052468D448B2DF22B648943C097C0608D1E2341007438B0',
-    representative:
-      'xrb_3p1asma84n8k84joneka776q4egm5wwru3suho9wjsfyuem8j95b3c78nw8j',
-    balance: '5000000000000000000000000000001',
-    link: 'B2EC73C1F503F47E051AD72ECB512C63BA8E1A0ACC2CEE4EA9A22FE1CBDB693F', // block hash
-    hash: '597395E83BD04DF8EF30AF04234EAAFE0606A883CF4AEAD2DB8196AAF5C4444F'
-  },
-  {
-    account: 'xrb_3igf8hd4sjshoibbbkeitmgkp1o6ug4xads43j6e4gqkj5xk5o83j8ja9php',
-    previous:
-      '597395E83BD04DF8EF30AF04234EAAFE0606A883CF4AEAD2DB8196AAF5C4444F',
-    representative:
-      'xrb_3p1asma84n8k84joneka776q4egm5wwru3suho9wjsfyuem8j95b3c78nw8j',
-    balance: '3000000000000000000000000000001',
-    link: 'xrb_1q3hqecaw15cjt7thbtxu3pbzr1eihtzzpzxguoc37bj1wc5ffoh7w74gi6p', // address
-    hash: '128106287002E595F479ACD615C818117FCB3860EC112670557A2467386249D4'
-  }
-]
+const VALID_STATE_BLOCKS = require('./data/valid_blocks')
+const RANDOM_VALID_STATE_BLOCK = VALID_STATE_BLOCKS[0]
 
 describe('send', () => {
   test('creates correct send hash', () => {
@@ -226,13 +206,13 @@ describe('state', () => {
     for (let validStateBlock of VALID_STATE_BLOCKS) {
       expect(
         nano.hashStateBlock(
-          validStateBlock.account,
-          validStateBlock.previous,
-          validStateBlock.representative,
-          validStateBlock.balance,
-          validStateBlock.link
+          validStateBlock.block.data.account,
+          validStateBlock.block.data.previous,
+          validStateBlock.block.data.representative,
+          validStateBlock.block.data.balance,
+          validStateBlock.originalLink
         )
-      ).toBe(validStateBlock.hash)
+      ).toBe(validStateBlock.block.hash)
     }
   })
 
@@ -242,10 +222,10 @@ describe('state', () => {
       expect(() =>
         nano.hashStateBlock(
           invalidAddress,
-          VALID_STATE_BLOCKS[0].previous,
-          VALID_STATE_BLOCKS[0].representative,
-          VALID_STATE_BLOCKS[0].balance,
-          VALID_STATE_BLOCKS[0].link
+          RANDOM_VALID_STATE_BLOCK.block.data.previous,
+          RANDOM_VALID_STATE_BLOCK.block.data.representative,
+          RANDOM_VALID_STATE_BLOCK.block.data.balance,
+          RANDOM_VALID_STATE_BLOCK.originalLink
         )
       ).toThrowError('Account is not valid')
     }
@@ -256,11 +236,11 @@ describe('state', () => {
     for (let invalidHash of INVALID_HASHES) {
       expect(() =>
         nano.hashStateBlock(
-          VALID_STATE_BLOCKS[0].account,
+          RANDOM_VALID_STATE_BLOCK.block.data.account,
           invalidHash,
-          VALID_STATE_BLOCKS[0].representative,
-          VALID_STATE_BLOCKS[0].balance,
-          VALID_STATE_BLOCKS[0].link
+          RANDOM_VALID_STATE_BLOCK.block.data.representative,
+          RANDOM_VALID_STATE_BLOCK.block.data.balance,
+          RANDOM_VALID_STATE_BLOCK.originalLink
         )
       ).toThrowError('Previous is not valid')
     }
@@ -271,11 +251,11 @@ describe('state', () => {
     for (let invalidAddress of INVALID_ADDRESSES) {
       expect(() =>
         nano.hashStateBlock(
-          VALID_STATE_BLOCKS[0].account,
-          VALID_STATE_BLOCKS[0].previous,
+          RANDOM_VALID_STATE_BLOCK.block.data.account,
+          RANDOM_VALID_STATE_BLOCK.block.data.previous,
           invalidAddress,
-          VALID_STATE_BLOCKS[0].balance,
-          VALID_STATE_BLOCKS[0].link
+          RANDOM_VALID_STATE_BLOCK.block.data.balance,
+          RANDOM_VALID_STATE_BLOCK.originalLink
         )
       ).toThrowError('Representative is not valid')
     }
@@ -286,11 +266,11 @@ describe('state', () => {
     for (let invalidAmount of INVALID_AMOUNTS) {
       expect(() =>
         nano.hashStateBlock(
-          VALID_STATE_BLOCKS[0].account,
-          VALID_STATE_BLOCKS[0].previous,
-          VALID_STATE_BLOCKS[0].representative,
+          RANDOM_VALID_STATE_BLOCK.block.data.account,
+          RANDOM_VALID_STATE_BLOCK.block.data.previous,
+          RANDOM_VALID_STATE_BLOCK.block.data.representative,
           invalidAmount,
-          VALID_STATE_BLOCKS[0].link
+          RANDOM_VALID_STATE_BLOCK.originalLink
         )
       ).toThrowError('Balance is not valid')
     }
@@ -301,10 +281,10 @@ describe('state', () => {
     for (let invalidLink of INVALID_HASHES_AND_ADDRESSES) {
       expect(() =>
         nano.hashStateBlock(
-          VALID_STATE_BLOCKS[0].account,
-          VALID_STATE_BLOCKS[0].previous,
-          VALID_STATE_BLOCKS[0].representative,
-          VALID_STATE_BLOCKS[0].balance,
+          RANDOM_VALID_STATE_BLOCK.block.data.account,
+          RANDOM_VALID_STATE_BLOCK.block.data.previous,
+          RANDOM_VALID_STATE_BLOCK.block.data.representative,
+          RANDOM_VALID_STATE_BLOCK.block.data.balance,
           invalidLink
         )
       ).toThrowError('Link is not valid')

@@ -188,26 +188,37 @@ export function createStateBlock (
     throw new Error('Representative is not valid')
   }
   if (!checkBalance(balance)) throw new Error('Balance is not valid')
-  if (!checkAddress(link) && !checkHash(link)) {
-    throw new Error('Link is not valid')
-  }
+  let linkIsAddress = false
+  if (checkAddress(link)) linkIsAddress = true
+  else if (!checkHash(link)) throw new Error('Link is not valid')
 
   const publicKey = derivePublicKey(secretKey)
   const account = deriveAddress(publicKey)
   const hash = hashStateBlock(account, previous, representative, balance, link)
   const signature = signBlock(hash, secretKey)
 
+  let linkAsAddress
+  if (linkIsAddress) {
+    linkAsAddress = link
+    link = derivePublicKey(linkAsAddress)
+  } else {
+    linkAsAddress = deriveAddress(link)
+  }
+
+  const block = {
+    type: 'state',
+    account,
+    previous,
+    representative,
+    balance,
+    link,
+    link_as_account: linkAsAddress,
+    work,
+    signature
+  }
+
   return {
     hash,
-    block: {
-      type: 'state',
-      account,
-      previous,
-      representative,
-      balance,
-      link,
-      work,
-      signature
-    }
+    block
   }
 }

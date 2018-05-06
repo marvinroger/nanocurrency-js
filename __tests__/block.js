@@ -7,13 +7,10 @@ const {
   INVALID_AMOUNTS,
   INVALID_ADDRESSES,
   INVALID_HASHES_AND_ADDRESSES
-} = require('./common/data')
+} = require('./data/invalid')
 
 const SECRET_KEY =
   '0000000000000000000000000000000000000000000000000000000000000001'
-
-const SECRET_KEY_STATE_BLOCK =
-  'B61AEB236B0C8A2DFDD71C06F1F3544C524801E4B45B7A34DFDEC6F74F177927'
 
 const VALID_OPEN_BLOCK = {
   params: {
@@ -109,66 +106,8 @@ const VALID_CHANGE_BLOCK = {
   }
 }
 
-const VALID_STATE_BLOCKS = [
-  {
-    params: {
-      work: '0000000000000000',
-      previous:
-        'FC5A7FB777110A858052468D448B2DF22B648943C097C0608D1E2341007438B0',
-      representative:
-        'xrb_3p1asma84n8k84joneka776q4egm5wwru3suho9wjsfyuem8j95b3c78nw8j',
-      balance: '5000000000000000000000000000001',
-      link: 'B2EC73C1F503F47E051AD72ECB512C63BA8E1A0ACC2CEE4EA9A22FE1CBDB693F' // block hash
-    },
-    result: {
-      hash: '597395E83BD04DF8EF30AF04234EAAFE0606A883CF4AEAD2DB8196AAF5C4444F',
-      block: {
-        type: 'state',
-        account:
-          'xrb_3igf8hd4sjshoibbbkeitmgkp1o6ug4xads43j6e4gqkj5xk5o83j8ja9php',
-        previous:
-          'FC5A7FB777110A858052468D448B2DF22B648943C097C0608D1E2341007438B0',
-        representative:
-          'xrb_3p1asma84n8k84joneka776q4egm5wwru3suho9wjsfyuem8j95b3c78nw8j',
-        balance: '5000000000000000000000000000001',
-        link:
-          'B2EC73C1F503F47E051AD72ECB512C63BA8E1A0ACC2CEE4EA9A22FE1CBDB693F',
-        work: '0000000000000000',
-        signature:
-          '90CBD62F5466E35DB3BFE5EFDBC6283BD30C0591A3787C9458D11F2AF6188E45E6E71B5F4A8E3598B1C80080D6024867878E355161AD1935CD757477991D3B0B'
-      }
-    }
-  },
-  {
-    params: {
-      work: '0000000000000000',
-      previous:
-        '597395E83BD04DF8EF30AF04234EAAFE0606A883CF4AEAD2DB8196AAF5C4444F',
-      representative:
-        'xrb_3p1asma84n8k84joneka776q4egm5wwru3suho9wjsfyuem8j95b3c78nw8j',
-      balance: '3000000000000000000000000000001',
-      link: 'xrb_1q3hqecaw15cjt7thbtxu3pbzr1eihtzzpzxguoc37bj1wc5ffoh7w74gi6p' // block hash
-    },
-    result: {
-      hash: '128106287002E595F479ACD615C818117FCB3860EC112670557A2467386249D4',
-      block: {
-        type: 'state',
-        account:
-          'xrb_3igf8hd4sjshoibbbkeitmgkp1o6ug4xads43j6e4gqkj5xk5o83j8ja9php',
-        previous:
-          '597395E83BD04DF8EF30AF04234EAAFE0606A883CF4AEAD2DB8196AAF5C4444F',
-        representative:
-          'xrb_3p1asma84n8k84joneka776q4egm5wwru3suho9wjsfyuem8j95b3c78nw8j',
-        balance: '3000000000000000000000000000001',
-        link:
-          'xrb_1q3hqecaw15cjt7thbtxu3pbzr1eihtzzpzxguoc37bj1wc5ffoh7w74gi6p',
-        work: '0000000000000000',
-        signature:
-          'D7975EE2F6FAE1FC7DA336FB9DD5F7E30FC1A6825021194E614F0588073D1A4901E34E3CAE8739F1DE2FD85A73D2A0B26F8BE6539E0548C9A45E1C1887BFFC05'
-      }
-    }
-  }
-]
+const VALID_STATE_BLOCKS = require('./data/valid_blocks')
+const RANDOM_VALID_STATE_BLOCK = VALID_STATE_BLOCKS[0]
 
 describe('open', () => {
   test('creates correct open block', async () => {
@@ -400,14 +339,17 @@ describe('state', () => {
   test('creates correct state block', async () => {
     expect.assertions(VALID_STATE_BLOCKS.length)
     for (let validStateBlock of VALID_STATE_BLOCKS) {
-      const result = nano.createStateBlock(SECRET_KEY_STATE_BLOCK, {
-        work: validStateBlock.params.work,
-        previous: validStateBlock.params.previous,
-        representative: validStateBlock.params.representative,
-        balance: validStateBlock.params.balance,
-        link: validStateBlock.params.link
+      const result = nano.createStateBlock(validStateBlock.secretKey, {
+        work: validStateBlock.block.data.work,
+        previous: validStateBlock.block.data.previous,
+        representative: validStateBlock.block.data.representative,
+        balance: validStateBlock.block.data.balance,
+        link: validStateBlock.originalLink
       })
-      expect(result).toEqual(validStateBlock.result)
+      expect(result).toEqual({
+        hash: validStateBlock.block.hash,
+        block: validStateBlock.block.data
+      })
     }
   })
 
@@ -418,11 +360,11 @@ describe('state', () => {
     for (let invalidSecretKey of INVALID_SECRET_KEYS) {
       expect(() => {
         nano.createStateBlock(invalidSecretKey, {
-          work: VALID_STATE_BLOCKS[0].params.work,
-          previous: VALID_STATE_BLOCKS[0].params.previous,
-          representative: VALID_STATE_BLOCKS[0].params.representative,
-          balance: VALID_STATE_BLOCKS[0].params.balance,
-          link: VALID_STATE_BLOCKS[0].params.link
+          work: RANDOM_VALID_STATE_BLOCK.block.data.work,
+          previous: RANDOM_VALID_STATE_BLOCK.block.data.previous,
+          representative: RANDOM_VALID_STATE_BLOCK.block.data.representative,
+          balance: RANDOM_VALID_STATE_BLOCK.block.data.balance,
+          link: RANDOM_VALID_STATE_BLOCK.originalLink
         })
       }).toThrowError('Secret key is not valid')
     }
@@ -432,12 +374,12 @@ describe('state', () => {
     expect.assertions(INVALID_HASHES.length)
     for (let invalidPrevious of INVALID_HASHES) {
       expect(() => {
-        nano.createStateBlock(SECRET_KEY_STATE_BLOCK, {
-          work: VALID_STATE_BLOCKS[0].params.work,
+        nano.createStateBlock(RANDOM_VALID_STATE_BLOCK.secretKey, {
+          work: RANDOM_VALID_STATE_BLOCK.block.data.work,
           previous: invalidPrevious,
-          representative: VALID_STATE_BLOCKS[0].params.representative,
-          balance: VALID_STATE_BLOCKS[0].params.balance,
-          link: VALID_STATE_BLOCKS[0].params.link
+          representative: RANDOM_VALID_STATE_BLOCK.block.data.representative,
+          balance: RANDOM_VALID_STATE_BLOCK.block.data.balance,
+          link: RANDOM_VALID_STATE_BLOCK.originalLink
         })
       }).toThrowError('Previous is not valid')
     }
@@ -447,12 +389,12 @@ describe('state', () => {
     expect.assertions(INVALID_ADDRESSES.length)
     for (let invalidRepresentative of INVALID_ADDRESSES) {
       expect(() => {
-        nano.createStateBlock(SECRET_KEY_STATE_BLOCK, {
-          work: VALID_STATE_BLOCKS[0].params.work,
-          previous: VALID_STATE_BLOCKS[0].params.previous,
+        nano.createStateBlock(RANDOM_VALID_STATE_BLOCK.secretKey, {
+          work: RANDOM_VALID_STATE_BLOCK.block.data.work,
+          previous: RANDOM_VALID_STATE_BLOCK.block.data.previous,
           representative: invalidRepresentative,
-          balance: VALID_STATE_BLOCKS[0].params.balance,
-          link: VALID_STATE_BLOCKS[0].params.link
+          balance: RANDOM_VALID_STATE_BLOCK.block.data.balance,
+          link: RANDOM_VALID_STATE_BLOCK.originalLink
         })
       }).toThrowError('Representative is not valid')
     }
@@ -462,12 +404,12 @@ describe('state', () => {
     expect.assertions(INVALID_AMOUNTS.length)
     for (let invalidBalance of INVALID_AMOUNTS) {
       expect(() => {
-        nano.createStateBlock(SECRET_KEY_STATE_BLOCK, {
-          work: VALID_STATE_BLOCKS[0].params.work,
-          previous: VALID_STATE_BLOCKS[0].params.previous,
-          representative: VALID_STATE_BLOCKS[0].params.representative,
+        nano.createStateBlock(RANDOM_VALID_STATE_BLOCK.secretKey, {
+          work: RANDOM_VALID_STATE_BLOCK.block.data.work,
+          previous: RANDOM_VALID_STATE_BLOCK.block.data.previous,
+          representative: RANDOM_VALID_STATE_BLOCK.block.data.representative,
           balance: invalidBalance,
-          link: VALID_STATE_BLOCKS[0].params.link
+          link: RANDOM_VALID_STATE_BLOCK.originalLink
         })
       }).toThrowError('Balance is not valid')
     }
@@ -477,11 +419,11 @@ describe('state', () => {
     expect.assertions(INVALID_HASHES_AND_ADDRESSES.length)
     for (let invalidLink of INVALID_HASHES_AND_ADDRESSES) {
       expect(() => {
-        nano.createStateBlock(SECRET_KEY_STATE_BLOCK, {
-          work: VALID_STATE_BLOCKS[0].params.work,
-          previous: VALID_STATE_BLOCKS[0].params.previous,
-          representative: VALID_STATE_BLOCKS[0].params.representative,
-          balance: VALID_STATE_BLOCKS[0].params.balance,
+        nano.createStateBlock(RANDOM_VALID_STATE_BLOCK.secretKey, {
+          work: RANDOM_VALID_STATE_BLOCK.block.data.work,
+          previous: RANDOM_VALID_STATE_BLOCK.block.data.previous,
+          representative: RANDOM_VALID_STATE_BLOCK.block.data.representative,
+          balance: RANDOM_VALID_STATE_BLOCK.block.data.balance,
           link: invalidLink
         })
       }).toThrowError('Link is not valid')

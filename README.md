@@ -11,7 +11,7 @@ A [battle-tested](__tests__) toolkit for the Nano cryptocurrency, allowing you t
 
 ![Code showcase](showcase.png)
 
-The documentation is available locally in [docs/](docs/) or online at [https://marvinroger.github.io/nanocurrency-js](https://marvinroger.github.io/nanocurrency-js) file.
+The documentation is available locally in [docs/](docs/) or online at [https://marvinroger.github.io/nanocurrency-js](https://marvinroger.github.io/nanocurrency-js).
 
 ---
 

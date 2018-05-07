@@ -1,8 +1,12 @@
 ### App ###
 
 /dist/
-/*.tmp.*
+/native.js
 /_test.js
+
+### TS ###
+
+.rpt2_cache/
 
 ### Node ###
 

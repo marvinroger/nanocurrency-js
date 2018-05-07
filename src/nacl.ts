@@ -3,9 +3,11 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
+// originally from https://github.com/dchest/tweetnacl-js
+// adapted for Nano and TypeScript by Marvin ROGER
 import blake from 'blakejs'
 
-let gf = function (init) {
+let gf = function (init?: number[]) {
   const r = new Float64Array(16)
   if (init) for (let i = 0; i < init.length; i++) r[i] = init[i]
   return r
@@ -107,413 +109,22 @@ const I = gf([
   0x2b83
 ])
 
-function vn (x, xi, y, yi, n) {
+function vn (x: Uint8Array, xi: number, y: Uint8Array, yi: number, n: number) {
   let d = 0
   for (let i = 0; i < n; i++) d |= x[xi + i] ^ y[yi + i]
   return (1 & ((d - 1) >>> 8)) - 1
 }
 
-function cryptoVerify32 (x, xi, y, yi) {
+function cryptoVerify32 (x: Uint8Array, xi: number, y: Uint8Array, yi: number) {
   return vn(x, xi, y, yi, 32)
 }
-// "expand 32-byte k"
 
-/*
-* Port of Andrew Moon's Poly1305-donna-16. Public domain.
-* https://github.com/floodyberry/poly1305-donna
-*/
-
-let Poly1305 = function (key) {
-  this.buffer = new Uint8Array(16)
-  this.r = new Uint16Array(10)
-  this.h = new Uint16Array(10)
-  this.pad = new Uint16Array(8)
-  this.leftover = 0
-  this.fin = 0
-
-  let t0, t1, t2, t3, t4, t5, t6, t7
-
-  t0 = (key[0] & 0xff) | ((key[1] & 0xff) << 8)
-  this.r[0] = t0 & 0x1fff
-  t1 = (key[2] & 0xff) | ((key[3] & 0xff) << 8)
-  this.r[1] = ((t0 >>> 13) | (t1 << 3)) & 0x1fff
-  t2 = (key[4] & 0xff) | ((key[5] & 0xff) << 8)
-  this.r[2] = ((t1 >>> 10) | (t2 << 6)) & 0x1f03
-  t3 = (key[6] & 0xff) | ((key[7] & 0xff) << 8)
-  this.r[3] = ((t2 >>> 7) | (t3 << 9)) & 0x1fff
-  t4 = (key[8] & 0xff) | ((key[9] & 0xff) << 8)
-  this.r[4] = ((t3 >>> 4) | (t4 << 12)) & 0x00ff
-  this.r[5] = (t4 >>> 1) & 0x1ffe
-  t5 = (key[10] & 0xff) | ((key[11] & 0xff) << 8)
-  this.r[6] = ((t4 >>> 14) | (t5 << 2)) & 0x1fff
-  t6 = (key[12] & 0xff) | ((key[13] & 0xff) << 8)
-  this.r[7] = ((t5 >>> 11) | (t6 << 5)) & 0x1f81
-  t7 = (key[14] & 0xff) | ((key[15] & 0xff) << 8)
-  this.r[8] = ((t6 >>> 8) | (t7 << 8)) & 0x1fff
-  this.r[9] = (t7 >>> 5) & 0x007f
-
-  this.pad[0] = (key[16] & 0xff) | ((key[17] & 0xff) << 8)
-  this.pad[1] = (key[18] & 0xff) | ((key[19] & 0xff) << 8)
-  this.pad[2] = (key[20] & 0xff) | ((key[21] & 0xff) << 8)
-  this.pad[3] = (key[22] & 0xff) | ((key[23] & 0xff) << 8)
-  this.pad[4] = (key[24] & 0xff) | ((key[25] & 0xff) << 8)
-  this.pad[5] = (key[26] & 0xff) | ((key[27] & 0xff) << 8)
-  this.pad[6] = (key[28] & 0xff) | ((key[29] & 0xff) << 8)
-  this.pad[7] = (key[30] & 0xff) | ((key[31] & 0xff) << 8)
-}
-
-Poly1305.prototype.blocks = function (m, mpos, bytes) {
-  let hibit = this.fin ? 0 : 1 << 11
-  let t0, t1, t2, t3, t4, t5, t6, t7, c
-  let d0, d1, d2, d3, d4, d5, d6, d7, d8, d9
-
-  let h0 = this.h[0]
-  let h1 = this.h[1]
-  let h2 = this.h[2]
-  let h3 = this.h[3]
-  let h4 = this.h[4]
-  let h5 = this.h[5]
-  let h6 = this.h[6]
-  let h7 = this.h[7]
-  let h8 = this.h[8]
-  let h9 = this.h[9]
-
-  const r0 = this.r[0]
-  const r1 = this.r[1]
-  const r2 = this.r[2]
-  const r3 = this.r[3]
-  const r4 = this.r[4]
-  const r5 = this.r[5]
-  const r6 = this.r[6]
-  const r7 = this.r[7]
-  const r8 = this.r[8]
-  const r9 = this.r[9]
-
-  while (bytes >= 16) {
-    t0 = (m[mpos + 0] & 0xff) | ((m[mpos + 1] & 0xff) << 8)
-    h0 += t0 & 0x1fff
-    t1 = (m[mpos + 2] & 0xff) | ((m[mpos + 3] & 0xff) << 8)
-    h1 += ((t0 >>> 13) | (t1 << 3)) & 0x1fff
-    t2 = (m[mpos + 4] & 0xff) | ((m[mpos + 5] & 0xff) << 8)
-    h2 += ((t1 >>> 10) | (t2 << 6)) & 0x1fff
-    t3 = (m[mpos + 6] & 0xff) | ((m[mpos + 7] & 0xff) << 8)
-    h3 += ((t2 >>> 7) | (t3 << 9)) & 0x1fff
-    t4 = (m[mpos + 8] & 0xff) | ((m[mpos + 9] & 0xff) << 8)
-    h4 += ((t3 >>> 4) | (t4 << 12)) & 0x1fff
-    h5 += (t4 >>> 1) & 0x1fff
-    t5 = (m[mpos + 10] & 0xff) | ((m[mpos + 11] & 0xff) << 8)
-    h6 += ((t4 >>> 14) | (t5 << 2)) & 0x1fff
-    t6 = (m[mpos + 12] & 0xff) | ((m[mpos + 13] & 0xff) << 8)
-    h7 += ((t5 >>> 11) | (t6 << 5)) & 0x1fff
-    t7 = (m[mpos + 14] & 0xff) | ((m[mpos + 15] & 0xff) << 8)
-    h8 += ((t6 >>> 8) | (t7 << 8)) & 0x1fff
-    h9 += (t7 >>> 5) | hibit
-
-    c = 0
-
-    d0 = c
-    d0 += h0 * r0
-    d0 += h1 * (5 * r9)
-    d0 += h2 * (5 * r8)
-    d0 += h3 * (5 * r7)
-    d0 += h4 * (5 * r6)
-    c = d0 >>> 13
-    d0 &= 0x1fff
-    d0 += h5 * (5 * r5)
-    d0 += h6 * (5 * r4)
-    d0 += h7 * (5 * r3)
-    d0 += h8 * (5 * r2)
-    d0 += h9 * (5 * r1)
-    c += d0 >>> 13
-    d0 &= 0x1fff
-
-    d1 = c
-    d1 += h0 * r1
-    d1 += h1 * r0
-    d1 += h2 * (5 * r9)
-    d1 += h3 * (5 * r8)
-    d1 += h4 * (5 * r7)
-    c = d1 >>> 13
-    d1 &= 0x1fff
-    d1 += h5 * (5 * r6)
-    d1 += h6 * (5 * r5)
-    d1 += h7 * (5 * r4)
-    d1 += h8 * (5 * r3)
-    d1 += h9 * (5 * r2)
-    c += d1 >>> 13
-    d1 &= 0x1fff
-
-    d2 = c
-    d2 += h0 * r2
-    d2 += h1 * r1
-    d2 += h2 * r0
-    d2 += h3 * (5 * r9)
-    d2 += h4 * (5 * r8)
-    c = d2 >>> 13
-    d2 &= 0x1fff
-    d2 += h5 * (5 * r7)
-    d2 += h6 * (5 * r6)
-    d2 += h7 * (5 * r5)
-    d2 += h8 * (5 * r4)
-    d2 += h9 * (5 * r3)
-    c += d2 >>> 13
-    d2 &= 0x1fff
-
-    d3 = c
-    d3 += h0 * r3
-    d3 += h1 * r2
-    d3 += h2 * r1
-    d3 += h3 * r0
-    d3 += h4 * (5 * r9)
-    c = d3 >>> 13
-    d3 &= 0x1fff
-    d3 += h5 * (5 * r8)
-    d3 += h6 * (5 * r7)
-    d3 += h7 * (5 * r6)
-    d3 += h8 * (5 * r5)
-    d3 += h9 * (5 * r4)
-    c += d3 >>> 13
-    d3 &= 0x1fff
-
-    d4 = c
-    d4 += h0 * r4
-    d4 += h1 * r3
-    d4 += h2 * r2
-    d4 += h3 * r1
-    d4 += h4 * r0
-    c = d4 >>> 13
-    d4 &= 0x1fff
-    d4 += h5 * (5 * r9)
-    d4 += h6 * (5 * r8)
-    d4 += h7 * (5 * r7)
-    d4 += h8 * (5 * r6)
-    d4 += h9 * (5 * r5)
-    c += d4 >>> 13
-    d4 &= 0x1fff
-
-    d5 = c
-    d5 += h0 * r5
-    d5 += h1 * r4
-    d5 += h2 * r3
-    d5 += h3 * r2
-    d5 += h4 * r1
-    c = d5 >>> 13
-    d5 &= 0x1fff
-    d5 += h5 * r0
-    d5 += h6 * (5 * r9)
-    d5 += h7 * (5 * r8)
-    d5 += h8 * (5 * r7)
-    d5 += h9 * (5 * r6)
-    c += d5 >>> 13
-    d5 &= 0x1fff
-
-    d6 = c
-    d6 += h0 * r6
-    d6 += h1 * r5
-    d6 += h2 * r4
-    d6 += h3 * r3
-    d6 += h4 * r2
-    c = d6 >>> 13
-    d6 &= 0x1fff
-    d6 += h5 * r1
-    d6 += h6 * r0
-    d6 += h7 * (5 * r9)
-    d6 += h8 * (5 * r8)
-    d6 += h9 * (5 * r7)
-    c += d6 >>> 13
-    d6 &= 0x1fff
-
-    d7 = c
-    d7 += h0 * r7
-    d7 += h1 * r6
-    d7 += h2 * r5
-    d7 += h3 * r4
-    d7 += h4 * r3
-    c = d7 >>> 13
-    d7 &= 0x1fff
-    d7 += h5 * r2
-    d7 += h6 * r1
-    d7 += h7 * r0
-    d7 += h8 * (5 * r9)
-    d7 += h9 * (5 * r8)
-    c += d7 >>> 13
-    d7 &= 0x1fff
-
-    d8 = c
-    d8 += h0 * r8
-    d8 += h1 * r7
-    d8 += h2 * r6
-    d8 += h3 * r5
-    d8 += h4 * r4
-    c = d8 >>> 13
-    d8 &= 0x1fff
-    d8 += h5 * r3
-    d8 += h6 * r2
-    d8 += h7 * r1
-    d8 += h8 * r0
-    d8 += h9 * (5 * r9)
-    c += d8 >>> 13
-    d8 &= 0x1fff
-
-    d9 = c
-    d9 += h0 * r9
-    d9 += h1 * r8
-    d9 += h2 * r7
-    d9 += h3 * r6
-    d9 += h4 * r5
-    c = d9 >>> 13
-    d9 &= 0x1fff
-    d9 += h5 * r4
-    d9 += h6 * r3
-    d9 += h7 * r2
-    d9 += h8 * r1
-    d9 += h9 * r0
-    c += d9 >>> 13
-    d9 &= 0x1fff
-
-    c = ((c << 2) + c) | 0
-    c = (c + d0) | 0
-    d0 = c & 0x1fff
-    c = c >>> 13
-    d1 += c
-
-    h0 = d0
-    h1 = d1
-    h2 = d2
-    h3 = d3
-    h4 = d4
-    h5 = d5
-    h6 = d6
-    h7 = d7
-    h8 = d8
-    h9 = d9
-
-    mpos += 16
-    bytes -= 16
-  }
-  this.h[0] = h0
-  this.h[1] = h1
-  this.h[2] = h2
-  this.h[3] = h3
-  this.h[4] = h4
-  this.h[5] = h5
-  this.h[6] = h6
-  this.h[7] = h7
-  this.h[8] = h8
-  this.h[9] = h9
-}
-
-Poly1305.prototype.finish = function (mac, macpos) {
-  let g = new Uint16Array(10)
-  let c, mask, f, i
-
-  if (this.leftover) {
-    i = this.leftover
-    this.buffer[i++] = 1
-    for (; i < 16; i++) this.buffer[i] = 0
-    this.fin = 1
-    this.blocks(this.buffer, 0, 16)
-  }
-
-  c = this.h[1] >>> 13
-  this.h[1] &= 0x1fff
-  for (i = 2; i < 10; i++) {
-    this.h[i] += c
-    c = this.h[i] >>> 13
-    this.h[i] &= 0x1fff
-  }
-  this.h[0] += c * 5
-  c = this.h[0] >>> 13
-  this.h[0] &= 0x1fff
-  this.h[1] += c
-  c = this.h[1] >>> 13
-  this.h[1] &= 0x1fff
-  this.h[2] += c
-
-  g[0] = this.h[0] + 5
-  c = g[0] >>> 13
-  g[0] &= 0x1fff
-  for (i = 1; i < 10; i++) {
-    g[i] = this.h[i] + c
-    c = g[i] >>> 13
-    g[i] &= 0x1fff
-  }
-  g[9] -= 1 << 13
-
-  mask = (c ^ 1) - 1
-  for (i = 0; i < 10; i++) g[i] &= mask
-  mask = ~mask
-  for (i = 0; i < 10; i++) this.h[i] = (this.h[i] & mask) | g[i]
-
-  this.h[0] = (this.h[0] | (this.h[1] << 13)) & 0xffff
-  this.h[1] = ((this.h[1] >>> 3) | (this.h[2] << 10)) & 0xffff
-  this.h[2] = ((this.h[2] >>> 6) | (this.h[3] << 7)) & 0xffff
-  this.h[3] = ((this.h[3] >>> 9) | (this.h[4] << 4)) & 0xffff
-  this.h[4] =
-    ((this.h[4] >>> 12) | (this.h[5] << 1) | (this.h[6] << 14)) & 0xffff
-  this.h[5] = ((this.h[6] >>> 2) | (this.h[7] << 11)) & 0xffff
-  this.h[6] = ((this.h[7] >>> 5) | (this.h[8] << 8)) & 0xffff
-  this.h[7] = ((this.h[8] >>> 8) | (this.h[9] << 5)) & 0xffff
-
-  f = this.h[0] + this.pad[0]
-  this.h[0] = f & 0xffff
-  for (i = 1; i < 8; i++) {
-    f = (((this.h[i] + this.pad[i]) | 0) + (f >>> 16)) | 0
-    this.h[i] = f & 0xffff
-  }
-
-  mac[macpos + 0] = (this.h[0] >>> 0) & 0xff
-  mac[macpos + 1] = (this.h[0] >>> 8) & 0xff
-  mac[macpos + 2] = (this.h[1] >>> 0) & 0xff
-  mac[macpos + 3] = (this.h[1] >>> 8) & 0xff
-  mac[macpos + 4] = (this.h[2] >>> 0) & 0xff
-  mac[macpos + 5] = (this.h[2] >>> 8) & 0xff
-  mac[macpos + 6] = (this.h[3] >>> 0) & 0xff
-  mac[macpos + 7] = (this.h[3] >>> 8) & 0xff
-  mac[macpos + 8] = (this.h[4] >>> 0) & 0xff
-  mac[macpos + 9] = (this.h[4] >>> 8) & 0xff
-  mac[macpos + 10] = (this.h[5] >>> 0) & 0xff
-  mac[macpos + 11] = (this.h[5] >>> 8) & 0xff
-  mac[macpos + 12] = (this.h[6] >>> 0) & 0xff
-  mac[macpos + 13] = (this.h[6] >>> 8) & 0xff
-  mac[macpos + 14] = (this.h[7] >>> 0) & 0xff
-  mac[macpos + 15] = (this.h[7] >>> 8) & 0xff
-}
-
-Poly1305.prototype.update = function (m, mpos, bytes) {
-  let i, want
-
-  if (this.leftover) {
-    want = 16 - this.leftover
-    if (want > bytes) want = bytes
-    for (i = 0; i < want; i++) this.buffer[this.leftover + i] = m[mpos + i]
-    bytes -= want
-    mpos += want
-    this.leftover += want
-    if (this.leftover < 16) return
-    this.blocks(this.buffer, 0, 16)
-    this.leftover = 0
-  }
-
-  if (bytes >= 16) {
-    want = bytes - bytes % 16
-    this.blocks(m, mpos, want)
-    mpos += want
-    bytes -= want
-  }
-
-  if (bytes) {
-    for (i = 0; i < bytes; i++) this.buffer[this.leftover + i] = m[mpos + i]
-    this.leftover += bytes
-  }
-}
-
-function set25519 (r, a) {
+function set25519 (r: Float64Array, a: Float64Array) {
   let i
   for (i = 0; i < 16; i++) r[i] = a[i] | 0
 }
 
-function car25519 (o) {
+function car25519 (o: Float64Array) {
   let v
   let c = 1
   for (let i = 0; i < 16; i++) {
@@ -524,7 +135,7 @@ function car25519 (o) {
   o[0] += c - 1 + 37 * (c - 1)
 }
 
-function sel25519 (p, q, b) {
+function sel25519 (p: Float64Array, q: Float64Array, b: number) {
   let t
   const c = ~(b - 1)
   for (let i = 0; i < 16; i++) {
@@ -534,7 +145,7 @@ function sel25519 (p, q, b) {
   }
 }
 
-function pack25519 (o, n) {
+function pack25519 (o: Uint8Array, n: Float64Array) {
   let b
   const m = gf()
   const t = gf()
@@ -559,7 +170,7 @@ function pack25519 (o, n) {
   }
 }
 
-function neq25519 (a, b) {
+function neq25519 (a: Float64Array, b: Float64Array) {
   const c = new Uint8Array(32)
   const d = new Uint8Array(32)
   pack25519(c, a)
@@ -567,27 +178,27 @@ function neq25519 (a, b) {
   return cryptoVerify32(c, 0, d, 0)
 }
 
-function par25519 (a) {
+function par25519 (a: Float64Array) {
   let d = new Uint8Array(32)
   pack25519(d, a)
   return d[0] & 1
 }
 
-function unpack25519 (o, n) {
+function unpack25519 (o: Float64Array, n: Uint8Array) {
   let i
   for (i = 0; i < 16; i++) o[i] = n[2 * i] + (n[2 * i + 1] << 8)
   o[15] &= 0x7fff
 }
 
-function A (o, a, b) {
+function A (o: Float64Array, a: Float64Array, b: Float64Array) {
   for (let i = 0; i < 16; i++) o[i] = a[i] + b[i]
 }
 
-function Z (o, a, b) {
+function Z (o: Float64Array, a: Float64Array, b: Float64Array) {
   for (let i = 0; i < 16; i++) o[i] = a[i] - b[i]
 }
 
-function M (o, a, b) {
+function M (o: Float64Array, a: Float64Array, b: Float64Array) {
   let v
   let c
   let t0 = 0
@@ -1050,11 +661,11 @@ function M (o, a, b) {
   o[15] = t15
 }
 
-function S (o, a) {
+function S (o: Float64Array, a: Float64Array) {
   M(o, a, a)
 }
 
-function inv25519 (o, i) {
+function inv25519 (o: Float64Array, i: Float64Array) {
   let c = gf()
   let a
   for (a = 0; a < 16; a++) c[a] = i[a]
@@ -1065,7 +676,7 @@ function inv25519 (o, i) {
   for (a = 0; a < 16; a++) o[a] = c[a]
 }
 
-function pow2523 (o, i) {
+function pow2523 (o: Float64Array, i: Float64Array) {
   let c = gf()
   let a
   for (a = 0; a < 16; a++) c[a] = i[a]
@@ -1076,7 +687,7 @@ function pow2523 (o, i) {
   for (a = 0; a < 16; a++) o[a] = c[a]
 }
 
-function cryptoHash (out, m, n) {
+function cryptoHash (out: Uint8Array, m: Uint8Array, n: number) {
   const input = new Uint8Array(n)
   for (let i = 0; i < n; ++i) {
     input[i] = m[i]
@@ -1088,7 +699,7 @@ function cryptoHash (out, m, n) {
   return 0
 }
 
-function add (p, q) {
+function add (p: Float64Array[], q: Float64Array[]) {
   const a = gf()
   const b = gf()
   const c = gf()
@@ -1120,14 +731,14 @@ function add (p, q) {
   M(p[3], e, h)
 }
 
-function cswap (p, q, b) {
+function cswap (p: Float64Array[], q: Float64Array[], b: number) {
   let i
   for (i = 0; i < 4; i++) {
     sel25519(p[i], q[i], b)
   }
 }
 
-function pack (r, p) {
+function pack (r: Uint8Array, p: Float64Array[]) {
   const tx = gf()
   const ty = gf()
   const zi = gf()
@@ -1138,7 +749,7 @@ function pack (r, p) {
   r[31] ^= par25519(tx) << 7
 }
 
-function scalarmult (p, q, s) {
+function scalarmult (p: Float64Array[], q: Float64Array[], s: Uint8Array) {
   let b, i
   set25519(p[0], gf0)
   set25519(p[1], gf1)
@@ -1153,7 +764,7 @@ function scalarmult (p, q, s) {
   }
 }
 
-function scalarbase (p, s) {
+function scalarbase (p: Float64Array[], s: Uint8Array) {
   let q = [gf(), gf(), gf(), gf()]
   set25519(q[0], X)
   set25519(q[1], Y)
@@ -1197,7 +808,7 @@ let L = new Float64Array([
   0x10
 ])
 
-function modL (r, x) {
+function modL (r: Uint8Array, x: Float64Array) {
   let carry, i, j, k
   for (i = 63; i >= 32; --i) {
     carry = 0
@@ -1222,7 +833,7 @@ function modL (r, x) {
   }
 }
 
-function reduce (r) {
+function reduce (r: Uint8Array) {
   const x = new Float64Array(64)
   for (let i = 0; i < 64; i++) x[i] = r[i]
   for (let i = 0; i < 64; i++) r[i] = 0
@@ -1230,7 +841,7 @@ function reduce (r) {
 }
 
 // Note: difference from C - smlen returned, not passed as argument.
-function cryptoSign (sm, m, n, sk) {
+function cryptoSign (sm: Uint8Array, m: Uint8Array, n: number, sk: Uint8Array) {
   const d = new Uint8Array(64)
   const h = new Uint8Array(64)
   const r = new Uint8Array(64)
@@ -1271,7 +882,7 @@ function cryptoSign (sm, m, n, sk) {
   return smlen
 }
 
-function unpackneg (r, p) {
+function unpackneg (r: Float64Array[], p: Uint8Array) {
   const t = gf()
   const chk = gf()
   const num = gf()
@@ -1313,7 +924,12 @@ function unpackneg (r, p) {
   return 0
 }
 
-function cryptoSignOpen (m, sm, n, pk) {
+function cryptoSignOpen (
+  m: Uint8Array,
+  sm: Uint8Array,
+  n: number,
+  pk: Uint8Array
+) {
   let i, mlen
   const t = new Uint8Array(32)
   const h = new Uint8Array(64)
@@ -1353,7 +969,7 @@ const CRYPTO_HASH_BYTES = 64
 
 /* High-level API */
 
-function checkArrayTypes () {
+function checkArrayTypes (..._params: Uint8Array[]) {
   for (let i = 0; i < arguments.length; i++) {
     if (!(arguments[i] instanceof Uint8Array)) {
       throw new TypeError('unexpected type, use Uint8Array')
@@ -1361,7 +977,7 @@ function checkArrayTypes () {
   }
 }
 
-function naclSign (msg, secretKey) {
+function naclSign (msg: Uint8Array, secretKey: Uint8Array) {
   checkArrayTypes(msg, secretKey)
   if (secretKey.length !== CRYPTO_SIGN_SECRETKEYBYTES) {
     throw new Error('bad secret key size')
@@ -1371,7 +987,8 @@ function naclSign (msg, secretKey) {
   return signedMsg
 }
 
-export function derivePublicFromSecret (sk) {
+/** @hidden */
+export function derivePublicFromSecret (sk: Uint8Array) {
   let d = new Uint8Array(64)
   let p = [gf(), gf(), gf(), gf()]
   let pk = new Uint8Array(32)
@@ -1388,14 +1005,20 @@ export function derivePublicFromSecret (sk) {
   return pk
 }
 
-export function signDetached (msg, secretKey) {
+/** @hidden */
+export function signDetached (msg: Uint8Array, secretKey: Uint8Array) {
   let signedMsg = naclSign(msg, secretKey)
   let sig = new Uint8Array(CRYPTO_SIGN_BYTES)
   for (let i = 0; i < sig.length; i++) sig[i] = signedMsg[i]
   return sig
 }
 
-export function verifyDetached (msg, sig, publicKey) {
+/** @hidden */
+export function verifyDetached (
+  msg: Uint8Array,
+  sig: Uint8Array,
+  publicKey: Uint8Array
+) {
   checkArrayTypes(msg, sig, publicKey)
   if (sig.length !== CRYPTO_SIGN_BYTES) throw new Error('bad signature size')
   if (publicKey.length !== CRYPTO_SIGN_PUBLICKEYBYTES) {

@@ -18,14 +18,18 @@ const INVALID_WORK = {
 
 describe('validation', () => {
   test('validates correct work', () => {
-    // TODO: check why state blocks check fails
-    // expect.assertions(VALID_BLOCKS.length)
-    // for (let block of VALID_BLOCKS) {
-    //   expect(nano.validateWork(block.block.hash, block.block.data.work)).toBe(
-    //     true
-    //   )
-    // }
-    expect(nano.validateWork(VALID_WORK.hash, VALID_WORK.work)).toBe(true)
+    expect.assertions(VALID_BLOCKS.length)
+    for (let block of VALID_BLOCKS) {
+      let hash = block.block.data.previous
+      // if it's an open block
+      if (
+        hash ===
+        '0000000000000000000000000000000000000000000000000000000000000000'
+      ) {
+        hash = nano.derivePublicKey(block.block.data.account)
+      }
+      expect(nano.validateWork(hash, block.block.data.work)).toBe(true)
+    }
   })
 
   test('does not validate incorrect work', () => {

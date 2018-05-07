@@ -8,11 +8,13 @@ import nanoBase32 from 'nano-base32'
 
 import { compareArrays } from './utils'
 
-export function checkString (candidate) {
+/** @hidden */
+export function checkString (candidate: string) {
   return typeof candidate === 'string'
 }
 
-export function checkNumber (number) {
+/** @hidden */
+export function checkNumber (number: string) {
   if (!checkString(number)) return false
   if (number.startsWith('.') || number.endsWith('.')) return false
 
@@ -30,10 +32,10 @@ export function checkNumber (number) {
  * Check if the given balance is valid.
  * Does not require initialization.
  *
- * @param {string} balance - The balance to check
- * @return {boolean} Valid
+ * @param balance - The balance to check
+ * @returns Valid
  */
-export function checkBalance (balance) {
+export function checkBalance (balance: string) {
   // TODO(breaking): checkAmount instead
   if (!checkString(balance) || balance.length > 39) return false
   for (let char of balance) {
@@ -47,10 +49,10 @@ export function checkBalance (balance) {
  * Check if the given seed is valid.
  * Does not require initialization.
  *
- * @param {string} seed - The seed to check
- * @return {boolean} Valid
+ * @param seed - The seed to check
+ * @returns Valid
  */
-export function checkSeed (seed) {
+export function checkSeed (seed: string) {
   return checkString(seed) && /[0-9a-fA-F]{64}/.test(seed)
 }
 
@@ -58,10 +60,10 @@ export function checkSeed (seed) {
  * Check if the given hash is valid.
  * Does not require initialization.
  *
- * @param {string} hash - The hash to check
- * @return {boolean} Valid
+ * @param hash - The hash to check
+ * @returns Valid
  */
-export function checkHash (hash) {
+export function checkHash (hash: string) {
   return checkSeed(hash)
 }
 
@@ -69,10 +71,10 @@ export function checkHash (hash) {
  * Check if the given public or secret key is valid.
  * Does not require initialization.
  *
- * @param {string} key - The key to check
- * @return {boolean} Valid
+ * @param key - The key to check
+ * @returns Valid
  */
-export function checkKey (key) {
+export function checkKey (key: string) {
   return checkSeed(key)
 }
 
@@ -80,10 +82,10 @@ export function checkKey (key) {
  * Check if the given address is valid.
  * Does not require initialization.
  *
- * @param {string} address - The address to check
- * @return {boolean} Valid
+ * @param address - The address to check
+ * @returns Valid
  */
-export function checkAddress (address) {
+export function checkAddress (address: string) {
   if (!checkString(address) || !/xrb_[13][0-9a-km-uw-z]{59}/.test(address)) {
     return false
   }
@@ -100,10 +102,10 @@ export function checkAddress (address) {
  * Check if the given work is valid.
  * Does not require initialization.
  *
- * @param {string} work - The work to check
- * @return {boolean} Valid
+ * @param work - The work to check
+ * @returns Valid
  */
-export function checkWork (work) {
+export function checkWork (work: string) {
   return checkString(work) && /[0-9a-fA-F]{16}/.test(work)
 }
 
@@ -111,9 +113,9 @@ export function checkWork (work) {
  * Check if the given signature is valid.
  * Does not require initialization.
  *
- * @param {string} signature - The signature to check
- * @return {boolean} Valid
+ * @param signature - The signature to check
+ * @returns Valid
  */
-export function checkSignature (signature) {
+export function checkSignature (signature: string) {
   return checkString(signature) && /[0-9a-fA-F]{128}/.test(signature)
 }

@@ -10,24 +10,29 @@ import { checkWork, checkHash } from './check'
 
 import { hexToByteArray, byteArrayToHex } from './utils'
 
-import Native from '../native.tmp'
+import Native from '../native'
 
 const WORK_THRESHOLD = new BigNumber('0xffffffc000000000')
 
-export const C_BINDING = {
-  instance_: null,
-  work: null
-}
+const C_BINDING: {
+  instance_: any
+  work:
+  | null
+  | ((blockHash: string, workerIndex: number, workerCount: number) => string)
+  } = {
+    instance_: null,
+    work: null
+  }
 
 /**
  * Initialize the library. This basically loads the WebAssembly used by `work`.
  *
- * @return {Promise<void>} Promise
+ * @returns Promise
  */
-export function init () {
+export function init (): Promise<void> {
   return new Promise((resolve, reject) => {
     try {
-      Native().then(native => {
+      Native().then((native: any) => {
         C_BINDING.instance_ = native
         C_BINDING.work = native.cwrap('emscripten_work', 'string', [
           'string',
@@ -46,7 +51,7 @@ export function init () {
 /**
  * Get whether or not `work` is ready to be used ({@link #init} has been called).
  *
- * @return {boolean} Ready
+ * @returns Ready
  */
 export function isReady () {
   return C_BINDING.instance_ !== null
@@ -56,12 +61,16 @@ export function isReady () {
  * Find a work value that meets the difficulty for the given hash.
  * Requires initialization.
  *
- * @param {string} blockHash - The hash to find a work for
- * @param {number} [workerIndex=0] - The current worker index, starting at 0
- * @param {number} [workerCount=1] - The count of worker
- * @return {string} Work, in hexadecimal format
+ * @param blockHash - The hash to find a work for
+ * @param workerIndex - The current worker index, starting at 0
+ * @param  workerCount - The count of worker
+ * @returns Work, in hexadecimal format
  */
-export function work (blockHash, workerIndex = 0, workerCount = 1) {
+export function work (
+  blockHash: string,
+  workerIndex: number = 0,
+  workerCount: number = 1
+) {
   if (!isReady()) throw new Error('NanoCurrency is not initialized')
   if (!checkHash(blockHash)) throw new Error('Hash is not valid')
   if (
@@ -74,7 +83,7 @@ export function work (blockHash, workerIndex = 0, workerCount = 1) {
     throw new Error('Worker parameters are not valid')
   }
 
-  const work = C_BINDING.work(blockHash, workerIndex, workerCount)
+  const work = C_BINDING.work!(blockHash, workerIndex, workerCount)
 
   return work !== '0000000000000000' ? work : null
 }
@@ -83,11 +92,11 @@ export function work (blockHash, workerIndex = 0, workerCount = 1) {
  * Validate whether or not the work value meets the difficulty for the given hash.
  * Does not require initialization.
  *
- * @param {string} blockHash - The hash to validate the work against
- * @param {string} work - The work to validate
- * @return {boolean} Valid
+ * @param blockHash - The hash to validate the work against
+ * @param work - The work to validate
+ * @returns Valid
  */
-export function validateWork (blockHash, work) {
+export function validateWork (blockHash: string, work: string) {
   if (!checkHash(blockHash)) throw new Error('Hash is not valid')
   if (!checkWork(work)) throw new Error('Work is not valid')
 

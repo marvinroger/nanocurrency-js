@@ -9,7 +9,7 @@ import { checkNumber, checkBalance } from './check'
 
 const TunedBigNumber = BigNumber.clone({ EXPONENTIAL_AT: 1e9 })
 
-const ZEROES = {
+const ZEROES: { [index: string]: number } = {
   hex: 0,
   raw: 0,
   nano: 24,
@@ -24,19 +24,19 @@ const ZEROES = {
  * Convert a value from one Nano unit to another.
  * Does not require initialization.
  *
- * @param {string} value - The value to convert
- * @param {Object} units - Units
- * @param {string} [units.from=Nano] - The unit to convert the value from. One of 'hex', 'raw', 'nano', 'knano', 'Nano', 'NANO', 'KNano', 'MNano'
- * @param {string} [units.to=raw] - The unit to convert the value to. Same units as units.from
- * @return {string} Converted number
+ * @param value - The value to convert
+ * @param units - Units
+ * @param units.from - The unit to convert the value from. One of 'hex', 'raw', 'nano', 'knano', 'Nano', 'NANO', 'KNano', 'MNano'
+ * @param units.to - The unit to convert the value to. Same units as units.from
+ * @returns Converted number
  */
-export function convert (value, { from = 'Nano', to = 'raw' } = {}) {
+export function convert (value: string, { from = 'Nano', to = 'raw' } = {}) {
   if ((from === 'hex' && !checkBalance(value)) || !checkNumber(value)) {
     throw new Error('Value is not valid')
   }
 
-  const fromZeroes = ZEROES[from]
-  const toZeroes = ZEROES[to]
+  const fromZeroes: number | undefined = ZEROES[from]
+  const toZeroes: number | undefined = ZEROES[to]
 
   if (typeof fromZeroes === 'undefined' || typeof toZeroes === 'undefined') {
     throw new Error('From or to is not valid')

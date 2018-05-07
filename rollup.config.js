@@ -1,5 +1,4 @@
-// import wasm from 'rollup-plugin-wasm'
-import buble from 'rollup-plugin-buble'
+import typescript from 'rollup-plugin-typescript2'
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import uglify from 'rollup-plugin-uglify'
@@ -20,31 +19,29 @@ const globals = { fs: 'fs', path: 'path' }
 
 const config = [
   {
-    input: 'src/index.js',
+    input: 'src/index.ts',
     external: ['fs', 'path'],
     output: [
-      { name: 'NanoCurrency', file: 'dist/nanocurrency.umd.js', format: 'umd', globals },
+      {
+        name: 'NanoCurrency',
+        file: 'dist/nanocurrency.umd.js',
+        format: 'umd',
+        globals
+      },
       { file: pkg.main, format: 'cjs', globals },
       { file: pkg.module, format: 'es', globals }
     ],
-    plugins: [
-      // wasm(),
-      resolve(),
-      commonjs(),
-      buble({
-        transforms: {
-          dangerousForOf: true
-        }
-      })
-    ]
+    plugins: [resolve(), commonjs(), typescript()]
   }
 ]
 
 if (ENV === 'production') {
   config[0].plugins.push(uglify())
-  config[0].plugins.push(license({
-    banner: licenseBanner
-  }))
+  config[0].plugins.push(
+    license({
+      banner: licenseBanner
+    })
+  )
 }
 
 export default config

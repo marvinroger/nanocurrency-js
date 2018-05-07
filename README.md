@@ -7,11 +7,11 @@
 
 ---
 
-A toolkit for the Nano cryptocurrency, allowing you to derive keys, generate seeds, hashes, signatures, proofs of work and blocks.
+A [battle-tested](__tests__) toolkit for the Nano cryptocurrency, allowing you to derive keys, generate seeds, hashes, signatures, proofs of work and state and legacy blocks.
 
 ![Code showcase](showcase.png)
 
-The documentation is available in the [DOCUMENTATION.md](DOCUMENTATION.md) file.
+The documentation is available locally in [docs/](docs/) or online at [https://marvinroger.github.io/nanocurrency-js](https://marvinroger.github.io/nanocurrency-js) file.
 
 ---
 

@@ -14,9 +14,9 @@ import { getRandomBytes, hexToByteArray, byteArrayToHex } from './utils'
  * Generate a cryptographically secure seed.
  * Does not require initialization.
  *
- * @return {Promise<string>} Seed, in hexadecimal format
+ * @returns Promise fulfilled with seed, in hexadecimal format
  */
-export function generateSeed () {
+export function generateSeed (): Promise<string> {
   return new Promise((resolve, reject) => {
     getRandomBytes(32)
       .then(seed => {
@@ -34,11 +34,11 @@ export function generateSeed () {
  * Derive a secret key from a seed, given an index.
  * Does not require initialization.
  *
- * @param {string} seed - The seed to generate the secret key from, in hexadecimal format
- * @param {number} index - The index to generate the secret key from
- * @return {string} Secret key, in hexadecimal format
+ * @param seed - The seed to generate the secret key from, in hexadecimal format
+ * @param index - The index to generate the secret key from
+ * @returns Secret key, in hexadecimal format
  */
-export function deriveSecretKey (seed, index) {
+export function deriveSecretKey (seed: string, index: number) {
   if (!checkSeed(seed)) throw new Error('Seed is not valid')
   if (!Number.isInteger(index) || index < 0) {
     throw new Error('Index is not valid')
@@ -62,17 +62,17 @@ export function deriveSecretKey (seed, index) {
  * Derive a public key from a secret key.
  * Does not require initialization.
  *
- * @param {string} secretKeyOrAddress - The secret key or address to generate the public key from, in hexadecimal or address format
- * @return {string} Public key, in hexadecimal format
+ * @param secretKeyOrAddress - The secret key or address to generate the public key from, in hexadecimal or address format
+ * @returns Public key, in hexadecimal format
  */
-export function derivePublicKey (secretKeyOrAddress) {
+export function derivePublicKey (secretKeyOrAddress: string) {
   const isSecretKey = checkKey(secretKeyOrAddress)
   const isAddress = checkAddress(secretKeyOrAddress)
   if (!isSecretKey && !isAddress) {
     throw new Error('Secret key or address is not valid')
   }
 
-  let publicKeyBytes
+  let publicKeyBytes: Uint8Array
   if (isSecretKey) {
     const secretKeyBytes = hexToByteArray(secretKeyOrAddress)
     publicKeyBytes = derivePublicFromSecret(secretKeyBytes)
@@ -80,17 +80,17 @@ export function derivePublicKey (secretKeyOrAddress) {
     publicKeyBytes = nanoBase32.decode(secretKeyOrAddress.substr(4, 52))
   }
 
-  return byteArrayToHex(publicKeyBytes)
+  return byteArrayToHex(publicKeyBytes!)
 }
 
 /**
  * Derive address from a public key.
  * Does not require initialization.
  *
- * @param {string} publicKey - The public key to generate the address from, in hexadecimal format
- * @return {string} Address
+ * @param publicKey - The public key to generate the address from, in hexadecimal format
+ * @returns Address
  */
-export function deriveAddress (publicKey) {
+export function deriveAddress (publicKey: string) {
   if (!checkKey(publicKey)) throw new Error('Public key is not valid')
 
   const publicKeyBytes = hexToByteArray(publicKey)

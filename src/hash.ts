@@ -20,11 +20,11 @@ STATE_BLOCK_PREAMBLE_BYTES[31] = 6
  * Hash a receive block.
  * Does not require initialization.
  *
- * @param {string} previous - The hash of the previous block on the account chain, in hexadecimal format
- * @param {string} source - The hash of the send block that is being received, in hexadecimal format
- * @return {string} Hash, in hexadecimal format
+ * @param previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param source - The hash of the send block that is being received, in hexadecimal format
+ * @returns Hash, in hexadecimal format
  */
-export function hashReceiveBlock (previous, source) {
+export function hashReceiveBlock (previous: string, source: string) {
   if (!checkHash(previous)) throw new Error('Previous is not valid')
   if (!checkHash(source)) throw new Error('Source is not valid')
 
@@ -43,12 +43,16 @@ export function hashReceiveBlock (previous, source) {
  * Hash an open block.
  * Does not require initialization.
  *
- * @param {string} source - The hash of the send block that is being received, in hexadecimal format
- * @param {string} representative - The representative address
- * @param {string} account - The account address
- * @return {string} Hash, in hexadecimal format
+ * @param source - The hash of the send block that is being received, in hexadecimal format
+ * @param representative - The representative address
+ * @param account - The account address
+ * @returns Hash, in hexadecimal format
  */
-export function hashOpenBlock (source, representative, account) {
+export function hashOpenBlock (
+  source: string,
+  representative: string,
+  account: string
+) {
   if (!checkHash(source)) throw new Error('Source is not valid')
   if (!checkAddress(representative)) {
     throw new Error('Representative is not valid')
@@ -72,11 +76,11 @@ export function hashOpenBlock (source, representative, account) {
  * Hash a change block.
  * Does not require initialization.
  *
- * @param {string} previous - The hash of the previous block on the account chain, in hexadecimal format
- * @param {string} representative - The representative address
- * @return {string} Hash, in hexadecimal format
+ * @param previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param representative - The representative address
+ * @returns Hash, in hexadecimal format
  */
-export function hashChangeBlock (previous, representative) {
+export function hashChangeBlock (previous: string, representative: string) {
   if (!checkHash(previous)) throw new Error('Previous is not valid')
   if (!checkAddress(representative)) {
     throw new Error('Representative is not valid')
@@ -97,12 +101,16 @@ export function hashChangeBlock (previous, representative) {
  * Hash a send block.
  * Does not require initialization.
  *
- * @param {string} previous - The hash of the previous block on the account chain, in hexadecimal format
- * @param {string} destination - The destination address
- * @param {string} balance - The balance, in raw
- * @return {string} Hash, in hexadecimal format
+ * @param previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param destination - The destination address
+ * @param balance - The balance, in raw
+ * @returns Hash, in hexadecimal format
  */
-export function hashSendBlock (previous, destination, balance) {
+export function hashSendBlock (
+  previous: string,
+  destination: string,
+  balance: string
+) {
   if (!checkHash(previous)) throw new Error('Previous is not valid')
   if (!checkAddress(destination)) throw new Error('Destination is not valid')
   if (!checkBalance(balance)) throw new Error('Balance is not valid')
@@ -125,19 +133,19 @@ export function hashSendBlock (previous, destination, balance) {
  * Hash a state block.
  * Does not require initialization.
  *
- * @param {string} account - The account address
- * @param {string} previous - The hash of the previous block on the account chain, in hexadecimal format
- * @param {string} representative - The representative address
- * @param {string} balance - The balance, in raw
- * @param {string} link - The account or block hash meant as a link, in address or hexadecimal format
- * @return {string} Hash, in hexadecimal format
+ * @param account - The account address
+ * @param previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param representative - The representative address
+ * @param balance - The balance, in raw
+ * @param link - The account or block hash meant as a link, in address or hexadecimal format
+ * @returns Hash, in hexadecimal format
  */
 export function hashStateBlock (
-  account,
-  previous,
-  representative,
-  balance,
-  link
+  account: string,
+  previous: string,
+  representative: string,
+  balance: string,
+  link: string
 ) {
   if (!checkAddress(account)) throw new Error('Account is not valid')
   if (!checkHash(previous)) throw new Error('Previous is not valid')

@@ -8,7 +8,7 @@ const IS_NODE =
     typeof process !== 'undefined' ? process : 0
   ) === '[object process]'
 
-let fillRandom = null
+let fillRandom: (bytes: Uint8Array) => Promise<void>
 if (!IS_NODE) {
   fillRandom = bytes => {
     return new Promise(resolve => {
@@ -21,7 +21,8 @@ if (!IS_NODE) {
   fillRandom = promisify(require('crypto').randomFill)
 }
 
-export function getRandomBytes (count) {
+/** @hidden */
+export function getRandomBytes (count: number): Promise<Uint8Array> {
   return new Promise((resolve, reject) => {
     const bytes = new Uint8Array(count)
     fillRandom(bytes)
@@ -32,7 +33,8 @@ export function getRandomBytes (count) {
   })
 }
 
-export function byteArrayToHex (byteArray) {
+/** @hidden */
+export function byteArrayToHex (byteArray: Uint8Array) {
   if (!byteArray) {
     return ''
   }
@@ -47,7 +49,8 @@ export function byteArrayToHex (byteArray) {
   return hexStr.toUpperCase()
 }
 
-export function hexToByteArray (hex) {
+/** @hidden */
+export function hexToByteArray (hex: string) {
   if (!hex) {
     return new Uint8Array()
   }
@@ -60,7 +63,8 @@ export function hexToByteArray (hex) {
   return new Uint8Array(a)
 }
 
-export function compareArrays (array1, array2) {
+/** @hidden */
+export function compareArrays (array1: Uint8Array, array2: Uint8Array) {
   for (let i = 0; i < array1.length; i++) {
     if (array1[i] !== array2[i]) return false
   }

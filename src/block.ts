@@ -23,14 +23,21 @@ import { signBlock } from './signature'
  * Create an open block.
  * Does not require initialization.
  *
- * @param {string} secretKey - The secret key to create the block from, in hexadecimal format
- * @param {Object} data - Block data
- * @param {string} data.work - The PoW
- * @param {string} data.source - The hash of the send block that is being received, in hexadecimal format
- * @param {string} data.representative - The representative address
- * @return {Object} Block
+ * @param secretKey - The secret key to create the block from, in hexadecimal format
+ * @param data - Block data
+ * @param data.work - The PoW
+ * @param data.source - The hash of the send block that is being received, in hexadecimal format
+ * @param data.representative - The representative address
+ * @returns Block
  */
-export function createOpenBlock (secretKey, { work, source, representative }) {
+export function createOpenBlock (
+  secretKey: string,
+  {
+    work,
+    source,
+    representative
+  }: { work?: string | null; source: string; representative: string }
+) {
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
   if (!checkHash(source)) throw new Error('Source is not valid')
@@ -60,14 +67,21 @@ export function createOpenBlock (secretKey, { work, source, representative }) {
  * Create a receive block.
  * Does not require initialization.
  *
- * @param {string} secretKey - The secret key to create the block from, in hexadecimal format
- * @param {Object} data - Block data
- * @param {string} data.work - The PoW
- * @param {string} data.previous - The hash of the previous block on the account chain, in hexadecimal format
- * @param {string} data.source - The hash of the send block that is being received, in hexadecimal format
- * @return {Object} Block
+ * @param secretKey - The secret key to create the block from, in hexadecimal format
+ * @param data - Block data
+ * @param data.work - The PoW
+ * @param data.previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param data.source - The hash of the send block that is being received, in hexadecimal format
+ * @returns Block
  */
-export function createReceiveBlock (secretKey, { work, previous, source }) {
+export function createReceiveBlock (
+  secretKey: string,
+  {
+    work,
+    previous,
+    source
+  }: { work?: string | null; previous: string; source: string }
+) {
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
   if (!checkHash(previous)) throw new Error('Previous is not valid')
@@ -92,17 +106,27 @@ export function createReceiveBlock (secretKey, { work, previous, source }) {
  * Create a send block.
  * Does not require initialization.
  *
- * @param {string} secretKey - The secret key to create the block from, in hexadecimal format
- * @param {Object} data - Block data
- * @param {string} data.work - The PoW
- * @param {string} data.previous - The hash of the previous block on the account chain, in hexadecimal format
- * @param {string} data.destination - The destination address
- * @param {string} data.balance - The balance, in raw
- * @return {Object} Block
+ * @param secretKey - The secret key to create the block from, in hexadecimal format
+ * @param data - Block data
+ * @param data.work - The PoW
+ * @param data.previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param data.destination - The destination address
+ * @param data.balance - The balance, in raw
+ * @returns Block
  */
 export function createSendBlock (
-  secretKey,
-  { work, previous, destination, balance }
+  secretKey: string,
+  {
+    work,
+    previous,
+    destination,
+    balance
+  }: {
+  work?: string | null
+  previous: string
+  destination: string
+  balance: string
+  }
 ) {
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
@@ -131,16 +155,20 @@ export function createSendBlock (
  * Create a change block.
  * Does not require initialization.
  *
- * @param {string} secretKey - The secret key to create the block from, in hexadecimal format
- * @param {Object} data - Block data
- * @param {string} data.work - The PoW
- * @param {string} data.previous - The hash of the previous block on the account chain, in hexadecimal format
- * @param {string} data.representative - The representative address
- * @return {Object} Block
+ * @param secretKey - The secret key to create the block from, in hexadecimal format
+ * @param data - Block data
+ * @param data.work - The PoW
+ * @param data.previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param data.representative - The representative address
+ * @returns Block
  */
 export function createChangeBlock (
-  secretKey,
-  { work, previous, representative }
+  secretKey: string,
+  {
+    work,
+    previous,
+    representative
+  }: { work?: string | null; previous: string; representative: string }
 ) {
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
@@ -168,18 +196,30 @@ export function createChangeBlock (
  * Create a state block.
  * Does not require initialization.
  *
- * @param {string} secretKey - The secret key to create the block from, in hexadecimal format
- * @param {Object} data - Block data
- * @param {string} data.work - The PoW
- * @param {string} data.previous - The hash of the previous block on the account chain, in hexadecimal format
- * @param {string} data.representative - The representative address
- * @param {string} data.balance - The resulting balance
- * @param {string} data.link - The link block hash or the link address, in hexadecimal or address format
- * @return {Object} Block
+ * @param secretKey - The secret key to create the block from, in hexadecimal format
+ * @param data - Block data
+ * @param data.work - The PoW
+ * @param data.previous - The hash of the previous block on the account chain, in hexadecimal format
+ * @param data.representative - The representative address
+ * @param data.balance - The resulting balance
+ * @param data.link - The link block hash or the link address, in hexadecimal or address format
+ * @returns Block
  */
 export function createStateBlock (
-  secretKey,
-  { work, previous, representative, balance, link }
+  secretKey: string,
+  {
+    work,
+    previous,
+    representative,
+    balance,
+    link
+  }: {
+  work?: string | null
+  previous: string
+  representative: string
+  balance: string
+  link: string
+  }
 ) {
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set

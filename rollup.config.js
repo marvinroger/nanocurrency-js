@@ -31,7 +31,11 @@ const config = [
       { file: pkg.main, format: 'cjs', globals },
       { file: pkg.module, format: 'es', globals }
     ],
-    plugins: [resolve(), commonjs(), typescript()]
+    plugins: [
+      resolve(),
+      commonjs(),
+      typescript({ useTsconfigDeclarationDir: true })
+    ]
   }
 ]
 

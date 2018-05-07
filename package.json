@@ -66,7 +66,7 @@
   "license": "GPL-3.0",
   "main": "dist/nanocurrency.cjs.js",
   "module": "dist/nanocurrency.esm.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/marvinroger/nanocurrency-js.git"

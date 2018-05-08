@@ -117,7 +117,7 @@ export function hashSendBlock (
 
   const previousBytes = hexToByteArray(previous)
   const destinationBytes = hexToByteArray(derivePublicKey(destination))
-  const balanceHex = convert(balance, { from: 'raw', to: 'hex' })
+  const balanceHex = convert(balance, { from: NanoUnit.raw, to: NanoUnit.hex })
   const balanceBytes = hexToByteArray(balanceHex)
 
   const context = blake2bInit(32)
@@ -162,7 +162,7 @@ export function hashStateBlock (
   const accountBytes = hexToByteArray(derivePublicKey(account))
   const previousBytes = hexToByteArray(previous)
   const representativeBytes = hexToByteArray(derivePublicKey(representative))
-  const balanceHex = convert(balance, { from: 'raw', to: 'hex' })
+  const balanceHex = convert(balance, { from: NanoUnit.raw, to: NanoUnit.hex })
   const balanceBytes = hexToByteArray(balanceHex)
   let linkBytes
   if (linkIsAddress) {

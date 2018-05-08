@@ -20,23 +20,53 @@ const ZEROES: { [index: string]: number } = {
   MNano: 36
 }
 
+/** Nano unit. */
+export enum NanoUnit {
+  /** 10^0 raw in hexadecimal format */
+  hex = 'hex',
+  /** 10^0 raw */
+  raw = 'raw',
+  /** 10^24 raw */
+  nano = 'nano',
+  /** 10^27 raw */
+  knano = 'knano',
+  /** 10^30 raw */
+  Nano = 'Nano',
+  /** 10^30 raw */
+  NANO = 'NANO',
+  /** 10^33 raw */
+  KNano = 'KNano',
+  /** 10^36 raw */
+  MNano = 'MNano'
+}
+
+// TODO(breaking): require from and to parameters
+/** Convert parameters. */
+export interface ConvertParams {
+  /** The unit to convert the value from */
+  from?: NanoUnit
+  /** The unit to convert the value to */
+  to?: NanoUnit
+}
+
 /**
  * Convert a value from one Nano unit to another.
  * Does not require initialization.
  *
  * @param value - The value to convert
- * @param units - Units
- * @param units.from - The unit to convert the value from. One of 'hex', 'raw', 'nano', 'knano', 'Nano', 'NANO', 'KNano', 'MNano'
- * @param units.to - The unit to convert the value to. Same units as units.from
+ * @param params - Params
  * @returns Converted number
  */
-export function convert (value: string, { from = 'Nano', to = 'raw' } = {}) {
-  if ((from === 'hex' && !checkBalance(value)) || !checkNumber(value)) {
+export function convert(value: string, params: ConvertParams = {}) {
+  if (typeof params.from === 'undefined') params.from = NanoUnit.Nano
+  if (typeof params.to === 'undefined') params.to = NanoUnit.raw
+
+  if ((params.from === 'hex' && !checkBalance(value)) || !checkNumber(value)) {
     throw new Error('Value is not valid')
   }
 
-  const fromZeroes: number | undefined = ZEROES[from]
-  const toZeroes: number | undefined = ZEROES[to]
+  const fromZeroes: number | undefined = ZEROES[params.from]
+  const toZeroes: number | undefined = ZEROES[params.to]
 
   if (typeof fromZeroes === 'undefined' || typeof toZeroes === 'undefined') {
     throw new Error('From or to is not valid')
@@ -45,7 +75,7 @@ export function convert (value: string, { from = 'Nano', to = 'raw' } = {}) {
   const difference = fromZeroes - toZeroes
 
   let bigNumber
-  if (from === 'hex') {
+  if (params.from === 'hex') {
     bigNumber = new TunedBigNumber('0x' + value)
   } else {
     bigNumber = new TunedBigNumber(value)
@@ -61,7 +91,7 @@ export function convert (value: string, { from = 'Nano', to = 'raw' } = {}) {
     }
   }
 
-  if (to === 'hex') {
+  if (params.to === 'hex') {
     return bigNumber.toString(16).padStart(32, '0')
   } else {
     return bigNumber.toString()

@@ -7,7 +7,7 @@ import { blake2bInit, blake2bUpdate, blake2bFinal } from 'blakejs'
 
 import { checkHash, checkAddress, checkBalance } from './check'
 
-import { convert } from './conversion'
+import { convert, NanoUnit } from './conversion'
 
 import { hexToByteArray, byteArrayToHex } from './utils'
 

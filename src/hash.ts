@@ -3,13 +3,13 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import { blake2bInit, blake2bUpdate, blake2bFinal } from 'blakejs'
+import { blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
 
-import { checkHash, checkAddress, checkBalance } from './check'
+import { checkAddress, checkBalance, checkHash } from './check'
 
 import { convert, NanoUnit } from './conversion'
 
-import { hexToByteArray, byteArrayToHex } from './utils'
+import { byteArrayToHex, hexToByteArray } from './utils'
 
 import { derivePublicKey } from './keys'
 

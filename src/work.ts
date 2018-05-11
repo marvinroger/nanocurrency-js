@@ -4,25 +4,25 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import BigNumber from 'bignumber.js'
-import { blake2bInit, blake2bUpdate, blake2bFinal } from 'blakejs'
+import { blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
 
-import { checkWork, checkHash } from './check'
+import { checkHash, checkWork } from './check'
 
-import { hexToByteArray, byteArrayToHex } from './utils'
+import { byteArrayToHex, hexToByteArray } from './utils'
 
 import Native from '../native'
 
 const WORK_THRESHOLD = new BigNumber('0xffffffc000000000')
 
 const C_BINDING: {
-  instance_: any
+  instance_: any;
   work:
-  | null
-  | ((blockHash: string, workerIndex: number, workerCount: number) => string)
-  } = {
-    instance_: null,
-    work: null
-  }
+    | null
+    | ((blockHash: string, workerIndex: number, workerCount: number) => string);
+} = {
+  instance_: null,
+  work: null
+}
 
 /**
  * Initialize the library. This basically loads the WebAssembly used by `work`.
@@ -83,7 +83,7 @@ export function work (
     throw new Error('Worker parameters are not valid')
   }
 
-  const work = C_BINDING.work!(blockHash, workerIndex, workerCount)
+  const work = C_BINDING.work(blockHash, workerIndex, workerCount)
 
   return work !== '0000000000000000' ? work : null
 }

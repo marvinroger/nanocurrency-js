@@ -3,12 +3,12 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import { blake2b, blake2bInit, blake2bUpdate, blake2bFinal } from 'blakejs'
+import { blake2b, blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
 import nanoBase32 from 'nano-base32'
 
-import { checkSeed, checkKey, checkAddress } from './check'
+import { checkAddress, checkKey, checkSeed } from './check'
 import { derivePublicFromSecret } from './nacl'
-import { getRandomBytes, hexToByteArray, byteArrayToHex } from './utils'
+import { byteArrayToHex, getRandomBytes, hexToByteArray } from './utils'
 
 /**
  * Generate a cryptographically secure seed.
@@ -80,7 +80,7 @@ export function derivePublicKey (secretKeyOrAddress: string) {
     publicKeyBytes = nanoBase32.decode(secretKeyOrAddress.substr(4, 52))
   }
 
-  return byteArrayToHex(publicKeyBytes!)
+  return byteArrayToHex(publicKeyBytes)
 }
 
 /**

@@ -1,6 +1,7 @@
 {
   "name": "nanocurrency",
-  "description": "A toolkit for the Nano cryptocurrency, allowing you to derive keys, generate seeds, hashes, signatures, proofs of work and blocks.",
+  "description":
+    "A toolkit for the Nano cryptocurrency, allowing you to derive keys, generate seeds, hashes, signatures, proofs of work and blocks.",
   "version": "0.0.0-development",
   "author": {
     "name": "Marvin ROGER",
@@ -25,14 +26,9 @@
     "cross-env": "^5.1.3",
     "cross-os": "^1.2.2",
     "cross-var": "^1.1.0",
-    "eslint": "^4.19.1",
-    "eslint-config-standard": "^11.0.0",
-    "eslint-plugin-import": "^2.9.0",
-    "eslint-plugin-node": "^6.0.1",
-    "eslint-plugin-promise": "^3.7.0",
-    "eslint-plugin-standard": "^3.0.1",
     "jest": "^22.3.0",
-    "prettier-eslint-cli": "^4.7.1",
+    "prettier": "^1.12.1",
+    "prettier-tslint": "^0.4.0",
     "puppeteer": "^1.1.1",
     "rollup": "^0.57.1",
     "rollup-plugin-commonjs": "^9.0.0",
@@ -42,13 +38,13 @@
     "rollup-plugin-uglify": "^3.0.0",
     "semantic-release": "^15.0.2",
     "travis-deploy-once": "^4.3.4",
+    "tslint": "^5.10.0",
+    "tslint-config-standard": "^7.0.0",
     "typedoc": "^0.11.1",
     "typedoc-plugin-internal-external": "^1.0.10",
     "typescript": "^2.8.3"
   },
-  "files": [
-    "dist/"
-  ],
+  "files": ["dist/"],
   "homepage": "https://github.com/marvinroger/nanocurrency-js",
   "jest": {
     "testPathIgnorePatterns": [
@@ -56,13 +52,7 @@
       "<rootDir>/node_modules/"
     ]
   },
-  "keywords": [
-    "crypto",
-    "currency",
-    "nano",
-    "pow",
-    "raiblocks"
-  ],
+  "keywords": ["crypto", "currency", "nano", "pow", "raiblocks"],
   "license": "GPL-3.0",
   "main": "dist/nanocurrency.cjs.js",
   "module": "dist/nanocurrency.esm.js",
@@ -75,7 +65,8 @@
     "build:dev": "yarn build:dev:native && yarn build:dev:js",
     "build:dev:js": "cross-env NODE_ENV=development rollup -c",
     "build:dev:native": "cross-env EMCC_ARGS=\"\" cross-os build:native__cross",
-    "build:native__common": "cross-var docker run --rm -v $PWD:/src trzeci/emscripten emcc -o native.js $EMCC_ARGS -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[\\\"cwrap\\\"]\" src/native/functions.c src/native/blake2/ref/blake2b-ref.c",
+    "build:native__common":
+      "cross-var docker run --rm -v $PWD:/src trzeci/emscripten emcc -o native.js $EMCC_ARGS -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[\\\"cwrap\\\"]\" src/native/functions.c src/native/blake2/ref/blake2b-ref.c",
     "build:native__cross": {
       "darwin": "cross-env PWD=\"$(pwd)\" yarn build:native__common",
       "linux": "cross-env PWD=\"$(pwd)\" yarn build:native__common",
@@ -83,10 +74,11 @@
     },
     "build:prod": "yarn build:prod:native && yarn build:prod:js",
     "build:prod:js": "cross-env NODE_ENV=production rollup -c",
-    "build:prod:native": "cross-env EMCC_ARGS=\"-O3 --closure 1 --llvm-lto 3\" cross-os build:native__cross",
-    "format": "prettier-eslint --write 'src/**/*.js'",
+    "build:prod:native":
+      "cross-env EMCC_ARGS=\"-O3 --closure 1 --llvm-lto 3\" cross-os build:native__cross",
+    "format": "prettier-tslint fix 'src/**/*.ts'",
     "generate-docs": "typedoc src/index.ts",
-    "lint": "eslint 'src/**/*.js'",
+    "lint": "tslint --project . 'src/**/*.ts'",
     "prepublishOnly": "yarn build:prod:js",
     "semantic-release": "semantic-release",
     "test": "jest",

@@ -5,7 +5,7 @@
  */
 const IS_NODE =
   Object.prototype.toString.call(
-    typeof process !== 'undefined' ? process : 0
+    typeof process !== "undefined" ? process : 0 // tslint:disable-line
   ) === '[object process]'
 
 let fillRandom: (bytes: Uint8Array) => Promise<void>
@@ -39,9 +39,9 @@ export function byteArrayToHex (byteArray: Uint8Array) {
     return ''
   }
 
-  var hexStr = ''
-  for (var i = 0; i < byteArray.length; i++) {
-    var hex = (byteArray[i] & 0xff).toString(16)
+  let hexStr = ''
+  for (let i = 0; i < byteArray.length; i++) {
+    let hex = (byteArray[i] & 0xff).toString(16)
     hex = hex.length === 1 ? '0' + hex : hex
     hexStr += hex
   }
@@ -55,8 +55,8 @@ export function hexToByteArray (hex: string) {
     return new Uint8Array()
   }
 
-  var a = []
-  for (var i = 0, len = hex.length; i < len; i += 2) {
+  const a = []
+  for (let i = 0; i < hex.length; i += 2) {
     a.push(parseInt(hex.substr(i, 2), 16))
   }
 

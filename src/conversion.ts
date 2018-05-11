@@ -5,11 +5,11 @@
  */
 import BigNumber from 'bignumber.js'
 
-import { checkNumber, checkBalance } from './check'
+import { checkBalance, checkNumber } from './check'
 
 const TunedBigNumber = BigNumber.clone({ EXPONENTIAL_AT: 1e9 })
 
-const ZEROES: { [index: string]: number } = {
+const ZEROES: { [index: string]: number | undefined } = {
   hex: 0,
   raw: 0,
   nano: 24,
@@ -57,7 +57,7 @@ export interface ConvertParams {
  * @param params - Params
  * @returns Converted number
  */
-export function convert(value: string, params: ConvertParams = {}) {
+export function convert (value: string, params: ConvertParams = {}) {
   if (typeof params.from === 'undefined') params.from = NanoUnit.Nano
   if (typeof params.to === 'undefined') params.to = NanoUnit.raw
 

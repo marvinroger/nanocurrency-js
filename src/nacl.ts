@@ -7,13 +7,13 @@
 // adapted for Nano and TypeScript by Marvin ROGER
 import blake from 'blakejs'
 
-let gf = function (init?: number[]) {
+const gf = function (init?: number[]) {
   const r = new Float64Array(16)
   if (init) for (let i = 0; i < init.length; i++) r[i] = init[i]
   return r
 }
 
-let _9 = new Uint8Array(32)
+const _9 = new Uint8Array(32)
 _9[0] = 9
 
 const gf0 = gf()
@@ -179,7 +179,7 @@ function neq25519 (a: Float64Array, b: Float64Array) {
 }
 
 function par25519 (a: Float64Array) {
-  let d = new Uint8Array(32)
+  const d = new Uint8Array(32)
   pack25519(d, a)
   return d[0] & 1
 }
@@ -232,22 +232,22 @@ function M (o: Float64Array, a: Float64Array, b: Float64Array) {
   let t28 = 0
   let t29 = 0
   let t30 = 0
-  let b0 = b[0]
-  let b1 = b[1]
-  let b2 = b[2]
-  let b3 = b[3]
-  let b4 = b[4]
-  let b5 = b[5]
-  let b6 = b[6]
-  let b7 = b[7]
-  let b8 = b[8]
-  let b9 = b[9]
-  let b10 = b[10]
-  let b11 = b[11]
-  let b12 = b[12]
-  let b13 = b[13]
-  let b14 = b[14]
-  let b15 = b[15]
+  const b0 = b[0]
+  const b1 = b[1]
+  const b2 = b[2]
+  const b3 = b[3]
+  const b4 = b[4]
+  const b5 = b[5]
+  const b6 = b[6]
+  const b7 = b[7]
+  const b8 = b[8]
+  const b9 = b[9]
+  const b10 = b[10]
+  const b11 = b[11]
+  const b12 = b[12]
+  const b13 = b[13]
+  const b14 = b[14]
+  const b15 = b[15]
 
   v = a[0]
   t0 += v * b0
@@ -666,7 +666,7 @@ function S (o: Float64Array, a: Float64Array) {
 }
 
 function inv25519 (o: Float64Array, i: Float64Array) {
-  let c = gf()
+  const c = gf()
   let a
   for (a = 0; a < 16; a++) c[a] = i[a]
   for (a = 253; a >= 0; a--) {
@@ -677,7 +677,7 @@ function inv25519 (o: Float64Array, i: Float64Array) {
 }
 
 function pow2523 (o: Float64Array, i: Float64Array) {
-  let c = gf()
+  const c = gf()
   let a
   for (a = 0; a < 16; a++) c[a] = i[a]
   for (a = 250; a >= 0; a--) {
@@ -687,12 +687,17 @@ function pow2523 (o: Float64Array, i: Float64Array) {
   for (a = 0; a < 16; a++) o[a] = c[a]
 }
 
+const CRYPTO_SIGN_BYTES = 64
+const CRYPTO_SIGN_PUBLICKEYBYTES = 32
+const CRYPTO_SIGN_SECRETKEYBYTES = 32
+const CRYPTO_HASH_BYTES = 64
+
 function cryptoHash (out: Uint8Array, m: Uint8Array, n: number) {
   const input = new Uint8Array(n)
   for (let i = 0; i < n; ++i) {
     input[i] = m[i]
   }
-  let hash = blake.blake2b(input)
+  const hash = blake.blake2b(input)
   for (let i = 0; i < CRYPTO_HASH_BYTES; ++i) {
     out[i] = hash[i]
   }
@@ -750,7 +755,8 @@ function pack (r: Uint8Array, p: Float64Array[]) {
 }
 
 function scalarmult (p: Float64Array[], q: Float64Array[], s: Uint8Array) {
-  let b, i
+  let b
+  let i
   set25519(p[0], gf0)
   set25519(p[1], gf1)
   set25519(p[2], gf1)
@@ -765,7 +771,7 @@ function scalarmult (p: Float64Array[], q: Float64Array[], s: Uint8Array) {
 }
 
 function scalarbase (p: Float64Array[], s: Uint8Array) {
-  let q = [gf(), gf(), gf(), gf()]
+  const q = [gf(), gf(), gf(), gf()]
   set25519(q[0], X)
   set25519(q[1], Y)
   set25519(q[2], gf1)
@@ -773,7 +779,7 @@ function scalarbase (p: Float64Array[], s: Uint8Array) {
   scalarmult(p, q, s)
 }
 
-let L = new Float64Array([
+const L = new Float64Array([
   0xed,
   0xd3,
   0xf5,
@@ -809,7 +815,10 @@ let L = new Float64Array([
 ])
 
 function modL (r: Uint8Array, x: Float64Array) {
-  let carry, i, j, k
+  let carry
+  let i
+  let j
+  let k
   for (i = 63; i >= 32; --i) {
     carry = 0
     for (j = i - 32, k = i - 12; j < k; ++j) {
@@ -847,17 +856,17 @@ function cryptoSign (sm: Uint8Array, m: Uint8Array, n: number, sk: Uint8Array) {
   const r = new Uint8Array(64)
   let i
   let j
-  let x = new Float64Array(64)
-  let p = [gf(), gf(), gf(), gf()]
+  const x = new Float64Array(64)
+  const p = [gf(), gf(), gf(), gf()]
 
-  let pk = derivePublicFromSecret(sk)
+  const pk = derivePublicFromSecret(sk)
 
   cryptoHash(d, sk, 32)
   d[0] &= 248
   d[31] &= 127
   d[31] |= 64
 
-  let smlen = n + 64
+  const smlen = n + 64
   for (i = 0; i < n; i++) sm[64 + i] = m[i]
   for (i = 0; i < 32; i++) sm[32 + i] = d[32 + i]
 
@@ -930,7 +939,8 @@ function cryptoSignOpen (
   n: number,
   pk: Uint8Array
 ) {
-  let i, mlen
+  let i
+  let mlen
   const t = new Uint8Array(32)
   const h = new Uint8Array(64)
   const p = [gf(), gf(), gf(), gf()]
@@ -962,11 +972,6 @@ function cryptoSignOpen (
   return mlen
 }
 
-const CRYPTO_SIGN_BYTES = 64
-const CRYPTO_SIGN_PUBLICKEYBYTES = 32
-const CRYPTO_SIGN_SECRETKEYBYTES = 32
-const CRYPTO_HASH_BYTES = 64
-
 /* High-level API */
 
 function checkArrayTypes (..._params: Uint8Array[]) {
@@ -982,7 +987,7 @@ function naclSign (msg: Uint8Array, secretKey: Uint8Array) {
   if (secretKey.length !== CRYPTO_SIGN_SECRETKEYBYTES) {
     throw new Error('bad secret key size')
   }
-  let signedMsg = new Uint8Array(CRYPTO_SIGN_BYTES + msg.length)
+  const signedMsg = new Uint8Array(CRYPTO_SIGN_BYTES + msg.length)
   cryptoSign(signedMsg, msg, msg.length, secretKey)
   return signedMsg
 }
@@ -990,9 +995,9 @@ function naclSign (msg: Uint8Array, secretKey: Uint8Array) {
 /** @hidden */
 export function derivePublicFromSecret (sk: Uint8Array) {
   let d = new Uint8Array(64)
-  let p = [gf(), gf(), gf(), gf()]
-  let pk = new Uint8Array(32)
-  let context = blake.blake2bInit(64)
+  const p = [gf(), gf(), gf(), gf()]
+  const pk = new Uint8Array(32)
+  const context = blake.blake2bInit(64)
   blake.blake2bUpdate(context, sk)
   d = blake.blake2bFinal(context)
 
@@ -1007,8 +1012,8 @@ export function derivePublicFromSecret (sk: Uint8Array) {
 
 /** @hidden */
 export function signDetached (msg: Uint8Array, secretKey: Uint8Array) {
-  let signedMsg = naclSign(msg, secretKey)
-  let sig = new Uint8Array(CRYPTO_SIGN_BYTES)
+  const signedMsg = naclSign(msg, secretKey)
+  const sig = new Uint8Array(CRYPTO_SIGN_BYTES)
   for (let i = 0; i < sig.length; i++) sig[i] = signedMsg[i]
   return sig
 }
@@ -1024,8 +1029,8 @@ export function verifyDetached (
   if (publicKey.length !== CRYPTO_SIGN_PUBLICKEYBYTES) {
     throw new Error('bad public key size')
   }
-  let sm = new Uint8Array(CRYPTO_SIGN_BYTES + msg.length)
-  let m = new Uint8Array(CRYPTO_SIGN_BYTES + msg.length)
+  const sm = new Uint8Array(CRYPTO_SIGN_BYTES + msg.length)
+  const m = new Uint8Array(CRYPTO_SIGN_BYTES + msg.length)
   let i
   for (i = 0; i < CRYPTO_SIGN_BYTES; i++) sm[i] = sig[i]
   for (i = 0; i < msg.length; i++) sm[i + CRYPTO_SIGN_BYTES] = msg[i]

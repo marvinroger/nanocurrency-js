@@ -9,19 +9,19 @@ import nanoBase32 from 'nano-base32'
 import { compareArrays } from './utils'
 
 /** @hidden */
-export function checkString (candidate: string) {
+export function checkString (candidate: any) {
   return typeof candidate === 'string'
 }
 
 /** @hidden */
-export function checkNumber (number: string) {
-  if (!checkString(number)) return false
-  if (number.startsWith('.') || number.endsWith('.')) return false
+export function checkNumber (candidate: any) {
+  if (!checkString(candidate)) return false
+  if (candidate.startsWith('.') || candidate.endsWith('.')) return false
 
-  let numberWithoutDot = number.replace('.', '')
+  const numberWithoutDot = candidate.replace('.', '')
   // more than one '.'
-  if (number.length - numberWithoutDot.length > 1) return false
-  for (let char of numberWithoutDot) {
+  if (candidate.length - numberWithoutDot.length > 1) return false
+  for (const char of numberWithoutDot) {
     if (char < '0' || char > '9') return false
   }
 
@@ -35,10 +35,10 @@ export function checkNumber (number: string) {
  * @param balance - The balance to check
  * @returns Valid
  */
-export function checkBalance (balance: string) {
+export function checkBalance (balance: any) {
   // TODO(breaking): checkAmount instead
   if (!checkString(balance) || balance.length > 39) return false
-  for (let char of balance) {
+  for (const char of balance) {
     if (char < '0' || char > '9') return false
   }
 
@@ -52,7 +52,7 @@ export function checkBalance (balance: string) {
  * @param seed - The seed to check
  * @returns Valid
  */
-export function checkSeed (seed: string) {
+export function checkSeed (seed: any) {
   return checkString(seed) && /[0-9a-fA-F]{64}/.test(seed)
 }
 
@@ -63,7 +63,7 @@ export function checkSeed (seed: string) {
  * @param hash - The hash to check
  * @returns Valid
  */
-export function checkHash (hash: string) {
+export function checkHash (hash: any) {
   return checkSeed(hash)
 }
 
@@ -74,7 +74,7 @@ export function checkHash (hash: string) {
  * @param key - The key to check
  * @returns Valid
  */
-export function checkKey (key: string) {
+export function checkKey (key: any) {
   return checkSeed(key)
 }
 
@@ -85,7 +85,7 @@ export function checkKey (key: string) {
  * @param address - The address to check
  * @returns Valid
  */
-export function checkAddress (address: string) {
+export function checkAddress (address: any) {
   if (!checkString(address) || !/xrb_[13][0-9a-km-uw-z]{59}/.test(address)) {
     return false
   }
@@ -105,7 +105,7 @@ export function checkAddress (address: string) {
  * @param work - The work to check
  * @returns Valid
  */
-export function checkWork (work: string) {
+export function checkWork (work: any) {
   return checkString(work) && /[0-9a-fA-F]{16}/.test(work)
 }
 
@@ -116,6 +116,6 @@ export function checkWork (work: string) {
  * @param signature - The signature to check
  * @returns Valid
  */
-export function checkSignature (signature: string) {
+export function checkSignature (signature: any) {
   return checkString(signature) && /[0-9a-fA-F]{128}/.test(signature)
 }

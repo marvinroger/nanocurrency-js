@@ -3,17 +3,17 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import { checkKey, checkHash, checkAddress, checkBalance } from './check'
+import { checkAddress, checkBalance, checkHash, checkKey } from './check'
 
 import { convert, NanoUnit } from './conversion'
 
-import { derivePublicKey, deriveAddress } from './keys'
+import { deriveAddress, derivePublicKey } from './keys'
 
 import {
-  hashOpenBlock,
-  hashSendBlock,
-  hashReceiveBlock,
   hashChangeBlock,
+  hashOpenBlock,
+  hashReceiveBlock,
+  hashSendBlock,
   hashStateBlock
 } from './hash'
 
@@ -37,7 +37,7 @@ export interface OpenBlockData {
  * @param data - Block data
  * @returns Block
  */
-export function createOpenBlock(secretKey: string, data: OpenBlockData) {
+export function createOpenBlock (secretKey: string, data: OpenBlockData) {
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   let work = data.work
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
@@ -82,7 +82,7 @@ export interface ReceiveBlockData {
  * @param data - Block data
  * @returns Block
  */
-export function createReceiveBlock(secretKey: string, data: ReceiveBlockData) {
+export function createReceiveBlock (secretKey: string, data: ReceiveBlockData) {
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   let work = data.work
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
@@ -124,13 +124,14 @@ export interface SendBlockData {
  * @param data - Block data
  * @returns Block
  */
-export function createSendBlock(secretKey: string, data: SendBlockData) {
+export function createSendBlock (secretKey: string, data: SendBlockData) {
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   let work = data.work
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
   if (!checkHash(data.previous)) throw new Error('Previous is not valid')
-  if (!checkAddress(data.destination))
+  if (!checkAddress(data.destination)) {
     throw new Error('Destination is not valid')
+  }
   if (!checkBalance(data.balance)) throw new Error('Balance is not valid')
 
   const hash = hashSendBlock(data.previous, data.destination, data.balance)
@@ -171,7 +172,7 @@ export interface ChangeBlockData {
  * @param data - Block data
  * @returns Block
  */
-export function createChangeBlock(secretKey: string, data: ChangeBlockData) {
+export function createChangeBlock (secretKey: string, data: ChangeBlockData) {
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   let work = data.work
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
@@ -217,7 +218,7 @@ export interface StateBlockData {
  * @param data - Block data
  * @returns Block
  */
-export function createStateBlock(secretKey: string, data: StateBlockData) {
+export function createStateBlock (secretKey: string, data: StateBlockData) {
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   let work = data.work
   if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set

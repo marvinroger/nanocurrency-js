@@ -5,9 +5,9 @@
  */
 import { signDetached, verifyDetached } from './nacl'
 
-import { checkKey, checkHash, checkSignature } from './check'
+import { checkHash, checkKey, checkSignature } from './check'
 
-import { hexToByteArray, byteArrayToHex } from './utils'
+import { byteArrayToHex, hexToByteArray } from './utils'
 
 /**
  * Sign a block.

@@ -83,7 +83,7 @@ export function work (
     throw new Error('Worker parameters are not valid')
   }
 
-  const work = C_BINDING.work(blockHash, workerIndex, workerCount)
+  const work = C_BINDING.work!(blockHash, workerIndex, workerCount)
 
   return work !== '0000000000000000' ? work : null
 }

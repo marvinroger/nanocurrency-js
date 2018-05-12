@@ -6,9 +6,10 @@
 import { blake2b, blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
 import nanoBase32 from 'nano-base32'
 
-import { checkAddress, checkKey, checkSeed } from './check'
+import { checkKey, checkSeed } from './check'
 import { derivePublicFromSecret } from './nacl'
 import { byteArrayToHex, getRandomBytes, hexToByteArray } from './utils'
+import { parseAddress } from './parse'
 
 /**
  * Generate a cryptographically secure seed.
@@ -67,20 +68,27 @@ export function deriveSecretKey (seed: string, index: number) {
  */
 export function derivePublicKey (secretKeyOrAddress: string) {
   const isSecretKey = checkKey(secretKeyOrAddress)
-  const isAddress = checkAddress(secretKeyOrAddress)
+  const addressParseResult = parseAddress(secretKeyOrAddress)
+  const isAddress = addressParseResult.valid
   if (!isSecretKey && !isAddress) {
     throw new Error('Secret key or address is not valid')
   }
 
-  let publicKeyBytes: Uint8Array
+  let publicKeyBytes: Uint8Array | null
   if (isSecretKey) {
     const secretKeyBytes = hexToByteArray(secretKeyOrAddress)
     publicKeyBytes = derivePublicFromSecret(secretKeyBytes)
   } else if (isAddress) {
-    publicKeyBytes = nanoBase32.decode(secretKeyOrAddress.substr(4, 52))
+    publicKeyBytes = addressParseResult.publicKeyBytes
   }
 
-  return byteArrayToHex(publicKeyBytes)
+  return byteArrayToHex(publicKeyBytes!)
+}
+
+/** Derive address params. */
+export interface DeriveAddressParams {
+  /** Whether to use nano_ instead of xrb_ */
+  useNanoPrefix?: boolean
 }
 
 /**
@@ -88,13 +96,20 @@ export function derivePublicKey (secretKeyOrAddress: string) {
  * Does not require initialization.
  *
  * @param publicKey - The public key to generate the address from, in hexadecimal format
+ * @param params - Parameters
  * @returns Address
  */
-export function deriveAddress (publicKey: string) {
+export function deriveAddress (
+  publicKey: string,
+  params: DeriveAddressParams = {}
+) {
   if (!checkKey(publicKey)) throw new Error('Public key is not valid')
 
   const publicKeyBytes = hexToByteArray(publicKey)
   const paddedPublicKeyBytes = hexToByteArray(publicKey)
+
+  let prefix = 'xrb_'
+  if (params.useNanoPrefix === true) prefix = 'nano_'
 
   const encodedPublicKey = nanoBase32.encode(paddedPublicKeyBytes)
 
@@ -102,5 +117,5 @@ export function deriveAddress (publicKey: string) {
 
   const encodedChecksum = nanoBase32.encode(checksum)
 
-  return 'xrb_' + encodedPublicKey + encodedChecksum
+  return prefix + encodedPublicKey + encodedChecksum
 }

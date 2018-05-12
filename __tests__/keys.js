@@ -93,6 +93,15 @@ describe('addresses', () => {
     }
   })
 
+  test('creates correct addresses with nano prefix', () => {
+    expect.assertions(VALID_KEYS.length)
+    for (let key of VALID_KEYS) {
+      expect(nano.deriveAddress(key.publicKey, { useNanoPrefix: true })).toBe(
+        key.account.replace('xrb_', 'nano_')
+      )
+    }
+  })
+
   test('throws with invalid public keys', () => {
     expect.assertions(INVALID_PUBLIC_KEYS.length)
     for (let invalidPublicKey of INVALID_PUBLIC_KEYS) {

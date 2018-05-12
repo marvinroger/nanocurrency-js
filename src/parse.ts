@@ -9,6 +9,7 @@ import nanoBase32 from 'nano-base32'
 import { compareArrays } from './utils'
 import { checkString } from './check'
 
+/** @hidden */
 export interface ParseAddressResult {
   valid: boolean,
   publicKeyBytes: Uint8Array | null

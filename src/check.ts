@@ -34,7 +34,7 @@ export function checkNumber (candidate: any) {
  */
 export function checkBalance (balance: any) {
   // TODO(breaking): checkAmount instead
-  if (!checkString(balance) || balance.length > 39) return false
+  if (!checkString(balance) || balance === '' || balance.length > 39) return false
   for (const char of balance) {
     if (char < '0' || char > '9') return false
   }

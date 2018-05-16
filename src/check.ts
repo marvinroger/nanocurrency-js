@@ -3,26 +3,26 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import { parseAddress } from './parse'
+import { parseAddress } from './parse';
 
 /** @hidden */
-export function checkString (candidate: any) {
-  return typeof candidate === 'string'
+export function checkString(candidate: any) {
+  return typeof candidate === 'string';
 }
 
 /** @hidden */
-export function checkNumber (candidate: any) {
-  if (!checkString(candidate)) return false
-  if (candidate.startsWith('.') || candidate.endsWith('.')) return false
+export function checkNumber(candidate: any) {
+  if (!checkString(candidate)) return false;
+  if (candidate.startsWith('.') || candidate.endsWith('.')) return false;
 
-  const numberWithoutDot = candidate.replace('.', '')
+  const numberWithoutDot = candidate.replace('.', '');
   // more than one '.'
-  if (candidate.length - numberWithoutDot.length > 1) return false
+  if (candidate.length - numberWithoutDot.length > 1) return false;
   for (const char of numberWithoutDot) {
-    if (char < '0' || char > '9') return false
+    if (char < '0' || char > '9') return false;
   }
 
-  return true
+  return true;
 }
 
 /**
@@ -32,14 +32,15 @@ export function checkNumber (candidate: any) {
  * @param balance - The balance to check
  * @returns Valid
  */
-export function checkBalance (balance: any) {
+export function checkBalance(balance: any) {
   // TODO(breaking): checkAmount instead
-  if (!checkString(balance) || balance === '' || balance.length > 39) return false
+  if (!checkString(balance) || balance === '' || balance.length > 39) return false;
+
   for (const char of balance) {
-    if (char < '0' || char > '9') return false
+    if (char < '0' || char > '9') return false;
   }
 
-  return true
+  return true;
 }
 
 /**
@@ -49,8 +50,8 @@ export function checkBalance (balance: any) {
  * @param seed - The seed to check
  * @returns Valid
  */
-export function checkSeed (seed: any) {
-  return checkString(seed) && /[0-9a-fA-F]{64}/.test(seed)
+export function checkSeed(seed: any) {
+  return checkString(seed) && /[0-9a-fA-F]{64}/.test(seed);
 }
 
 /**
@@ -60,8 +61,8 @@ export function checkSeed (seed: any) {
  * @param hash - The hash to check
  * @returns Valid
  */
-export function checkHash (hash: any) {
-  return checkSeed(hash)
+export function checkHash(hash: any) {
+  return checkSeed(hash);
 }
 
 /**
@@ -71,8 +72,8 @@ export function checkHash (hash: any) {
  * @param key - The key to check
  * @returns Valid
  */
-export function checkKey (key: any) {
-  return checkSeed(key)
+export function checkKey(key: any) {
+  return checkSeed(key);
 }
 
 /**
@@ -82,10 +83,10 @@ export function checkKey (key: any) {
  * @param address - The address to check
  * @returns Valid
  */
-export function checkAddress (address: any) {
-  const parseResult = parseAddress(address)
+export function checkAddress(address: any) {
+  const parseResult = parseAddress(address);
 
-  return parseResult.valid
+  return parseResult.valid;
 }
 
 /**
@@ -95,8 +96,8 @@ export function checkAddress (address: any) {
  * @param work - The work to check
  * @returns Valid
  */
-export function checkWork (work: any) {
-  return checkString(work) && /[0-9a-fA-F]{16}/.test(work)
+export function checkWork(work: any) {
+  return checkString(work) && /[0-9a-fA-F]{16}/.test(work);
 }
 
 /**
@@ -106,6 +107,6 @@ export function checkWork (work: any) {
  * @param signature - The signature to check
  * @returns Valid
  */
-export function checkSignature (signature: any) {
-  return checkString(signature) && /[0-9a-fA-F]{128}/.test(signature)
+export function checkSignature(signature: any) {
+  return checkString(signature) && /[0-9a-fA-F]{128}/.test(signature);
 }

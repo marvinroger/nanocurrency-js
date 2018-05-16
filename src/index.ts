@@ -13,34 +13,29 @@ export {
   checkKey,
   checkAddress,
   checkWork,
-  checkSignature
-} from './check'
+  checkSignature,
+} from './check';
 
-export { convert } from './conversion'
+export { convert } from './conversion';
 
-export {
-  generateSeed,
-  deriveSecretKey,
-  derivePublicKey,
-  deriveAddress
-} from './keys'
+export { generateSeed, deriveSecretKey, derivePublicKey, deriveAddress } from './keys';
 
 export {
   hashOpenBlock,
   hashSendBlock,
   hashReceiveBlock,
   hashChangeBlock,
-  hashStateBlock
-} from './hash'
+  hashStateBlock,
+} from './hash';
 
-export { signBlock, verifyBlock } from './signature'
+export { signBlock, verifyBlock } from './signature';
 
-export { init, isReady, work, validateWork } from './work'
+export { init, isReady, work, validateWork } from './work';
 
 export {
   createOpenBlock,
   createSendBlock,
   createReceiveBlock,
   createChangeBlock,
-  createStateBlock
-} from './block'
+  createStateBlock,
+} from './block';

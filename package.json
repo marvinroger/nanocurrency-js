@@ -28,7 +28,6 @@
     "cross-var": "^1.1.0",
     "jest": "^22.3.0",
     "prettier": "^1.12.1",
-    "prettier-tslint": "^0.4.0",
     "puppeteer": "^1.1.1",
     "rollup": "^0.57.1",
     "rollup-plugin-commonjs": "^9.0.0",
@@ -39,7 +38,8 @@
     "semantic-release": "^15.0.2",
     "travis-deploy-once": "^4.3.4",
     "tslint": "^5.10.0",
-    "tslint-config-standard": "^7.0.0",
+    "tslint-config-airbnb": "^5.8.0",
+    "tslint-config-prettier": "^1.12.0",
     "typedoc": "^0.11.1",
     "typedoc-plugin-internal-external": "^1.0.10",
     "typescript": "^2.8.3"
@@ -47,10 +47,7 @@
   "files": ["dist/"],
   "homepage": "https://github.com/marvinroger/nanocurrency-js",
   "jest": {
-    "testPathIgnorePatterns": [
-      "<rootDir>/__tests__/data/",
-      "<rootDir>/node_modules/"
-    ]
+    "testPathIgnorePatterns": ["<rootDir>/__tests__/data/", "<rootDir>/node_modules/"]
   },
   "keywords": ["crypto", "currency", "nano", "pow", "raiblocks"],
   "license": "GPL-3.0",
@@ -76,9 +73,9 @@
     "build:prod:js": "cross-env NODE_ENV=production rollup -c",
     "build:prod:native":
       "cross-env EMCC_ARGS=\"-O3 --closure 1 --llvm-lto 3\" cross-os build:native__cross",
-    "format": "prettier-tslint fix 'src/**/*.ts'",
     "generate-docs": "typedoc src/index.ts",
-    "lint": "tslint --project . 'src/**/*.ts'",
+    "format": "prettier --write \"{src,__tests__}/**/*.{ts,js}\"",
+    "lint": "tslint --project . \"src/**/*.ts\"",
     "prepublishOnly": "yarn build:prod:js",
     "semantic-release": "semantic-release",
     "test": "jest",

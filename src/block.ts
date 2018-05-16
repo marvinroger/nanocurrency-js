@@ -3,30 +3,31 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import { checkAddress, checkBalance, checkHash, checkKey } from './check'
+/* tslint:disable object-shorthand-properties-first */
+import { checkAddress, checkBalance, checkHash, checkKey } from './check';
 
-import { convert, NanoUnit } from './conversion'
+import { convert, NanoUnit } from './conversion';
 
-import { deriveAddress, derivePublicKey } from './keys'
+import { deriveAddress, derivePublicKey } from './keys';
 
 import {
   hashChangeBlock,
   hashOpenBlock,
   hashReceiveBlock,
   hashSendBlock,
-  hashStateBlock
-} from './hash'
+  hashStateBlock,
+} from './hash';
 
-import { signBlock } from './signature'
+import { signBlock } from './signature';
 
 /** Open block data. */
 export interface OpenBlockData {
   /** The PoW */
-  work?: string | null
+  work?: string | null;
   /** The hash of the send block that is being received, in hexadecimal format */
-  source: string
+  source: string;
   /** The representative address */
-  representative: string
+  representative: string;
 }
 
 /**
@@ -37,19 +38,19 @@ export interface OpenBlockData {
  * @param data - Block data
  * @returns Block
  */
-export function createOpenBlock (secretKey: string, data: OpenBlockData) {
-  if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
-  let work = data.work
-  if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
-  if (!checkHash(data.source)) throw new Error('Source is not valid')
+export function createOpenBlock(secretKey: string, data: OpenBlockData) {
+  if (!checkKey(secretKey)) throw new Error('Secret key is not valid');
+  let work = data.work;
+  if (typeof work === 'undefined') work = null; // TODO(breaking): Ensure work is set
+  if (!checkHash(data.source)) throw new Error('Source is not valid');
   if (!checkAddress(data.representative)) {
-    throw new Error('Representative is not valid')
+    throw new Error('Representative is not valid');
   }
 
-  const previous = derivePublicKey(secretKey)
-  const account = deriveAddress(previous)
-  const hash = hashOpenBlock(data.source, data.representative, account)
-  const signature = signBlock(hash, secretKey)
+  const previous = derivePublicKey(secretKey);
+  const account = deriveAddress(previous);
+  const hash = hashOpenBlock(data.source, data.representative, account);
+  const signature = signBlock(hash, secretKey);
 
   return {
     hash,
@@ -59,19 +60,19 @@ export function createOpenBlock (secretKey: string, data: OpenBlockData) {
       representative: data.representative,
       account,
       work,
-      signature
-    }
-  }
+      signature,
+    },
+  };
 }
 
 /** Receive block data. */
 export interface ReceiveBlockData {
   /** The PoW */
-  work?: string | null
+  work?: string | null;
   /** The hash of the previous block on the account chain, in hexadecimal format */
-  previous: string
+  previous: string;
   /** The hash of the send block that is being received, in hexadecimal format */
-  source: string
+  source: string;
 }
 
 /**
@@ -82,15 +83,15 @@ export interface ReceiveBlockData {
  * @param data - Block data
  * @returns Block
  */
-export function createReceiveBlock (secretKey: string, data: ReceiveBlockData) {
-  if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
-  let work = data.work
-  if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
-  if (!checkHash(data.previous)) throw new Error('Previous is not valid')
-  if (!checkHash(data.source)) throw new Error('Source is not valid')
+export function createReceiveBlock(secretKey: string, data: ReceiveBlockData) {
+  if (!checkKey(secretKey)) throw new Error('Secret key is not valid');
+  let work = data.work;
+  if (typeof work === 'undefined') work = null; // TODO(breaking): Ensure work is set
+  if (!checkHash(data.previous)) throw new Error('Previous is not valid');
+  if (!checkHash(data.source)) throw new Error('Source is not valid');
 
-  const hash = hashReceiveBlock(data.previous, data.source)
-  const signature = signBlock(hash, secretKey)
+  const hash = hashReceiveBlock(data.previous, data.source);
+  const signature = signBlock(hash, secretKey);
 
   return {
     hash,
@@ -99,21 +100,21 @@ export function createReceiveBlock (secretKey: string, data: ReceiveBlockData) {
       previous: data.previous,
       source: data.source,
       work,
-      signature
-    }
-  }
+      signature,
+    },
+  };
 }
 
 /** Send block data. */
 export interface SendBlockData {
   /** The PoW */
-  work?: string | null
+  work?: string | null;
   /** The hash of the previous block on the account chain, in hexadecimal format */
-  previous: string
+  previous: string;
   /** The destination address */
-  destination: string
+  destination: string;
   /** The balance, in raw */
-  balance: string
+  balance: string;
 }
 
 /**
@@ -124,22 +125,22 @@ export interface SendBlockData {
  * @param data - Block data
  * @returns Block
  */
-export function createSendBlock (secretKey: string, data: SendBlockData) {
-  if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
-  let work = data.work
-  if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
-  if (!checkHash(data.previous)) throw new Error('Previous is not valid')
+export function createSendBlock(secretKey: string, data: SendBlockData) {
+  if (!checkKey(secretKey)) throw new Error('Secret key is not valid');
+  let work = data.work;
+  if (typeof work === 'undefined') work = null; // TODO(breaking): Ensure work is set
+  if (!checkHash(data.previous)) throw new Error('Previous is not valid');
   if (!checkAddress(data.destination)) {
-    throw new Error('Destination is not valid')
+    throw new Error('Destination is not valid');
   }
-  if (!checkBalance(data.balance)) throw new Error('Balance is not valid')
+  if (!checkBalance(data.balance)) throw new Error('Balance is not valid');
 
-  const hash = hashSendBlock(data.previous, data.destination, data.balance)
-  const signature = signBlock(hash, secretKey)
+  const hash = hashSendBlock(data.previous, data.destination, data.balance);
+  const signature = signBlock(hash, secretKey);
   const balanceHex = convert(data.balance, {
     from: NanoUnit.raw,
-    to: NanoUnit.hex
-  })
+    to: NanoUnit.hex,
+  });
 
   return {
     hash,
@@ -149,19 +150,19 @@ export function createSendBlock (secretKey: string, data: SendBlockData) {
       destination: data.destination,
       balance: balanceHex,
       work,
-      signature
-    }
-  }
+      signature,
+    },
+  };
 }
 
 /** Change block data. */
 export interface ChangeBlockData {
   /** The PoW */
-  work?: string | null
+  work?: string | null;
   /** The hash of the previous block on the account chain, in hexadecimal format */
-  previous: string
+  previous: string;
   /** The destination address */
-  representative: string
+  representative: string;
 }
 
 /**
@@ -172,17 +173,17 @@ export interface ChangeBlockData {
  * @param data - Block data
  * @returns Block
  */
-export function createChangeBlock (secretKey: string, data: ChangeBlockData) {
-  if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
-  let work = data.work
-  if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
-  if (!checkHash(data.previous)) throw new Error('Previous is not valid')
+export function createChangeBlock(secretKey: string, data: ChangeBlockData) {
+  if (!checkKey(secretKey)) throw new Error('Secret key is not valid');
+  let work = data.work;
+  if (typeof work === 'undefined') work = null; // TODO(breaking): Ensure work is set
+  if (!checkHash(data.previous)) throw new Error('Previous is not valid');
   if (!checkAddress(data.representative)) {
-    throw new Error('Representative is not valid')
+    throw new Error('Representative is not valid');
   }
 
-  const hash = hashChangeBlock(data.previous, data.representative)
-  const signature = signBlock(hash, secretKey)
+  const hash = hashChangeBlock(data.previous, data.representative);
+  const signature = signBlock(hash, secretKey);
 
   return {
     hash,
@@ -191,23 +192,23 @@ export function createChangeBlock (secretKey: string, data: ChangeBlockData) {
       previous: data.previous,
       representative: data.representative,
       work,
-      signature
-    }
-  }
+      signature,
+    },
+  };
 }
 
 /** State block data. */
 export interface StateBlockData {
   /** The PoW */
-  work?: string | null
+  work?: string | null;
   /** The hash of the previous block on the account chain, in hexadecimal format */
-  previous: string
+  previous: string;
   /** The destination address */
-  representative: string
+  representative: string;
   /** The resulting balance */
-  balance: string
+  balance: string;
   /** The link block hash or the link address, in hexadecimal or address format */
-  link: string
+  link: string;
 }
 
 /**
@@ -218,38 +219,32 @@ export interface StateBlockData {
  * @param data - Block data
  * @returns Block
  */
-export function createStateBlock (secretKey: string, data: StateBlockData) {
-  if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
-  let work = data.work
-  if (typeof work === 'undefined') work = null // TODO(breaking): Ensure work is set
-  if (!checkHash(data.previous)) throw new Error('Previous is not valid')
+export function createStateBlock(secretKey: string, data: StateBlockData) {
+  if (!checkKey(secretKey)) throw new Error('Secret key is not valid');
+  let work = data.work;
+  if (typeof work === 'undefined') work = null; // TODO(breaking): Ensure work is set
+  if (!checkHash(data.previous)) throw new Error('Previous is not valid');
   if (!checkAddress(data.representative)) {
-    throw new Error('Representative is not valid')
+    throw new Error('Representative is not valid');
   }
-  if (!checkBalance(data.balance)) throw new Error('Balance is not valid')
-  let linkIsAddress = false
-  if (checkAddress(data.link)) linkIsAddress = true
-  else if (!checkHash(data.link)) throw new Error('Link is not valid')
+  if (!checkBalance(data.balance)) throw new Error('Balance is not valid');
+  let linkIsAddress = false;
+  if (checkAddress(data.link)) linkIsAddress = true;
+  else if (!checkHash(data.link)) throw new Error('Link is not valid');
 
-  const publicKey = derivePublicKey(secretKey)
-  const account = deriveAddress(publicKey)
-  const hash = hashStateBlock(
-    account,
-    data.previous,
-    data.representative,
-    data.balance,
-    data.link
-  )
-  const signature = signBlock(hash, secretKey)
+  const publicKey = derivePublicKey(secretKey);
+  const account = deriveAddress(publicKey);
+  const hash = hashStateBlock(account, data.previous, data.representative, data.balance, data.link);
+  const signature = signBlock(hash, secretKey);
 
-  let link
-  let linkAsAddress
+  let link;
+  let linkAsAddress;
   if (linkIsAddress) {
-    linkAsAddress = data.link
-    link = derivePublicKey(linkAsAddress)
+    linkAsAddress = data.link;
+    link = derivePublicKey(linkAsAddress);
   } else {
-    link = data.link
-    linkAsAddress = deriveAddress(link)
+    link = data.link;
+    linkAsAddress = deriveAddress(link);
   }
 
   const block = {
@@ -261,11 +256,11 @@ export function createStateBlock (secretKey: string, data: StateBlockData) {
     link,
     link_as_account: linkAsAddress,
     work,
-    signature
-  }
+    signature,
+  };
 
   return {
     hash,
-    block
-  }
+    block,
+  };
 }

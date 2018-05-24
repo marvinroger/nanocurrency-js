@@ -43,7 +43,7 @@ export function init(): Promise<void> {
 }
 
 /**
- * Get whether or not `work` is ready to be used ({@link #init} has been called).
+ * Get whether or not `work` is ready to be used (`init` has been called).
  *
  * @returns Ready
  */

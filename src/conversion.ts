@@ -22,7 +22,7 @@ const ZEROES: { [index: string]: number | undefined } = {
 };
 
 /** Nano unit. */
-export enum NanoUnit {
+export enum Unit {
   /** 10^0 raw in hexadecimal format */
   hex = 'hex',
   /** 10^0 raw */
@@ -45,9 +45,9 @@ export enum NanoUnit {
 /** Convert parameters. */
 export interface ConvertParams {
   /** The unit to convert the value from */
-  from?: NanoUnit;
+  from?: Unit;
   /** The unit to convert the value to */
-  to?: NanoUnit;
+  to?: Unit;
 }
 
 /**
@@ -59,8 +59,8 @@ export interface ConvertParams {
  * @returns Converted number
  */
 export function convert(value: string, params: ConvertParams = {}) {
-  if (typeof params.from === 'undefined') params.from = NanoUnit.Nano;
-  if (typeof params.to === 'undefined') params.to = NanoUnit.raw;
+  if (typeof params.from === 'undefined') params.from = Unit.Nano;
+  if (typeof params.to === 'undefined') params.to = Unit.raw;
 
   if ((params.from === 'hex' && !checkAmount(value)) || !checkNumber(value)) {
     throw new Error('Value is not valid');

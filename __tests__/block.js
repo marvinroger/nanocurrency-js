@@ -111,8 +111,6 @@ describe('state', () => {
     }
   });
 
-  // TODO(breaking): add work test
-
   test('throws with invalid secret key', () => {
     expect.assertions(INVALID_SECRET_KEYS.length);
     for (let invalidSecretKey of INVALID_SECRET_KEYS) {
@@ -126,6 +124,17 @@ describe('state', () => {
         });
       }).toThrowError('Secret key is not valid');
     }
+  });
+
+  test('throws with unset work', () => {
+    expect(() => {
+      nano.createBlock(RANDOM_VALID_STATE_BLOCK.secretKey, {
+        previous: RANDOM_VALID_STATE_BLOCK.block.data.previous,
+        representative: RANDOM_VALID_STATE_BLOCK.block.data.representative,
+        balance: RANDOM_VALID_STATE_BLOCK.block.data.balance,
+        link: RANDOM_VALID_STATE_BLOCK.originalLink,
+      });
+    }).toThrowError('Work is not set');
   });
 
   test('throws with invalid previous', () => {

@@ -13,7 +13,6 @@ import { parseAddress } from './parse';
 
 /**
  * Generate a cryptographically secure seed.
- * Does not require initialization.
  *
  * @returns Promise fulfilled with seed, in hexadecimal format
  */
@@ -33,7 +32,6 @@ export function generateSeed(): Promise<string> {
 
 /**
  * Derive a secret key from a seed, given an index.
- * Does not require initialization.
  *
  * @param seed - The seed to generate the secret key from, in hexadecimal format
  * @param index - The index to generate the secret key from
@@ -61,7 +59,6 @@ export function deriveSecretKey(seed: string, index: number) {
 
 /**
  * Derive a public key from a secret key.
- * Does not require initialization.
  *
  * @param secretKeyOrAddress - The secret key or address to generate the public key from, in hexadecimal or address format
  * @returns Public key, in hexadecimal format
@@ -93,7 +90,6 @@ export interface DeriveAddressParams {
 
 /**
  * Derive address from a public key.
- * Does not require initialization.
  *
  * @param publicKey - The public key to generate the address from, in hexadecimal format
  * @param params - Parameters

@@ -51,7 +51,6 @@ export interface ConvertParams {
 
 /**
  * Convert a value from one Nano unit to another.
- * Does not require initialization.
  *
  * @param value - The value to convert
  * @param params - Params

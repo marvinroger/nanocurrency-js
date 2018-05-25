@@ -31,7 +31,6 @@ export function checkNumber(candidate: any) {
 
 /**
  * Check if the given amount is valid.
- * Does not require initialization.
  *
  * @param amount - The amount to check
  * @returns Valid
@@ -50,7 +49,6 @@ export function checkAmount(amount: any) {
 
 /**
  * Check if the given seed is valid.
- * Does not require initialization.
  *
  * @param seed - The seed to check
  * @returns Valid
@@ -61,7 +59,6 @@ export function checkSeed(seed: any) {
 
 /**
  * Check if the given hash is valid.
- * Does not require initialization.
  *
  * @param hash - The hash to check
  * @returns Valid
@@ -72,7 +69,6 @@ export function checkHash(hash: any) {
 
 /**
  * Check if the given public or secret key is valid.
- * Does not require initialization.
  *
  * @param key - The key to check
  * @returns Valid
@@ -83,7 +79,6 @@ export function checkKey(key: any) {
 
 /**
  * Check if the given address is valid.
- * Does not require initialization.
  *
  * @param address - The address to check
  * @returns Valid
@@ -96,7 +91,6 @@ export function checkAddress(address: any) {
 
 /**
  * Check if the given work is valid.
- * Does not require initialization.
  *
  * @param work - The work to check
  * @returns Valid
@@ -107,7 +101,6 @@ export function checkWork(work: any) {
 
 /**
  * Check if the given signature is valid.
- * Does not require initialization.
  *
  * @param signature - The signature to check
  * @returns Valid

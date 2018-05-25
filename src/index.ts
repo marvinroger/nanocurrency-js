@@ -7,7 +7,7 @@
  * @module NanoCurrency
  */
 export {
-  checkBalance,
+  checkAmount,
   checkSeed,
   checkHash,
   checkKey,

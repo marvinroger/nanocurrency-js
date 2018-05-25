@@ -5,7 +5,7 @@
  */
 import { blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs';
 
-import { checkAddress, checkBalance, checkHash } from './check';
+import { checkAddress, checkAmount, checkHash } from './check';
 
 import { convert, NanoUnit } from './conversion';
 
@@ -39,7 +39,7 @@ export function hashBlock(
   if (!checkAddress(representative)) {
     throw new Error('Representative is not valid');
   }
-  if (!checkBalance(balance)) throw new Error('Balance is not valid');
+  if (!checkAmount(balance)) throw new Error('Balance is not valid');
   let linkIsAddress = false;
   let linkIsBlockHash = false;
   if (checkAddress(link)) linkIsAddress = true;

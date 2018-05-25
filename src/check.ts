@@ -26,17 +26,16 @@ export function checkNumber(candidate: any) {
 }
 
 /**
- * Check if the given balance is valid.
+ * Check if the given amount is valid.
  * Does not require initialization.
  *
- * @param balance - The balance to check
+ * @param amount - The amount to check
  * @returns Valid
  */
-export function checkBalance(balance: any) {
-  // TODO(breaking): checkAmount instead
-  if (!checkString(balance) || balance === '' || balance.length > 39) return false;
+export function checkAmount(amount: any) {
+  if (!checkString(amount) || amount === '' || amount.length > 39) return false;
 
-  for (const char of balance) {
+  for (const char of amount) {
     if (char < '0' || char > '9') return false;
   }
 

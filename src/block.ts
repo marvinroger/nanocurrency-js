@@ -4,7 +4,7 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 /* tslint:disable object-shorthand-properties-first */
-import { checkAddress, checkBalance, checkHash, checkKey } from './check';
+import { checkAddress, checkAmount, checkHash, checkKey } from './check';
 
 import { deriveAddress, derivePublicKey } from './keys';
 
@@ -42,7 +42,7 @@ export function createBlock(secretKey: string, data: BlockData) {
   if (!checkAddress(data.representative)) {
     throw new Error('Representative is not valid');
   }
-  if (!checkBalance(data.balance)) throw new Error('Balance is not valid');
+  if (!checkAmount(data.balance)) throw new Error('Balance is not valid');
   let linkIsAddress = false;
   if (checkAddress(data.link)) linkIsAddress = true;
   else if (!checkHash(data.link)) throw new Error('Link is not valid');

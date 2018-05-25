@@ -47,8 +47,14 @@ export function createBlock(secretKey: string, data: BlockData) {
 
   const publicKey = derivePublicKey(secretKey);
   const account = deriveAddress(publicKey);
-  const hash = hashBlock(account, data.previous, data.representative, data.balance, data.link);
-  const signature = signBlock(hash, secretKey);
+  const hash = hashBlock({
+    account,
+    previous: data.previous,
+    representative: data.representative,
+    balance: data.balance,
+    link: data.link,
+  });
+  const signature = signBlock({ hash, secretKey });
 
   let link;
   let linkAsAddress;

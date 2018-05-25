@@ -12,19 +12,26 @@ import { byteArrayToHex, hexToByteArray } from './utils';
 
 const WORK_THRESHOLD = new BigNumber('0xffffffc000000000');
 
+/** Validate work parameters. */
+export interface ValidateWorkParams {
+  /** The block hash to validate the work against */
+  blockHash: string;
+  /** The work to validate */
+  work: string;
+}
+
 /**
  * Validate whether or not the work value meets the difficulty for the given hash.
  *
- * @param blockHash - The hash to validate the work against
- * @param work - The work to validate
+ * @param params - Parameters
  * @returns Valid
  */
-export function validateWork(blockHash: string, work: string) {
-  if (!checkHash(blockHash)) throw new Error('Hash is not valid');
-  if (!checkWork(work)) throw new Error('Work is not valid');
+export function validateWork(params: ValidateWorkParams) {
+  if (!checkHash(params.blockHash)) throw new Error('Hash is not valid');
+  if (!checkWork(params.work)) throw new Error('Work is not valid');
 
-  const hashBytes = hexToByteArray(blockHash);
-  const workBytes = hexToByteArray(work).reverse();
+  const hashBytes = hexToByteArray(params.blockHash);
+  const workBytes = hexToByteArray(params.work).reverse();
 
   const context = blake2bInit(8);
   blake2bUpdate(context, workBytes);

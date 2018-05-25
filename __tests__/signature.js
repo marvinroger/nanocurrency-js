@@ -18,25 +18,27 @@ describe('sign', () => {
   test('signs correctly', () => {
     expect.assertions(VALID_BLOCKS.length);
     for (let block of VALID_BLOCKS) {
-      expect(nano.signBlock(block.block.hash, block.secretKey)).toBe(block.block.data.signature);
+      expect(nano.signBlock({ hash: block.block.hash, secretKey: block.secretKey })).toBe(
+        block.block.data.signature
+      );
     }
   });
 
   test('throws with invalid hashes', () => {
     expect.assertions(INVALID_HASHES.length);
     for (let invalidHash of INVALID_HASHES) {
-      expect(() => nano.signBlock(invalidHash, RANDOM_VALID_BLOCK.secretKey)).toThrowError(
-        'Hash is not valid'
-      );
+      expect(() =>
+        nano.signBlock({ hash: invalidHash, secretKey: RANDOM_VALID_BLOCK.secretKey })
+      ).toThrowError('Hash is not valid');
     }
   });
 
   test('throws with invalid secret keys', () => {
     expect.assertions(INVALID_SECRET_KEYS.length);
     for (let invalidSecretKey of INVALID_SECRET_KEYS) {
-      expect(() => nano.signBlock(RANDOM_VALID_BLOCK.block.hash, invalidSecretKey)).toThrowError(
-        'Secret key is not valid'
-      );
+      expect(() =>
+        nano.signBlock({ hash: RANDOM_VALID_BLOCK.block.hash, secretKey: invalidSecretKey })
+      ).toThrowError('Secret key is not valid');
     }
   });
 });
@@ -45,19 +47,23 @@ describe('verify', () => {
   test('validates correct signature', () => {
     expect.assertions(VALID_BLOCKS.length);
     for (let block of VALID_BLOCKS) {
-      expect(nano.verifyBlock(block.block.hash, block.block.data.signature, block.publicKey)).toBe(
-        true
-      );
+      expect(
+        nano.verifyBlock({
+          hash: block.block.hash,
+          signature: block.block.data.signature,
+          publicKey: block.publicKey,
+        })
+      ).toBe(true);
     }
   });
 
   test('does not validate incorrect signature', () => {
     expect(
-      nano.verifyBlock(
-        RANDOM_VALID_BLOCK.block.hash,
-        INVALID_SIGNATURE,
-        RANDOM_VALID_BLOCK.publicKey
-      )
+      nano.verifyBlock({
+        hash: RANDOM_VALID_BLOCK.block.hash,
+        signature: INVALID_SIGNATURE,
+        publicKey: RANDOM_VALID_BLOCK.publicKey,
+      })
     ).toBe(false);
   });
 
@@ -65,11 +71,11 @@ describe('verify', () => {
     expect.assertions(INVALID_HASHES.length);
     for (let invalidHash of INVALID_HASHES) {
       expect(() =>
-        nano.verifyBlock(
-          invalidHash,
-          RANDOM_VALID_BLOCK.block.signature,
-          RANDOM_VALID_BLOCK.publicKey
-        )
+        nano.verifyBlock({
+          hash: invalidHash,
+          signature: RANDOM_VALID_BLOCK.block.signature,
+          publicKey: RANDOM_VALID_BLOCK.publicKey,
+        })
       ).toThrowError('Hash is not valid');
     }
   });
@@ -78,11 +84,11 @@ describe('verify', () => {
     expect.assertions(INVALID_SIGNATURES.length);
     for (let invalidSignature of INVALID_SIGNATURES) {
       expect(() =>
-        nano.verifyBlock(
-          RANDOM_VALID_BLOCK.block.hash,
-          invalidSignature,
-          RANDOM_VALID_BLOCK.publicKey
-        )
+        nano.verifyBlock({
+          hash: RANDOM_VALID_BLOCK.block.hash,
+          signature: invalidSignature,
+          publicKey: RANDOM_VALID_BLOCK.publicKey,
+        })
       ).toThrowError('Signature is not valid');
     }
   });
@@ -91,11 +97,11 @@ describe('verify', () => {
     expect.assertions(INVALID_PUBLIC_KEYS.length);
     for (let invalidPublicKey of INVALID_PUBLIC_KEYS) {
       expect(() =>
-        nano.verifyBlock(
-          RANDOM_VALID_BLOCK.block.hash,
-          RANDOM_VALID_BLOCK.block.data.signature,
-          invalidPublicKey
-        )
+        nano.verifyBlock({
+          hash: RANDOM_VALID_BLOCK.block.hash,
+          signature: RANDOM_VALID_BLOCK.block.data.signature,
+          publicKey: invalidPublicKey,
+        })
       ).toThrowError('Public key is not valid');
     }
   });

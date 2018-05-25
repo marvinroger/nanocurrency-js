@@ -16,13 +16,13 @@ describe('state', () => {
     expect.assertions(VALID_STATE_BLOCKS.length);
     for (let validStateBlock of VALID_STATE_BLOCKS) {
       expect(
-        nano.hashBlock(
-          validStateBlock.block.data.account,
-          validStateBlock.block.data.previous,
-          validStateBlock.block.data.representative,
-          validStateBlock.block.data.balance,
-          validStateBlock.originalLink
-        )
+        nano.hashBlock({
+          account: validStateBlock.block.data.account,
+          previous: validStateBlock.block.data.previous,
+          representative: validStateBlock.block.data.representative,
+          balance: validStateBlock.block.data.balance,
+          link: validStateBlock.originalLink,
+        })
       ).toBe(validStateBlock.block.hash);
     }
   });
@@ -31,13 +31,13 @@ describe('state', () => {
     expect.assertions(INVALID_ADDRESSES.length);
     for (let invalidAddress of INVALID_ADDRESSES) {
       expect(() =>
-        nano.hashBlock(
-          invalidAddress,
-          RANDOM_VALID_STATE_BLOCK.block.data.previous,
-          RANDOM_VALID_STATE_BLOCK.block.data.representative,
-          RANDOM_VALID_STATE_BLOCK.block.data.balance,
-          RANDOM_VALID_STATE_BLOCK.originalLink
-        )
+        nano.hashBlock({
+          account: invalidAddress,
+          previous: RANDOM_VALID_STATE_BLOCK.block.data.previous,
+          representative: RANDOM_VALID_STATE_BLOCK.block.data.representative,
+          balance: RANDOM_VALID_STATE_BLOCK.block.data.balance,
+          link: RANDOM_VALID_STATE_BLOCK.originalLink,
+        })
       ).toThrowError('Account is not valid');
     }
   });
@@ -46,13 +46,13 @@ describe('state', () => {
     expect.assertions(INVALID_HASHES.length);
     for (let invalidHash of INVALID_HASHES) {
       expect(() =>
-        nano.hashBlock(
-          RANDOM_VALID_STATE_BLOCK.block.data.account,
-          invalidHash,
-          RANDOM_VALID_STATE_BLOCK.block.data.representative,
-          RANDOM_VALID_STATE_BLOCK.block.data.balance,
-          RANDOM_VALID_STATE_BLOCK.originalLink
-        )
+        nano.hashBlock({
+          account: RANDOM_VALID_STATE_BLOCK.block.data.account,
+          previous: invalidHash,
+          representative: RANDOM_VALID_STATE_BLOCK.block.data.representative,
+          balance: RANDOM_VALID_STATE_BLOCK.block.data.balance,
+          link: RANDOM_VALID_STATE_BLOCK.originalLink,
+        })
       ).toThrowError('Previous is not valid');
     }
   });
@@ -61,13 +61,13 @@ describe('state', () => {
     expect.assertions(INVALID_ADDRESSES.length);
     for (let invalidAddress of INVALID_ADDRESSES) {
       expect(() =>
-        nano.hashBlock(
-          RANDOM_VALID_STATE_BLOCK.block.data.account,
-          RANDOM_VALID_STATE_BLOCK.block.data.previous,
-          invalidAddress,
-          RANDOM_VALID_STATE_BLOCK.block.data.balance,
-          RANDOM_VALID_STATE_BLOCK.originalLink
-        )
+        nano.hashBlock({
+          account: RANDOM_VALID_STATE_BLOCK.block.data.account,
+          previous: RANDOM_VALID_STATE_BLOCK.block.data.previous,
+          representative: invalidAddress,
+          balance: RANDOM_VALID_STATE_BLOCK.block.data.balance,
+          link: RANDOM_VALID_STATE_BLOCK.originalLink,
+        })
       ).toThrowError('Representative is not valid');
     }
   });
@@ -76,13 +76,13 @@ describe('state', () => {
     expect.assertions(INVALID_AMOUNTS.length);
     for (let invalidAmount of INVALID_AMOUNTS) {
       expect(() =>
-        nano.hashBlock(
-          RANDOM_VALID_STATE_BLOCK.block.data.account,
-          RANDOM_VALID_STATE_BLOCK.block.data.previous,
-          RANDOM_VALID_STATE_BLOCK.block.data.representative,
-          invalidAmount,
-          RANDOM_VALID_STATE_BLOCK.originalLink
-        )
+        nano.hashBlock({
+          account: RANDOM_VALID_STATE_BLOCK.block.data.account,
+          previous: RANDOM_VALID_STATE_BLOCK.block.data.previous,
+          representative: RANDOM_VALID_STATE_BLOCK.block.data.representative,
+          balance: invalidAmount,
+          link: RANDOM_VALID_STATE_BLOCK.originalLink,
+        })
       ).toThrowError('Balance is not valid');
     }
   });
@@ -91,13 +91,13 @@ describe('state', () => {
     expect.assertions(INVALID_HASHES_AND_ADDRESSES.length);
     for (let invalidLink of INVALID_HASHES_AND_ADDRESSES) {
       expect(() =>
-        nano.hashBlock(
-          RANDOM_VALID_STATE_BLOCK.block.data.account,
-          RANDOM_VALID_STATE_BLOCK.block.data.previous,
-          RANDOM_VALID_STATE_BLOCK.block.data.representative,
-          RANDOM_VALID_STATE_BLOCK.block.data.balance,
-          invalidLink
-        )
+        nano.hashBlock({
+          account: RANDOM_VALID_STATE_BLOCK.block.data.account,
+          previous: RANDOM_VALID_STATE_BLOCK.block.data.previous,
+          representative: RANDOM_VALID_STATE_BLOCK.block.data.representative,
+          balance: RANDOM_VALID_STATE_BLOCK.block.data.balance,
+          link: invalidLink,
+        })
       ).toThrowError('Link is not valid');
     }
   });

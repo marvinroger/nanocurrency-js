@@ -7,7 +7,9 @@
 
 ---
 
-A [battle-tested](__tests__) toolkit for the Nano cryptocurrency, allowing you to derive keys, generate seeds, hashes, signatures, proofs of work and state and legacy blocks.
+A [battle-tested](__tests__) toolkit for the Nano cryptocurrency, allowing you to derive keys, generate seeds, hashes, signatures, proofs of work and state blocks.
+
+If you are looking for legacy blocks, you will want the `^1.0.0` versions.
 
 ![Code showcase](showcase.png)
 

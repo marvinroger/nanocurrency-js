@@ -5,7 +5,7 @@
  */
 import BigNumber from 'bignumber.js';
 
-import { checkBalance, checkNumber } from './check';
+import { checkAmount, checkNumber } from './check';
 
 // tslint:disable-next-line variable-name
 const TunedBigNumber = BigNumber.clone({ EXPONENTIAL_AT: 1e9 });
@@ -62,7 +62,7 @@ export function convert(value: string, params: ConvertParams = {}) {
   if (typeof params.from === 'undefined') params.from = NanoUnit.Nano;
   if (typeof params.to === 'undefined') params.to = NanoUnit.raw;
 
-  if ((params.from === 'hex' && !checkBalance(value)) || !checkNumber(value)) {
+  if ((params.from === 'hex' && !checkAmount(value)) || !checkNumber(value)) {
     throw new Error('Value is not valid');
   }
 

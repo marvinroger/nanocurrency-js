@@ -14,8 +14,8 @@ import { signBlock } from './signature';
 
 /** State block data. */
 export interface BlockData {
-  /** The PoW */
-  work?: string | null;
+  /** The PoW. You can give it a `null` if you want to fill this field later */
+  work: string | null;
   /** The hash of the previous block on the account chain, in hexadecimal format */
   previous: string;
   /** The destination address */
@@ -36,8 +36,7 @@ export interface BlockData {
  */
 export function createBlock(secretKey: string, data: BlockData) {
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid');
-  let work = data.work;
-  if (typeof work === 'undefined') work = null; // TODO(breaking): Ensure work is set
+  if (typeof data.work === 'undefined') throw new Error('Work is not set');
   if (!checkHash(data.previous)) throw new Error('Previous is not valid');
   if (!checkAddress(data.representative)) {
     throw new Error('Representative is not valid');
@@ -70,7 +69,7 @@ export function createBlock(secretKey: string, data: BlockData) {
     balance: data.balance,
     link,
     link_as_account: linkAsAddress,
-    work,
+    work: data.work,
     signature,
   };
 

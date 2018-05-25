@@ -12,10 +12,6 @@ const VALID_CONVERSIONS = [
     result: '1000000000000000000000000000000',
   },
   {
-    value: '1',
-    result: '1000000000000000000000000000000',
-  },
-  {
     value: '2000000000000000000000000000000',
     from: 'raw',
     to: 'Nano',
@@ -51,6 +47,18 @@ const VALID_CONVERSIONS = [
     to: 'Nano',
     result: '9',
   },
+  {
+    value: '10000000000000000000000000000000',
+    from: 'raw',
+    to: 'hex',
+    result: '0000007e37be2022c0914b2680000000',
+  },
+  {
+    value: '0000007e37be2022c0914b2680000000',
+    from: 'hex',
+    to: 'raw',
+    result: '10000000000000000000000000000000',
+  },
 ];
 
 describe('conversion', () => {
@@ -66,11 +74,27 @@ describe('conversion', () => {
     }
   });
 
+  test('throws with no explicit from and to units', () => {
+    expect.assertions(3);
+    const errorMsg = 'From or to is not valid';
+    expect(() => nano.convert('1')).toThrowError(errorMsg);
+    expect(() => nano.convert('1', { from: 'raw' })).toThrowError(errorMsg);
+    expect(() => nano.convert('1', { to: 'Nano' })).toThrowError(errorMsg);
+  });
+
   test('throws with invalid numbers', () => {
     expect.assertions(INVALID_NUMBERS.length);
     for (let invalidNumber of INVALID_NUMBERS) {
-      expect(() => nano.convert(invalidNumber)).toThrowError('Value is not valid');
+      expect(() => nano.convert(invalidNumber, { from: 'raw', to: 'Nano' })).toThrowError(
+        'Value is not valid'
+      );
     }
+  });
+
+  test('throws with invalid hex', () => {
+    expect(() =>
+      nano.convert('0000007e37be2022c0914b268000000', { from: 'hex', to: 'Nano' })
+    ).toThrowError('Value is not valid');
   });
 
   test('throws with invalid from unit', () => {

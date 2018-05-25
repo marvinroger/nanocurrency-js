@@ -5,7 +5,7 @@
  */
 import BigNumber from 'bignumber.js';
 
-import { checkAmount, checkNumber } from './check';
+import { checkNumber, checkString } from './check';
 
 // tslint:disable-next-line variable-name
 const TunedBigNumber = BigNumber.clone({ EXPONENTIAL_AT: 1e9 });
@@ -41,13 +41,12 @@ export enum Unit {
   MNano = 'MNano',
 }
 
-// TODO(breaking): require from and to parameters
 /** Convert parameters. */
 export interface ConvertParams {
   /** The unit to convert the value from */
-  from?: Unit;
+  from: Unit;
   /** The unit to convert the value to */
-  to?: Unit;
+  to: Unit;
 }
 
 /**
@@ -58,19 +57,23 @@ export interface ConvertParams {
  * @param params - Params
  * @returns Converted number
  */
-export function convert(value: string, params: ConvertParams = {}) {
-  if (typeof params.from === 'undefined') params.from = Unit.Nano;
-  if (typeof params.to === 'undefined') params.to = Unit.raw;
-
-  if ((params.from === 'hex' && !checkAmount(value)) || !checkNumber(value)) {
-    throw new Error('Value is not valid');
-  }
+export function convert(value: string, params: ConvertParams) {
+  const paramsNotValid = new Error('From or to is not valid');
+  if (!params) throw paramsNotValid;
 
   const fromZeroes: number | undefined = ZEROES[params.from];
   const toZeroes: number | undefined = ZEROES[params.to];
 
   if (typeof fromZeroes === 'undefined' || typeof toZeroes === 'undefined') {
     throw new Error('From or to is not valid');
+  }
+
+  const valueNotValid = new Error('Value is not valid');
+  if (!checkString) throw valueNotValid;
+  if (params.from === 'hex') {
+    if (!/[0-9a-fA-F]{32}/.test(value)) throw valueNotValid;
+  } else {
+    if (!checkNumber(value)) throw valueNotValid;
   }
 
   const difference = fromZeroes - toZeroes;

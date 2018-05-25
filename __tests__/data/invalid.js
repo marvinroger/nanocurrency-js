@@ -40,7 +40,15 @@ const INVALID_ADDRESSES = [
   'xrb_1mbj7xi6yrwcuwetzd5535pdqjea5rfpsoqo9nw4gxg8itycgntucp49i1nv',
 ];
 
-const INVALID_AMOUNTS = ['', 12, 'bla', '1000000000000000000000000000000000000000', '-1'];
+const INVALID_AMOUNTS = [
+  '',
+  12,
+  'bla',
+  '1000000000000000000000000000000000000000',
+  '-1',
+  // a bit more than 2^128
+  '350000000000000000000000000000000000000',
+];
 
 const INVALID_SIGNATURES = [
   '',

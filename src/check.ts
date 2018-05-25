@@ -3,7 +3,11 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
+import BigNumber from 'bignumber.js';
+
 import { parseAddress } from './parse';
+
+const MAX_AMOUNT = new BigNumber('0xffffffffffffffffffffffffffffffff');
 
 /** @hidden */
 export function checkString(candidate: any) {
@@ -39,7 +43,9 @@ export function checkAmount(amount: any) {
     if (char < '0' || char > '9') return false;
   }
 
-  return true;
+  const candidate = new BigNumber(amount);
+
+  return candidate.isLessThanOrEqualTo(MAX_AMOUNT);
 }
 
 /**

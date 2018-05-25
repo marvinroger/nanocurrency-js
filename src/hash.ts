@@ -7,7 +7,7 @@ import { blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs';
 
 import { checkAddress, checkAmount, checkHash } from './check';
 
-import { convert, NanoUnit } from './conversion';
+import { convert, Unit } from './conversion';
 
 import { byteArrayToHex, hexToByteArray } from './utils';
 
@@ -49,7 +49,7 @@ export function hashBlock(
   const accountBytes = hexToByteArray(derivePublicKey(account));
   const previousBytes = hexToByteArray(previous);
   const representativeBytes = hexToByteArray(derivePublicKey(representative));
-  const balanceHex = convert(balance, { from: NanoUnit.raw, to: NanoUnit.hex });
+  const balanceHex = convert(balance, { from: Unit.raw, to: Unit.hex });
   const balanceBytes = hexToByteArray(balanceHex);
   let linkBytes;
   if (linkIsAddress) {

@@ -20,29 +20,31 @@ describe('validation', () => {
       if (hash === '0000000000000000000000000000000000000000000000000000000000000000') {
         hash = nano.derivePublicKey(block.block.data.account);
       }
-      expect(nano.validateWork(hash, block.block.data.work)).toBe(true);
+      expect(nano.validateWork({ blockHash: hash, work: block.block.data.work })).toBe(true);
     }
   });
 
   test('does not validate incorrect work', () => {
-    expect(nano.validateWork(INVALID_WORK.hash, INVALID_WORK.work)).toBe(false);
+    expect(nano.validateWork({ blockHash: INVALID_WORK.hash, work: INVALID_WORK.work })).toBe(
+      false
+    );
   });
 
   test('throws with invalid hashes', () => {
     expect.assertions(INVALID_HASHES.length);
     for (let invalidHash of INVALID_HASHES) {
-      expect(() => nano.validateWork(invalidHash, RANDOM_VALID_BLOCK.block.data.work)).toThrowError(
-        'Hash is not valid'
-      );
+      expect(() =>
+        nano.validateWork({ blockHash: invalidHash, work: RANDOM_VALID_BLOCK.block.data.work })
+      ).toThrowError('Hash is not valid');
     }
   });
 
   test('throws with invalid works', () => {
     expect.assertions(INVALID_WORKS.length);
     for (let invalidWork of INVALID_WORKS) {
-      expect(() => nano.validateWork(RANDOM_VALID_BLOCK.block.hash, invalidWork)).toThrowError(
-        'Work is not valid'
-      );
+      expect(() =>
+        nano.validateWork({ blockHash: RANDOM_VALID_BLOCK.block.hash, work: invalidWork })
+      ).toThrowError('Work is not valid');
     }
   });
 });

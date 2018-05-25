@@ -37,11 +37,10 @@ describe('computeWork', () => {
     expect.assertions(INVALID_WORKER_PARAMETERS.length);
     for (let invalidWorkerParameters of INVALID_WORKER_PARAMETERS) {
       expect(
-        nano.computeWork(
-          RANDOM_VALID_BLOCK.block.hash,
-          invalidWorkerParameters[0],
-          invalidWorkerParameters[1]
-        )
+        nano.computeWork(VALID_WORK.hash, {
+          workerIndex: invalidWorkerParameters[0],
+          workerCount: invalidWorkerParameters[1],
+        })
       ).rejects.toThrow('Worker parameters are not valid');
     }
   });

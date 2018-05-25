@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ConvertParams | nanocurrency</title>
+	<title>ValidateWorkParams | nanocurrency</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -918,16 +918,8 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-interface tsd-is-external">
 			<a href="computeworkparams.html" class="tsd-kind-icon">Compute<wbr>Work<wbr>Params</a>
 		</li>
-		<li class="current tsd-kind-interface tsd-is-external">
+		<li class=" tsd-kind-interface tsd-is-external">
 			<a href="convertparams.html" class="tsd-kind-icon">Convert<wbr>Params</a>
-			<ul>
-				<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-external">
-					<a href="convertparams.html#from" class="tsd-kind-icon">from</a>
-				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-external">
-					<a href="convertparams.html#to" class="tsd-kind-icon">to</a>
-				</li>
-			</ul>
 		</li>
 		<li class=" tsd-kind-interface tsd-is-external">
 			<a href="deriveaddressparams.html" class="tsd-kind-icon">Derive<wbr>Address<wbr>Params</a>
@@ -938,8 +930,16 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-interface tsd-is-external">
 			<a href="signblockparams.html" class="tsd-kind-icon">Sign<wbr>Block<wbr>Params</a>
 		</li>
-		<li class=" tsd-kind-interface tsd-is-external">
+		<li class="current tsd-kind-interface tsd-is-external">
 			<a href="validateworkparams.html" class="tsd-kind-icon">Validate<wbr>Work<wbr>Params</a>
+			<ul>
+				<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-external">
+					<a href="validateworkparams.html#blockhash" class="tsd-kind-icon">block<wbr>Hash</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-external">
+					<a href="validateworkparams.html#work" class="tsd-kind-icon">work</a>
+				</li>
+			</ul>
 		</li>
 		<li class=" tsd-kind-interface tsd-is-external">
 			<a href="verifyblockparams.html" class="tsd-kind-icon">Verify<wbr>Block<wbr>Params</a>
@@ -1005,7 +1005,7 @@ img { max-width: 100%; }
 		<section class="tsd-panel tsd-comment">
 			<div class="tsd-comment tsd-typography">
 				<div class="lead">
-					<p>Convert parameters.</p>
+					<p>Validate work parameters.</p>
 				</div>
 			</div>
 		</section>
@@ -1013,7 +1013,7 @@ img { max-width: 100%; }
 			<h3>Hierarchy</h3>
 			<ul class="tsd-hierarchy">
 				<li>
-					<span class="target">ConvertParams</span>
+					<span class="target">ValidateWorkParams</span>
 				</li>
 			</ul>
 		</section>
@@ -1024,8 +1024,8 @@ img { max-width: 100%; }
 					<section class="tsd-index-section tsd-is-external">
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="convertparams.html#from" class="tsd-kind-icon">from</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="convertparams.html#to" class="tsd-kind-icon">to</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="validateworkparams.html#blockhash" class="tsd-kind-icon">block<wbr>Hash</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="validateworkparams.html#work" class="tsd-kind-icon">work</a></li>
 						</ul>
 					</section>
 				</div>
@@ -1034,32 +1034,32 @@ img { max-width: 100%; }
 		<section class="tsd-panel-group tsd-member-group tsd-is-external">
 			<h2>Properties</h2>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-external">
-				<a name="from" class="tsd-anchor"></a>
-				<h3>from</h3>
-				<div class="tsd-signature tsd-kind-icon">from<span class="tsd-signature-symbol">:</span> <a href="../enums/unit.html" class="tsd-signature-type">Unit</a></div>
+				<a name="blockhash" class="tsd-anchor"></a>
+				<h3>block<wbr>Hash</h3>
+				<div class="tsd-signature tsd-kind-icon">block<wbr>Hash<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/e4ddffc/src/conversion.ts#L47">conversion.ts:47</a></li>
+						<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/e4ddffc/src/work.ts#L18">work.ts:18</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The unit to convert the value from</p>
+						<p>The block hash to validate the work against</p>
 					</div>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-external">
-				<a name="to" class="tsd-anchor"></a>
-				<h3>to</h3>
-				<div class="tsd-signature tsd-kind-icon">to<span class="tsd-signature-symbol">:</span> <a href="../enums/unit.html" class="tsd-signature-type">Unit</a></div>
+				<a name="work" class="tsd-anchor"></a>
+				<h3>work</h3>
+				<div class="tsd-signature tsd-kind-icon">work<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/e4ddffc/src/conversion.ts#L49">conversion.ts:49</a></li>
+						<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/e4ddffc/src/work.ts#L20">work.ts:20</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The unit to convert the value to</p>
+						<p>The work to validate</p>
 					</div>
 				</div>
 			</section>

@@ -43,7 +43,7 @@ async function loadWasmIfNotLoaded() {
  * @param blockHash - The hash to find a work for
  * @param workerIndex - The current worker index, starting at 0
  * @param  workerCount - The count of worker
- * @returns Work, in hexadecimal format
+ * @returns Work, in hexadecimal format, or null if no work has been found (very unlikely)
  */
 export async function computeWork(
   blockHash: string,

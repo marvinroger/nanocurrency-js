@@ -93,237 +93,11 @@ const VALID_CHANGE_BLOCK = {
 const VALID_STATE_BLOCKS = require('./data/valid_blocks');
 const RANDOM_VALID_STATE_BLOCK = VALID_STATE_BLOCKS[0];
 
-describe('open', () => {
-  test('creates correct open block', async () => {
-    const result = nano.createOpenBlock(SECRET_KEY, {
-      work: VALID_OPEN_BLOCK.params.work,
-      source: VALID_OPEN_BLOCK.params.source,
-      representative: VALID_OPEN_BLOCK.params.representative,
-    });
-    expect(result).toEqual(VALID_OPEN_BLOCK.result);
-  });
-
-  // TODO(breaking): add work test
-
-  test('throws with invalid secret key', () => {
-    expect.assertions(INVALID_SECRET_KEYS.length);
-    for (let invalidSecretKey of INVALID_SECRET_KEYS) {
-      expect(() => {
-        nano.createOpenBlock(invalidSecretKey, {
-          work: VALID_OPEN_BLOCK.params.work,
-          source: VALID_OPEN_BLOCK.params.source,
-          representative: VALID_OPEN_BLOCK.params.representative,
-        });
-      }).toThrowError('Secret key is not valid');
-    }
-  });
-
-  test('throws with invalid source', () => {
-    expect.assertions(INVALID_HASHES.length);
-    for (let invalidSource of INVALID_HASHES) {
-      expect(() => {
-        nano.createOpenBlock(SECRET_KEY, {
-          work: VALID_OPEN_BLOCK.params.work,
-          source: invalidSource,
-          representative: VALID_OPEN_BLOCK.params.representative,
-        });
-      }).toThrowError('Source is not valid');
-    }
-  });
-
-  test('throws with invalid representative', () => {
-    expect.assertions(INVALID_ADDRESSES.length);
-    for (let invalidAddress of INVALID_ADDRESSES) {
-      expect(() => {
-        nano.createOpenBlock(SECRET_KEY, {
-          work: VALID_OPEN_BLOCK.params.work,
-          source: VALID_OPEN_BLOCK.params.source,
-          representative: invalidAddress,
-        });
-      }).toThrowError('Representative is not valid');
-    }
-  });
-});
-
-describe('receive', () => {
-  test('creates correct receive block', async () => {
-    const result = nano.createReceiveBlock(SECRET_KEY, {
-      work: VALID_RECEIVE_BLOCK.params.work,
-      previous: VALID_RECEIVE_BLOCK.params.previous,
-      source: VALID_RECEIVE_BLOCK.params.source,
-    });
-    expect(result).toEqual(VALID_RECEIVE_BLOCK.result);
-  });
-
-  // TODO(breaking): add work test
-
-  test('throws with invalid secret key', () => {
-    expect.assertions(INVALID_SECRET_KEYS.length);
-    for (let invalidSecretKey of INVALID_SECRET_KEYS) {
-      expect(() => {
-        nano.createReceiveBlock(invalidSecretKey, {
-          work: VALID_RECEIVE_BLOCK.params.work,
-          previous: VALID_RECEIVE_BLOCK.params.previous,
-          source: VALID_RECEIVE_BLOCK.params.source,
-        });
-      }).toThrowError('Secret key is not valid');
-    }
-  });
-
-  test('throws with invalid previous', () => {
-    expect.assertions(INVALID_HASHES.length);
-    for (let invalidPrevious of INVALID_HASHES) {
-      expect(() => {
-        nano.createReceiveBlock(SECRET_KEY, {
-          work: VALID_RECEIVE_BLOCK.params.work,
-          previous: invalidPrevious,
-          source: VALID_RECEIVE_BLOCK.params.source,
-        });
-      }).toThrowError('Previous is not valid');
-    }
-  });
-
-  test('throws with invalid source', () => {
-    expect.assertions(INVALID_HASHES.length);
-    for (let invalidSource of INVALID_HASHES) {
-      expect(() => {
-        nano.createReceiveBlock(SECRET_KEY, {
-          work: VALID_RECEIVE_BLOCK.params.work,
-          previous: VALID_RECEIVE_BLOCK.params.previous,
-          source: invalidSource,
-        });
-      }).toThrowError('Source is not valid');
-    }
-  });
-});
-
-describe('send', () => {
-  test('creates correct send block', async () => {
-    const result = nano.createSendBlock(SECRET_KEY, {
-      work: VALID_SEND_BLOCK.params.work,
-      previous: VALID_SEND_BLOCK.params.previous,
-      destination: VALID_SEND_BLOCK.params.destination,
-      balance: VALID_SEND_BLOCK.params.balance,
-    });
-    expect(result).toEqual(VALID_SEND_BLOCK.result);
-  });
-
-  // TODO(breaking): add work test
-
-  test('throws with invalid secret key', () => {
-    expect.assertions(INVALID_SECRET_KEYS.length);
-    for (let invalidSecretKey of INVALID_SECRET_KEYS) {
-      expect(() => {
-        nano.createSendBlock(invalidSecretKey, {
-          work: VALID_SEND_BLOCK.params.work,
-          previous: VALID_SEND_BLOCK.params.previous,
-          destination: VALID_SEND_BLOCK.params.destination,
-          balance: VALID_SEND_BLOCK.params.balance,
-        });
-      }).toThrowError('Secret key is not valid');
-    }
-  });
-
-  test('throws with invalid previous', () => {
-    expect.assertions(INVALID_HASHES.length);
-    for (let invalidPrevious of INVALID_HASHES) {
-      expect(() => {
-        nano.createSendBlock(SECRET_KEY, {
-          work: VALID_SEND_BLOCK.params.work,
-          previous: invalidPrevious,
-          destination: VALID_SEND_BLOCK.params.destination,
-          balance: VALID_SEND_BLOCK.params.balance,
-        });
-      }).toThrowError('Previous is not valid');
-    }
-  });
-
-  test('throws with invalid destination', () => {
-    expect.assertions(INVALID_ADDRESSES.length);
-    for (let invalidDestination of INVALID_ADDRESSES) {
-      expect(() => {
-        nano.createSendBlock(SECRET_KEY, {
-          work: VALID_SEND_BLOCK.params.work,
-          previous: VALID_SEND_BLOCK.params.previous,
-          destination: invalidDestination,
-          balance: VALID_SEND_BLOCK.params.balance,
-        });
-      }).toThrowError('Destination is not valid');
-    }
-  });
-
-  test('throws with invalid balance', () => {
-    expect.assertions(INVALID_AMOUNTS.length);
-    for (let invalidBalance of INVALID_AMOUNTS) {
-      expect(() => {
-        nano.createSendBlock(SECRET_KEY, {
-          work: VALID_SEND_BLOCK.params.work,
-          previous: VALID_SEND_BLOCK.params.previous,
-          destination: VALID_SEND_BLOCK.params.destination,
-          balance: invalidBalance,
-        });
-      }).toThrowError('Balance is not valid');
-    }
-  });
-});
-
-describe('change', () => {
-  test('creates correct change block', async () => {
-    const result = nano.createChangeBlock(SECRET_KEY, {
-      work: VALID_CHANGE_BLOCK.params.work,
-      previous: VALID_CHANGE_BLOCK.params.previous,
-      representative: VALID_CHANGE_BLOCK.params.representative,
-    });
-    expect(result).toEqual(VALID_CHANGE_BLOCK.result);
-  });
-
-  // TODO(breaking): add work test
-
-  test('throws with invalid secret key', () => {
-    expect.assertions(INVALID_SECRET_KEYS.length);
-    for (let invalidSecretKey of INVALID_SECRET_KEYS) {
-      expect(() => {
-        nano.createChangeBlock(invalidSecretKey, {
-          work: VALID_CHANGE_BLOCK.params.work,
-          previous: VALID_CHANGE_BLOCK.params.previous,
-          representative: VALID_CHANGE_BLOCK.params.representative,
-        });
-      }).toThrowError('Secret key is not valid');
-    }
-  });
-
-  test('throws with invalid previous', () => {
-    expect.assertions(INVALID_HASHES.length);
-    for (let invalidPrevious of INVALID_HASHES) {
-      expect(() => {
-        nano.createChangeBlock(SECRET_KEY, {
-          work: VALID_CHANGE_BLOCK.params.work,
-          previous: invalidPrevious,
-          representative: VALID_CHANGE_BLOCK.params.representative,
-        });
-      }).toThrowError('Previous is not valid');
-    }
-  });
-
-  test('throws with invalid representative', () => {
-    expect.assertions(INVALID_ADDRESSES.length);
-    for (let invalidRepresentative of INVALID_ADDRESSES) {
-      expect(() => {
-        nano.createChangeBlock(SECRET_KEY, {
-          work: VALID_CHANGE_BLOCK.params.work,
-          previous: VALID_CHANGE_BLOCK.params.previous,
-          representative: invalidRepresentative,
-        });
-      }).toThrowError('Representative is not valid');
-    }
-  });
-});
-
 describe('state', () => {
   test('creates correct state block', async () => {
     expect.assertions(VALID_STATE_BLOCKS.length);
     for (let validStateBlock of VALID_STATE_BLOCKS) {
-      const result = nano.createStateBlock(validStateBlock.secretKey, {
+      const result = nano.createBlock(validStateBlock.secretKey, {
         work: validStateBlock.block.data.work,
         previous: validStateBlock.block.data.previous,
         representative: validStateBlock.block.data.representative,
@@ -343,7 +117,7 @@ describe('state', () => {
     expect.assertions(INVALID_SECRET_KEYS.length);
     for (let invalidSecretKey of INVALID_SECRET_KEYS) {
       expect(() => {
-        nano.createStateBlock(invalidSecretKey, {
+        nano.createBlock(invalidSecretKey, {
           work: RANDOM_VALID_STATE_BLOCK.block.data.work,
           previous: RANDOM_VALID_STATE_BLOCK.block.data.previous,
           representative: RANDOM_VALID_STATE_BLOCK.block.data.representative,
@@ -358,7 +132,7 @@ describe('state', () => {
     expect.assertions(INVALID_HASHES.length);
     for (let invalidPrevious of INVALID_HASHES) {
       expect(() => {
-        nano.createStateBlock(RANDOM_VALID_STATE_BLOCK.secretKey, {
+        nano.createBlock(RANDOM_VALID_STATE_BLOCK.secretKey, {
           work: RANDOM_VALID_STATE_BLOCK.block.data.work,
           previous: invalidPrevious,
           representative: RANDOM_VALID_STATE_BLOCK.block.data.representative,
@@ -373,7 +147,7 @@ describe('state', () => {
     expect.assertions(INVALID_ADDRESSES.length);
     for (let invalidRepresentative of INVALID_ADDRESSES) {
       expect(() => {
-        nano.createStateBlock(RANDOM_VALID_STATE_BLOCK.secretKey, {
+        nano.createBlock(RANDOM_VALID_STATE_BLOCK.secretKey, {
           work: RANDOM_VALID_STATE_BLOCK.block.data.work,
           previous: RANDOM_VALID_STATE_BLOCK.block.data.previous,
           representative: invalidRepresentative,
@@ -388,7 +162,7 @@ describe('state', () => {
     expect.assertions(INVALID_AMOUNTS.length);
     for (let invalidBalance of INVALID_AMOUNTS) {
       expect(() => {
-        nano.createStateBlock(RANDOM_VALID_STATE_BLOCK.secretKey, {
+        nano.createBlock(RANDOM_VALID_STATE_BLOCK.secretKey, {
           work: RANDOM_VALID_STATE_BLOCK.block.data.work,
           previous: RANDOM_VALID_STATE_BLOCK.block.data.previous,
           representative: RANDOM_VALID_STATE_BLOCK.block.data.representative,
@@ -403,7 +177,7 @@ describe('state', () => {
     expect.assertions(INVALID_HASHES_AND_ADDRESSES.length);
     for (let invalidLink of INVALID_HASHES_AND_ADDRESSES) {
       expect(() => {
-        nano.createStateBlock(RANDOM_VALID_STATE_BLOCK.secretKey, {
+        nano.createBlock(RANDOM_VALID_STATE_BLOCK.secretKey, {
           work: RANDOM_VALID_STATE_BLOCK.block.data.work,
           previous: RANDOM_VALID_STATE_BLOCK.block.data.previous,
           representative: RANDOM_VALID_STATE_BLOCK.block.data.representative,

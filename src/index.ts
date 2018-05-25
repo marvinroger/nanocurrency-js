@@ -20,22 +20,10 @@ export { convert } from './conversion';
 
 export { generateSeed, deriveSecretKey, derivePublicKey, deriveAddress } from './keys';
 
-export {
-  hashOpenBlock,
-  hashSendBlock,
-  hashReceiveBlock,
-  hashChangeBlock,
-  hashStateBlock,
-} from './hash';
+export { hashBlock } from './hash';
 
 export { signBlock, verifyBlock } from './signature';
 
 export { init, isReady, work, validateWork } from './work';
 
-export {
-  createOpenBlock,
-  createSendBlock,
-  createReceiveBlock,
-  createChangeBlock,
-  createStateBlock,
-} from './block';
+export { createBlock } from './block';

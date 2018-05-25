@@ -17,111 +17,6 @@ const STATE_BLOCK_PREAMBLE_BYTES = new Uint8Array(32);
 STATE_BLOCK_PREAMBLE_BYTES[31] = 6;
 
 /**
- * Hash a receive block.
- * Does not require initialization.
- *
- * @param previous - The hash of the previous block on the account chain, in hexadecimal format
- * @param source - The hash of the send block that is being received, in hexadecimal format
- * @returns Hash, in hexadecimal format
- */
-export function hashReceiveBlock(previous: string, source: string) {
-  if (!checkHash(previous)) throw new Error('Previous is not valid');
-  if (!checkHash(source)) throw new Error('Source is not valid');
-
-  const previousBytes = hexToByteArray(previous);
-  const sourceBytes = hexToByteArray(source);
-
-  const context = blake2bInit(32);
-  blake2bUpdate(context, previousBytes);
-  blake2bUpdate(context, sourceBytes);
-  const hashBytes = blake2bFinal(context);
-
-  return byteArrayToHex(hashBytes);
-}
-
-/**
- * Hash an open block.
- * Does not require initialization.
- *
- * @param source - The hash of the send block that is being received, in hexadecimal format
- * @param representative - The representative address
- * @param account - The account address
- * @returns Hash, in hexadecimal format
- */
-export function hashOpenBlock(source: string, representative: string, account: string) {
-  if (!checkHash(source)) throw new Error('Source is not valid');
-  if (!checkAddress(representative)) {
-    throw new Error('Representative is not valid');
-  }
-  if (!checkAddress(account)) throw new Error('Account is not valid');
-
-  const sourceBytes = hexToByteArray(source);
-  const representativeBytes = hexToByteArray(derivePublicKey(representative));
-  const accountBytes = hexToByteArray(derivePublicKey(account));
-
-  const context = blake2bInit(32);
-  blake2bUpdate(context, sourceBytes);
-  blake2bUpdate(context, representativeBytes);
-  blake2bUpdate(context, accountBytes);
-  const hashBytes = blake2bFinal(context);
-
-  return byteArrayToHex(hashBytes);
-}
-
-/**
- * Hash a change block.
- * Does not require initialization.
- *
- * @param previous - The hash of the previous block on the account chain, in hexadecimal format
- * @param representative - The representative address
- * @returns Hash, in hexadecimal format
- */
-export function hashChangeBlock(previous: string, representative: string) {
-  if (!checkHash(previous)) throw new Error('Previous is not valid');
-  if (!checkAddress(representative)) {
-    throw new Error('Representative is not valid');
-  }
-
-  const previousBytes = hexToByteArray(previous);
-  const representativeBytes = hexToByteArray(derivePublicKey(representative));
-
-  const context = blake2bInit(32);
-  blake2bUpdate(context, previousBytes);
-  blake2bUpdate(context, representativeBytes);
-  const hashBytes = blake2bFinal(context);
-
-  return byteArrayToHex(hashBytes);
-}
-
-/**
- * Hash a send block.
- * Does not require initialization.
- *
- * @param previous - The hash of the previous block on the account chain, in hexadecimal format
- * @param destination - The destination address
- * @param balance - The balance, in raw
- * @returns Hash, in hexadecimal format
- */
-export function hashSendBlock(previous: string, destination: string, balance: string) {
-  if (!checkHash(previous)) throw new Error('Previous is not valid');
-  if (!checkAddress(destination)) throw new Error('Destination is not valid');
-  if (!checkBalance(balance)) throw new Error('Balance is not valid');
-
-  const previousBytes = hexToByteArray(previous);
-  const destinationBytes = hexToByteArray(derivePublicKey(destination));
-  const balanceHex = convert(balance, { from: NanoUnit.raw, to: NanoUnit.hex });
-  const balanceBytes = hexToByteArray(balanceHex);
-
-  const context = blake2bInit(32);
-  blake2bUpdate(context, previousBytes);
-  blake2bUpdate(context, destinationBytes);
-  blake2bUpdate(context, balanceBytes);
-  const hashBytes = blake2bFinal(context);
-
-  return byteArrayToHex(hashBytes);
-}
-
-/**
  * Hash a state block.
  * Does not require initialization.
  *
@@ -132,7 +27,7 @@ export function hashSendBlock(previous: string, destination: string, balance: st
  * @param link - The account or block hash meant as a link, in address or hexadecimal format
  * @returns Hash, in hexadecimal format
  */
-export function hashStateBlock(
+export function hashBlock(
   account: string,
   previous: string,
   representative: string,

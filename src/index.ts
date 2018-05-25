@@ -24,6 +24,8 @@ export { hashBlock } from './hash';
 
 export { signBlock, verifyBlock } from './signature';
 
-export { init, isReady, work, validateWork } from './work';
+export { validateWork } from './work';
 
 export { createBlock } from './block';
+
+export { computeWork } from './accelerated';

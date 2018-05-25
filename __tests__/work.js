@@ -6,11 +6,6 @@ const { INVALID_HASHES, INVALID_WORKS } = require('./data/invalid');
 const VALID_BLOCKS = require('./data/valid_blocks');
 const RANDOM_VALID_BLOCK = VALID_BLOCKS[0];
 
-const VALID_WORK = {
-  hash: '7f7122e843b27524f4f1d6bd14aefd1c8f01d36ae8653d37417533c0d4bc2be6',
-  work: '0000000000995bc3',
-};
-
 const INVALID_WORK = {
   hash: '3ed191ec702f384514ba35e1f9081148df5a9ab48fe0f604b6e5b9f7177cee32',
   work: 'bb6737f2daf01a2c',
@@ -48,43 +43,6 @@ describe('validation', () => {
       expect(() => nano.validateWork(RANDOM_VALID_BLOCK.block.hash, invalidWork)).toThrowError(
         'Work is not valid'
       );
-    }
-  });
-});
-
-describe('generation', () => {
-  beforeAll(nano.init);
-
-  test('computes deterministic work', () => {
-    expect(nano.work(VALID_WORK.hash)).toBe(VALID_WORK.work);
-  });
-
-  test('throws with invalid hashes', () => {
-    expect.assertions(INVALID_HASHES.length);
-    for (let invalidHash of INVALID_HASHES) {
-      expect(() => nano.work(invalidHash)).toThrowError('Hash is not valid');
-    }
-  });
-
-  test('throws with invalid worker parameters', () => {
-    const INVALID_WORKER_PARAMETERS = [
-      ['p', 1],
-      [1.1, 1],
-      [-1, 1],
-      [0, 'p'],
-      [0, 1.1],
-      [0, -1],
-      [1, 1],
-    ];
-    expect.assertions(INVALID_WORKER_PARAMETERS.length);
-    for (let invalidWorkerParameters of INVALID_WORKER_PARAMETERS) {
-      expect(() =>
-        nano.work(
-          RANDOM_VALID_BLOCK.block.hash,
-          invalidWorkerParameters[0],
-          invalidWorkerParameters[1]
-        )
-      ).toThrowError('Worker parameters are not valid');
     }
   });
 });

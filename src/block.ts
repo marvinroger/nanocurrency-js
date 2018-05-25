@@ -28,7 +28,6 @@ export interface BlockData {
 
 /**
  * Create a state block.
- * Does not require initialization.
  *
  * @param secretKey - The secret key to create the block from, in hexadecimal format
  * @param data - Block data

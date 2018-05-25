@@ -11,7 +11,6 @@ import { byteArrayToHex, hexToByteArray } from './utils';
 
 /**
  * Sign a block.
- * Does not require initialization.
  *
  * @param blockHash - The hash of the block to sign
  * @param secretKey - The secret key to sign the block with, in hexadecimal format
@@ -31,7 +30,6 @@ export function signBlock(blockHash: string, secretKey: string) {
 
 /**
  * Verify a block against a public key.
- * Does not require initialization.
  *
  * @param blockHash - The hash of the block to verify
  * @param signature - The signature of the block to verify, in hexadecimal format

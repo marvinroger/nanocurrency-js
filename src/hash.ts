@@ -18,7 +18,6 @@ STATE_BLOCK_PREAMBLE_BYTES[31] = 6;
 
 /**
  * Hash a state block.
- * Does not require initialization.
  *
  * @param account - The account address
  * @param previous - The hash of the previous block on the account chain, in hexadecimal format

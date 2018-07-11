@@ -7,7 +7,7 @@
 
 ---
 
-A [battle-tested](__tests__) toolkit for the Nano cryptocurrency, allowing you to derive keys, generate seeds, hashes, signatures, proofs of work and state blocks.
+A [battle-tested](__tests__) toolkit for the Nano cryptocurrency.
 
 If you are looking for legacy blocks, you will want the `^1.0.0` versions.
 
@@ -17,11 +17,41 @@ The documentation is available locally in [docs/](docs/) or online at [https://m
 
 ---
 
+## Features
+
+- Generate seeds
+- Derive secret keys, public keys and addresses
+- Hash blocks
+- Sign and verify blocks
+- Compute and test proofs of work
+- Check the format of seeds, secret keys, public keys, addresses, amounts, etc.
+- Convert Nano units
+- **CLI doing all of the above**
+
+---
+
 ## Usage
+
+To install the library:
 
 ```
 npm install nanocurrency
 # or yarn add nanocurrency
+```
+
+```js
+import * as nanocurrency from 'nanocurrency';
+```
+
+To install the CLI:
+
+```
+npm install -g nanocurrency
+# or yarn global add nanocurrency
+```
+
+```bash
+nanocurrency --help
 ```
 
 ---
@@ -39,21 +69,15 @@ Considering you can pre-compute and cache the work prior to an actual transactio
 
 Contributions are very welcome. To develop, make use of the following commands (using [Yarn](https://yarnpkg.com)):
 
-* `yarn build:dev`: build the C++ code to WebAssembly and bundle the files into the `dist` directory, without optimization so that it is fast while developing. Note that you'll need to have Docker installed
+- `yarn build:dev`: build the C++ code to WebAssembly and bundle the files into the `dist` directory, without optimization so that it is fast while developing. Note that you'll need to have Docker installed
 
-* `yarn test`: test the code
+- `yarn test`: test the code
 
-* `yarn lint`: lint the code against [JavaScript Standard Style](https://standardjs.com)
+- `yarn lint`: lint the code against [JavaScript Standard Style](https://standardjs.com)
 
-* `yarn format`: format the code with [Prettier](https://prettier.io)
+- `yarn format`: format the code with [Prettier](https://prettier.io)
 
-* `yarn generate-docs`: generate the `DOCUMENTATION.md` file from the [JSDoc](http://usejsdoc.org) annotations
-
----
-
-## Helpful materials
-
-* Article about seed / secret key / public key / address generation: https://medium.com/@benkray/raiblocks-deterministic-keys-8cb869cc6046
+- `yarn generate-docs`: generate the `DOCUMENTATION.md` file from the [JSDoc](http://usejsdoc.org) annotations
 
 ---
 

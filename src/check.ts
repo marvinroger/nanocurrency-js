@@ -35,7 +35,7 @@ export function checkNumber(candidate: any) {
  * @param amount - The amount to check
  * @returns Valid
  */
-export function checkAmount(amount: any) {
+export function checkAmount(amount: string) {
   if (!checkString(amount) || !/^[1-9]{1}[0-9]{0,38}$/.test(amount)) return false;
 
   const candidate = new BigNumber(amount);
@@ -49,7 +49,7 @@ export function checkAmount(amount: any) {
  * @param seed - The seed to check
  * @returns Valid
  */
-export function checkSeed(seed: any) {
+export function checkSeed(seed: string) {
   return checkString(seed) && /^[0-9a-fA-F]{64}$/.test(seed);
 }
 
@@ -59,7 +59,7 @@ export function checkSeed(seed: any) {
  * @param hash - The hash to check
  * @returns Valid
  */
-export function checkHash(hash: any) {
+export function checkHash(hash: string) {
   return checkSeed(hash);
 }
 
@@ -69,7 +69,7 @@ export function checkHash(hash: any) {
  * @param key - The key to check
  * @returns Valid
  */
-export function checkKey(key: any) {
+export function checkKey(key: string) {
   return checkSeed(key);
 }
 
@@ -79,7 +79,7 @@ export function checkKey(key: any) {
  * @param address - The address to check
  * @returns Valid
  */
-export function checkAddress(address: any) {
+export function checkAddress(address: string) {
   const parseResult = parseAddress(address);
 
   return parseResult.valid;
@@ -91,7 +91,7 @@ export function checkAddress(address: any) {
  * @param work - The work to check
  * @returns Valid
  */
-export function checkWork(work: any) {
+export function checkWork(work: string) {
   return checkString(work) && /^[0-9a-fA-F]{16}$/.test(work);
 }
 
@@ -101,6 +101,6 @@ export function checkWork(work: any) {
  * @param signature - The signature to check
  * @returns Valid
  */
-export function checkSignature(signature: any) {
+export function checkSignature(signature: string) {
   return checkString(signature) && /^[0-9a-fA-F]{128}$/.test(signature);
 }

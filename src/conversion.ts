@@ -70,7 +70,7 @@ export function convert(value: string, params: ConvertParams) {
   const valueNotValid = new Error('Value is not valid');
   if (!checkString) throw valueNotValid;
   if (params.from === 'hex') {
-    if (!/[0-9a-fA-F]{32}/.test(value)) throw valueNotValid;
+    if (!/^[0-9a-fA-F]{32}$/.test(value)) throw valueNotValid;
   } else {
     if (!checkNumber(value)) throw valueNotValid;
   }

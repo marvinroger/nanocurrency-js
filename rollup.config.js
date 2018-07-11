@@ -3,6 +3,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
 import license from 'rollup-plugin-license';
+
 import pkg from './package.json';
 
 const ENV = process.env.NODE_ENV;
@@ -32,6 +33,14 @@ const config = [
       { file: pkg.module, format: 'es', globals },
     ],
     plugins: [resolve(), commonjs(), typescript({ useTsconfigDeclarationDir: true })],
+  },
+  {
+    input: 'src/cli/index.ts',
+    output: { file: pkg.bin.nanocurrency, format: 'cjs', banner: '#!/usr/bin/env node' },
+    plugins: [resolve(), commonjs(), typescript({ useTsconfigDeclarationDir: true })],
+    external(id) {
+      return /^[\w-]+$/.test(id) || id === '../nanocurrency.cjs';
+    },
   },
 ];
 

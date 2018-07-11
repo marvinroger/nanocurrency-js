@@ -36,11 +36,7 @@ export function checkNumber(candidate: any) {
  * @returns Valid
  */
 export function checkAmount(amount: any) {
-  if (!checkString(amount) || amount === '' || amount.length > 39) return false;
-
-  for (const char of amount) {
-    if (char < '0' || char > '9') return false;
-  }
+  if (!checkString(amount) || !/^[1-9]{1}[0-9]{0,38}$/.test(amount)) return false;
 
   const candidate = new BigNumber(amount);
 
@@ -54,7 +50,7 @@ export function checkAmount(amount: any) {
  * @returns Valid
  */
 export function checkSeed(seed: any) {
-  return checkString(seed) && /[0-9a-fA-F]{64}/.test(seed);
+  return checkString(seed) && /^[0-9a-fA-F]{64}$/.test(seed);
 }
 
 /**
@@ -96,7 +92,7 @@ export function checkAddress(address: any) {
  * @returns Valid
  */
 export function checkWork(work: any) {
-  return checkString(work) && /[0-9a-fA-F]{16}/.test(work);
+  return checkString(work) && /^[0-9a-fA-F]{16}$/.test(work);
 }
 
 /**
@@ -106,5 +102,5 @@ export function checkWork(work: any) {
  * @returns Valid
  */
 export function checkSignature(signature: any) {
-  return checkString(signature) && /[0-9a-fA-F]{128}/.test(signature);
+  return checkString(signature) && /^[0-9a-fA-F]{128}$/.test(signature);
 }

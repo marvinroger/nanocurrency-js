@@ -18,7 +18,8 @@
   "dependencies": {
     "bignumber.js": "^7.2.0",
     "blakejs": "^1.1.0",
-    "nano-base32": "^1.0.0"
+    "nano-base32": "^1.0.0",
+    "yargs": "^12.0.1"
   },
   "devDependencies": {
     "@types/node": "^10.0.4",
@@ -43,8 +44,7 @@
     "tslint-config-prettier": "^1.12.0",
     "typedoc": "^0.11.1",
     "typedoc-plugin-internal-external": "^1.0.10",
-    "typescript": "^2.8.3",
-    "yargs": "^12.0.1"
+    "typescript": "^2.8.3"
   },
   "files": [
     "dist/"

@@ -39,6 +39,9 @@ const config = [
     output: { file: pkg.bin.nanocurrency, format: 'cjs', banner: '#!/usr/bin/env node' },
     plugins: [resolve(), commonjs(), typescript({ useTsconfigDeclarationDir: true })],
     external(id) {
+      // we'll want to embed the helpers
+      if (id === 'tslib') return false;
+
       return /^[\w-]+$/.test(id) || id === '../nanocurrency.cjs';
     },
   },

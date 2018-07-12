@@ -12,7 +12,9 @@ let fillRandom: (bytes: Uint8Array) => Promise<void>;
 if (!IS_NODE) {
   fillRandom = bytes => {
     return new Promise(resolve => {
-      self.crypto.getRandomValues(bytes); // eslint-disable-line
+      // cast as any, otherwise:
+      // error TS2339: Property 'crypto' does not exist on type 'WorkerGlobalScope'
+      (self as any).crypto.getRandomValues(bytes);
       resolve();
     });
   };

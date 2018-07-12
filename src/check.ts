@@ -32,6 +32,8 @@ export function checkNumber(candidate: any) {
 /**
  * Check if the given amount is valid.
  *
+ * **Note:** a valid amount means that it can be embedded into a block `balance`.
+ *
  * @param amount - The amount to check
  * @returns Valid
  */
@@ -46,6 +48,8 @@ export function checkAmount(amount: string) {
 /**
  * Check if the given seed is valid.
  *
+ * **Note:** it only checks the format of the seed.
+ *
  * @param seed - The seed to check
  * @returns Valid
  */
@@ -55,6 +59,8 @@ export function checkSeed(seed: string) {
 
 /**
  * Check if the given hash is valid.
+ *
+ * **Note:** it only checks the format of the hash.
  *
  * @param hash - The hash to check
  * @returns Valid
@@ -66,6 +72,9 @@ export function checkHash(hash: string) {
 /**
  * Check if the given public or secret key is valid.
  *
+ * **Note:** it only checks the format of the key.
+ * It does not check whether or not the key does exist on the network.
+ *
  * @param key - The key to check
  * @returns Valid
  */
@@ -75,6 +84,9 @@ export function checkKey(key: string) {
 
 /**
  * Check if the given address is valid.
+ *
+ * **Note:** it checks the format and the checksum of the address.
+ * It does not check whether or not the address does exist on the network.
  *
  * @param address - The address to check
  * @returns Valid
@@ -88,7 +100,7 @@ export function checkAddress(address: string) {
 /**
  * Check if the given work is valid.
  *
- * **Note:** this only checks the format of the work, not its difficulty
+ * **Note:** it only checks the format of the work, not its difficulty.
  *
  * @param work - The work to check
  * @returns Valid
@@ -99,6 +111,8 @@ export function checkWork(work: string) {
 
 /**
  * Check if the given signature is valid.
+ *
+ * **Note:** it only checks the format of the signature.
  *
  * @param signature - The signature to check
  * @returns Valid

@@ -88,6 +88,8 @@ export function checkAddress(address: string) {
 /**
  * Check if the given work is valid.
  *
+ * **Note:** this only checks the format of the work, not its difficulty
+ *
  * @param work - The work to check
  * @returns Valid
  */

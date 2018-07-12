@@ -210,7 +210,7 @@ yargs
   .command('verify', 'verify a [block]', yargs => {
     return wrapSubcommand(
       yargs.usage('usage: $0 verify <item>').command(
-        'verify',
+        'block',
         'verify a block',
         yargs => {
           return yargs

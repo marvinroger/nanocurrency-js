@@ -20,13 +20,21 @@ STATE_BLOCK_PREAMBLE_BYTES[31] = 6;
 export interface HashBlockParams {
   /** The account address */
   account: string;
-  /** The hash of the previous block on the account chain, in hexadecimal format */
+  /**
+   * The hash of the previous block on the account chain, in hexadecimal format
+   *
+   * `0000000000000000000000000000000000000000000000000000000000000000` if `open` block.
+   */
   previous: string;
   /** The destination address */
   representative: string;
   /** The resulting balance, in raw */
   balance: string;
-  /** The account or block hash meant as a link, in address or hexadecimal format */
+  /**
+   * The account or block hash meant as a link, in address or hexadecimal format
+   *
+   * Read more on the [Official Nano Wiki](https://github.com/nanocurrency/raiblocks/wiki/Universal-Blocks-Specification)
+   */
   link: string;
 }
 

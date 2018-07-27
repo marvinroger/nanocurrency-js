@@ -38,6 +38,7 @@ export function checkNumber(candidate: any) {
  * @returns Valid
  */
 export function checkAmount(amount: string) {
+  if (amount === '0') return true;
   if (!checkString(amount) || !/^[1-9]{1}[0-9]{0,38}$/.test(amount)) return false;
 
   const candidate = new BigNumber(amount);

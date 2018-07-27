@@ -4,10 +4,10 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import { blake2b } from 'blakejs';
-import nanoBase32 from 'nano-base32';
 
 import { compareArrays } from './utils';
 import { checkString } from './check';
+import { decodeNanoBase32 } from './nano-base32';
 
 /** @hidden */
 export interface ParseAddressResult {
@@ -30,8 +30,8 @@ export function parseAddress(address: any): ParseAddressResult {
     prefixLength = 5;
   }
 
-  const publicKeyBytes = nanoBase32.decode(address.substr(prefixLength, 52));
-  const checksumBytes = nanoBase32.decode(address.substr(prefixLength + 52));
+  const publicKeyBytes = decodeNanoBase32(address.substr(prefixLength, 52));
+  const checksumBytes = decodeNanoBase32(address.substr(prefixLength + 52));
 
   const computedChecksumBytes = blake2b(publicKeyBytes, null, 5).reverse();
 

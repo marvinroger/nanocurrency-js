@@ -4,12 +4,12 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import { blake2b, blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs';
-import nanoBase32 from 'nano-base32';
 
 import { checkKey, checkSeed } from './check';
 import { derivePublicFromSecret } from './nacl';
 import { byteArrayToHex, getRandomBytes, hexToByteArray } from './utils';
 import { parseAddress } from './parse';
+import { encodeNanoBase32 } from './nano-base32';
 
 /**
  * Generate a cryptographically secure seed.
@@ -104,11 +104,11 @@ export function deriveAddress(publicKey: string, params: DeriveAddressParams = {
   let prefix = 'xrb_';
   if (params.useNanoPrefix === true) prefix = 'nano_';
 
-  const encodedPublicKey = nanoBase32.encode(paddedPublicKeyBytes);
+  const encodedPublicKey = encodeNanoBase32(paddedPublicKeyBytes);
 
   const checksum = blake2b(publicKeyBytes, null, 5).reverse();
 
-  const encodedChecksum = nanoBase32.encode(checksum);
+  const encodedChecksum = encodeNanoBase32(checksum);
 
   return prefix + encodedPublicKey + encodedChecksum;
 }

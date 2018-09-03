@@ -18,7 +18,7 @@ export interface ParseAddressResult {
 /** @hidden */
 export function parseAddress(address: any): ParseAddressResult {
   const invalid = { valid: false, publicKeyBytes: null };
-  if (!checkString(address) || !/^(xrb_|nano_)[13][0-9a-km-uw-z]{59}$/.test(address)) {
+  if (!checkString(address) || !/^(xrb_|nano_)[13][13-9a-km-uw-z]{59}$/.test(address)) {
     return invalid;
   }
 

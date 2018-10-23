@@ -36,7 +36,11 @@ export interface BlockData {
 export function createBlock(secretKey: string, data: BlockData) {
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid');
   if (typeof data.work === 'undefined') throw new Error('Work is not set');
-  if (!checkHash(data.previous)) throw new Error('Previous is not valid');
+  if(!data.previous === '0') {
+    if (!checkHash(data.previous)) throw new Error('Previous is not valid');
+  } else {
+    data.previous = '0000000000000000000000000000000000000000000000000000000000000000';
+  }
   if (!checkAddress(data.representative)) {
     throw new Error('Representative is not valid');
   }

@@ -3,12 +3,12 @@
 const path = require('path');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const nano = require('../dist/nanocurrency.cjs');
+const nano = require('nanocurrency');
 
 const cli = async args => {
   try {
     const { stdout, stderr } = await exec(
-      'node ' + path.join(__dirname, '../dist/bin/index.js') + ' ' + args
+      'node ' + path.join(__dirname, '../dist/index.js') + ' ' + args
     );
 
     return {

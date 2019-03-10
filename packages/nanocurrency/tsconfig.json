@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig",
+  "compilerOptions": {
+    "lib": ["es2015", "es2016", "es2017", "webworker", "dom"],
+    "module": "es2015",
+    "outDir": "dist",
+    "declarationDir": "dist/types"
+  }
+}

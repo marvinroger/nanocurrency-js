@@ -1,6 +1,5 @@
 import * as yargs from 'yargs';
-
-const nanocurrency = require('../nanocurrency.cjs');
+import * as nanocurrency from 'nanocurrency';
 
 const wrapSubcommand = (yargs: yargs.Argv) =>
   yargs
@@ -151,8 +150,8 @@ yargs
         },
         async argv => {
           const converted = await nanocurrency.convert(argv.input, {
-            from: argv.from,
-            to: argv.to,
+            from: argv.from as any,
+            to: argv.to as any,
           });
           console.log(converted);
         }

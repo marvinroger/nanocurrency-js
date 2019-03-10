@@ -1,12 +1,9 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
     "target": "es5",
-    "lib": ["es2015", "es2016", "es2017", "webworker", "dom"],
-    "module": "es2015",
+    "lib": ["es2015", "es2016", "es2017"],
     "moduleResolution": "node",
     "declaration": true,
-    "declarationDir": "dist/types",
     "pretty": true,
     "newLine": "lf",
     "stripInternal": true,

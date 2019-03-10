@@ -1,8 +1,7 @@
 ### App ###
 
-/dist/
-/native.js
-/_test.js
+dist/
+/packages/nanocurrency/native.js
 
 ### TS ###
 

@@ -1,0 +1,41 @@
+{
+  "name": "nanocurrency-cli",
+  "description": "A toolkit for the Nano cryptocurrency, allowing you to derive keys, generate seeds, hashes, signatures, proofs of work and blocks.",
+  "version": "0.0.0-development",
+  "author": {
+    "name": "Marvin ROGER",
+    "email": "dev@marvinroger.fr",
+    "url": "https://www.marvinroger.fr"
+  },
+  "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",
+  "dependencies": {
+    "nanocurrency": "^2.0.4",
+    "yargs": "^12.0.1"
+  },
+  "files": [
+    "dist/"
+  ],
+  "homepage": "https://github.com/marvinroger/nanocurrency-js",
+  "keywords": [
+    "crypto",
+    "currency",
+    "nano",
+    "pow",
+    "raiblocks"
+  ],
+  "license": "GPL-3.0",
+  "bin": {
+    "nanocurrency": "dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marvinroger/nanocurrency-js.git"
+  },
+  "scripts": {
+    "build:prod": "tsc --build",
+    "format": "prettier --write \"{src,__tests__}/**/*.{ts,js}\"",
+    "lint": "tslint --project . \"src/**/*.ts\"",
+    "prepublishOnly": "yarn build",
+    "test": "jest"
+  }
+}

@@ -1,95 +1,19 @@
 {
-  "name": "nanocurrency",
-  "description":
-    "A toolkit for the Nano cryptocurrency, allowing you to derive keys, generate seeds, hashes, signatures, proofs of work and blocks.",
-  "version": "0.0.0-development",
-  "author": {
-    "name": "Marvin ROGER",
-    "email": "dev@marvinroger.fr",
-    "url": "https://www.marvinroger.fr"
-  },
-  "browser": {
-    "path": false,
-    "fs": false,
-    "crypto": false,
-    "util": false,
-    "./dist/nanocurrency.cjs.js": "./dist/nanocurrency.umd.js"
-  },
-  "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "dependencies": {
-    "bignumber.js": "^7.2.0",
-    "blakejs": "^1.1.0",
-    "yargs": "^12.0.1"
+    "@types/node": "^11.11.0",
+    "@types/yargs": "^12.0.9",
+    "cross-env": "^5.2.0",
+    "jest": "^24.3.1",
+    "lerna": "^3.13.1",
+    "prettier": "^1.16.4",
+    "tslint": "^5.13.1",
+    "typedoc": "^0.14.2",
+    "typedoc-plugin-internal-external": "^2.0.1",
+    "typescript": "^3.3.3333"
   },
-  "devDependencies": {
-    "@types/node": "^10.0.0",
-    "@types/yargs": "^11.0.0",
-    "bundlesize": "^0.17.0",
-    "cross-env": "^5.1.3",
-    "cross-os": "^1.2.2",
-    "cross-var": "^1.1.0",
-    "jest": "^23.0.0",
-    "prettier": "^1.12.1",
-    "puppeteer": "^1.1.1",
-    "rollup": "^0.62.0",
-    "rollup-plugin-commonjs": "^9.0.0",
-    "rollup-plugin-license": "^0.7.0",
-    "rollup-plugin-node-resolve": "^3.0.2",
-    "rollup-plugin-terser": "^1.0.1",
-    "rollup-plugin-typescript2": "^0.14.0",
-    "semantic-release": "^15.0.2",
-    "travis-deploy-once": "^5.0.0",
-    "tslint": "^5.10.0",
-    "tslint-config-airbnb": "^5.8.0",
-    "tslint-config-prettier": "^1.12.0",
-    "typedoc": "^0.11.1",
-    "typedoc-plugin-internal-external": "^1.0.10",
-    "typescript": "^2.8.3"
-  },
-  "files": ["dist/"],
-  "homepage": "https://github.com/marvinroger/nanocurrency-js",
-  "jest": {
-    "testPathIgnorePatterns": ["<rootDir>/__tests__/data/", "<rootDir>/node_modules/"]
-  },
-  "keywords": ["crypto", "currency", "nano", "pow", "raiblocks"],
-  "license": "GPL-3.0",
-  "main": "dist/nanocurrency.cjs.js",
-  "module": "dist/nanocurrency.esm.js",
-  "types": "dist/types/index.d.ts",
-  "bin": {
-    "nanocurrency": "dist/bin/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/marvinroger/nanocurrency-js.git"
-  },
-  "scripts": {
-    "build:dev": "yarn build:dev:native && yarn build:dev:js",
-    "build:dev:js": "cross-env NODE_ENV=development rollup -c",
-    "build:dev:native": "cross-env EMCC_ARGS=\"\" cross-os build:native__cross",
-    "build:native__common":
-      "cross-var docker run --rm -v $PWD:/src trzeci/emscripten emcc -o native.js $EMCC_ARGS -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[\\\"cwrap\\\"]\" src/native/functions.c src/native/blake2/ref/blake2b-ref.c",
-    "build:native__cross": {
-      "darwin": "cross-env PWD=\"$(pwd)\" yarn build:native__common",
-      "linux": "cross-env PWD=\"$(pwd)\" yarn build:native__common",
-      "win32": "cross-env PWD=\"%cd%\" yarn build:native__common"
-    },
-    "build:prod": "yarn build:prod:native && yarn build:prod:js",
-    "build:prod:js": "cross-env NODE_ENV=production rollup -c",
-    "build:prod:native":
-      "cross-env EMCC_ARGS=\"-O3 --closure 1 --llvm-lto 3\" cross-os build:native__cross",
-    "generate-docs": "typedoc src/index.ts",
-    "format": "prettier --write \"{src,__tests__}/**/*.{ts,js}\"",
-    "lint": "tslint --project . \"src/**/*.ts\"",
-    "prepublishOnly": "yarn build:prod:js",
-    "semantic-release": "semantic-release",
-    "test": "jest && bundlesize",
-    "travis-deploy-once": "travis-deploy-once"
-  },
-  "bundlesize": [
-    {
-      "path": "./dist/nanocurrency.*.js",
-      "maxSize": "100kB"
-    }
-  ]
+  "name": "nanocurrency-workspace"
 }

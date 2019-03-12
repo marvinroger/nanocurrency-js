@@ -16,7 +16,7 @@
   },
   "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",
   "dependencies": {
-    "bignumber.js": "^7.2.0",
+    "bignumber.js": "^8.0.0",
     "blakejs": "^1.1.0"
   },
   "devDependencies": {
@@ -29,7 +29,7 @@
     "rollup-plugin-license": "^0.8.0",
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-terser": "^4.0.0",
-    "rollup-plugin-typescript2": "^0.19.0",
+    "rollup-plugin-typescript2": "^0.20.0",
     "tslint-config-airbnb": "^5.8.0",
     "tslint-config-prettier": "^1.12.0"
   },

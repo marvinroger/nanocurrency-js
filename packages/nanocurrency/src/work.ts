@@ -38,7 +38,7 @@ export function validateWork(params: ValidateWorkParams) {
   blake2bUpdate(context, hashBytes);
   const output = blake2bFinal(context).reverse();
   const outputHex = byteArrayToHex(output);
-  const outputBigNumber = new BigNumber('0x' + outputHex);
+  const outputBigNumber = new BigNumber(`0x${outputHex}`);
 
   return outputBigNumber.isGreaterThanOrEqualTo(WORK_THRESHOLD);
 }

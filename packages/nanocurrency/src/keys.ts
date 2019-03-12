@@ -21,7 +21,7 @@ export function generateSeed(): Promise<string> {
     getRandomBytes(32)
       .then(seed => {
         const seedHex = seed.reduce((hex, i) => {
-          return hex + ('0' + i.toString(16)).slice(-2);
+          return `${hex}${`0${i.toString(16)}`.slice(-2)}`;
         }, '');
 
         resolve(seedHex);

@@ -79,7 +79,7 @@ export function convert(value: string, params: ConvertParams) {
 
   let bigNumber;
   if (params.from === 'hex') {
-    bigNumber = new TunedBigNumber('0x' + value);
+    bigNumber = new TunedBigNumber(`0x${value}`);
   } else {
     bigNumber = new TunedBigNumber(value);
   }

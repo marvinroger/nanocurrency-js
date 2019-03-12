@@ -59,7 +59,7 @@ function readChar(char: string) {
   const idx = alphabet.indexOf(char);
 
   if (idx === -1) {
-    throw new Error('Invalid character found: ' + char);
+    throw new Error(`Invalid character found: ${char}`);
   }
 
   return idx;
@@ -79,7 +79,7 @@ export function decodeNanoBase32(input: string) {
   let value = 0;
 
   let index = 0;
-  let output = new Uint8Array(Math.ceil(length * 5 / 8));
+  let output = new Uint8Array(Math.ceil((length * 5) / 8));
 
   for (let i = 0; i < length; i++) {
     value = (value << 5) | readChar(input[i]);

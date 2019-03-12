@@ -5,14 +5,12 @@
 
   <body>
     <pre id="status"></pre>
-    <script src="https://cdn.jsdelivr.net/npm/nanocurrency@1.6.1/dist/nanocurrency.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nanocurrency@2/dist/nanocurrency.umd.js"></script>
     <script>
       (function () {
         const ITERATION_COUNT = 100;
 
         async function main () {
-          await NanoCurrency.init()
-
           const globalStart = new Date()
 
           const statusEl = document.getElementById('status')
@@ -20,6 +18,7 @@
           const setStatus = msg => {
             statuses.push(msg)
             statusEl.innerHTML = statuses.join('\n')
+            window.scrollTo(0, document.body.scrollHeight)
           }
 
           // some browsers (e.g. iOS) don't export hardwareConcurrency
@@ -41,7 +40,7 @@
                 const worker = new Worker('worker.js')
                 worker.postMessage({
                   blockHash: hash,
-                  workerNumber: i,
+                  workerIndex: i,
                   workerCount
                 })
                 worker.onmessage = ({data}) => {

@@ -1,14 +1,14 @@
 /* eslint-env worker */
 /* global NanoCurrency:false */
 
-importScripts('https://cdn.jsdelivr.net/npm/nanocurrency@2.0.0/dist/nanocurrency.umd.js');
+importScripts('https://cdn.jsdelivr.net/npm/nanocurrency@2/dist/nanocurrency.umd.js');
 
 onmessage = async function({ data }) {
-  const { blockHash, workerNumber, workerCount } = data;
+  const { blockHash, workerIndex, workerCount } = data;
 
   postMessage({ type: 'started' });
 
-  const work = await NanoCurrency.computeWork(blockHash, workerNumber, workerCount);
+  const work = await NanoCurrency.computeWork(blockHash, { workerIndex, workerCount });
 
   postMessage({ type: 'done', work });
 };

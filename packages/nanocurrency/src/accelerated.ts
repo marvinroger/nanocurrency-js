@@ -3,35 +3,25 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
+import * as loader from 'assemblyscript/lib/loader';
+
 import { checkHash } from './check';
+import { base64ToByteArray, hexToByteArray, byteArrayToHex } from './utils';
 
-import Native from '../native';
+let ASSEMBLY: any = null;
 
-const C_BINDING: {
-  instance_: any;
-  work: null | ((blockHash: string, workerIndex: number, workerCount: number) => string);
-} = {
-  instance_: null,
-  work: null,
-};
-
-function loadWasm(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    try {
-      Native().then((native: any) => {
-        C_BINDING.instance_ = native;
-        C_BINDING.work = native.cwrap('emscripten_work', 'string', ['string', 'number', 'number']);
-
-        resolve();
-      });
-    } catch (err) {
-      reject(err);
-    }
-  });
+async function loadWasm(): Promise<void> {
+  ASSEMBLY = loader.instantiateBuffer(base64ToByteArray('%%%WASM_BASE64%%%'), {
+    external: {
+      logs(value: number) {
+        console.log(ASSEMBLY.getString(value));
+      },
+    },
+  } as any);
 }
 
 async function loadWasmIfNotLoaded() {
-  if (C_BINDING.instance_ !== null) return;
+  if (ASSEMBLY !== null) return;
 
   await loadWasm();
 }
@@ -69,7 +59,16 @@ export async function computeWork(
     throw new Error('Worker parameters are not valid');
   }
 
-  const work = C_BINDING.work!(blockHash, params.workerIndex, params.workerCount);
+  const blockHashBytes = hexToByteArray(blockHash);
+  const blockHashPtr = ASSEMBLY.newArray(blockHashBytes);
 
-  return work !== '0000000000000000' ? work : null;
+  const outputPtr = ASSEMBLY.findWork(blockHashPtr, params.workerIndex, params.workerCount);
+  const output = ASSEMBLY.getArray(Uint8Array, outputPtr);
+  ASSEMBLY.freeArray(blockHashPtr);
+
+  if (output.length === 0) {
+    return null;
+  }
+
+  return byteArrayToHex(output);
 }

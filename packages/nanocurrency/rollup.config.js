@@ -1,5 +1,10 @@
+import { readFileSync } from 'fs';
+import * as path from 'path';
+
+import autoExternal from 'rollup-plugin-auto-external';
 import typescript from 'rollup-plugin-typescript2';
 import resolve from 'rollup-plugin-node-resolve';
+import replace from 'rollup-plugin-replace';
 import commonjs from 'rollup-plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
 import license from 'rollup-plugin-license';
@@ -8,7 +13,11 @@ import pkg from './package.json';
 
 const ENV = process.env.NODE_ENV;
 
-const licenseBanner = `
+const WASM_PATH = path.join(__dirname, 'tmp/production.wasm');
+const WASM = readFileSync(WASM_PATH);
+const WASM_BASE64 = Buffer.from(WASM).toString('base64');
+const WASM_PLACEHOLDER = '%%%WASM_BASE64%%%';
+const LICENSE_BANNER = `
 /*!
 * nanocurrency-js v${pkg.version}: A toolkit for the Nano cryptocurrency.
 * Copyright (c) <%= moment().format('YYYY') %> Marvin ROGER <dev at marvinroger dot fr>
@@ -16,33 +25,47 @@ const licenseBanner = `
 */
 `.trim();
 
-const globals = { fs: 'fs', path: 'path' };
-
-const config = [
+const outputs = [
   {
-    input: 'src/index.ts',
-    external: ['fs', 'path'],
-    output: [
-      {
-        name: 'NanoCurrency',
-        file: 'dist/nanocurrency.umd.js',
-        format: 'umd',
-        globals,
-      },
-      { file: pkg.main, format: 'cjs', globals },
-      { file: pkg.module, format: 'es', globals },
-    ],
-    plugins: [resolve(), commonjs(), typescript({ useTsconfigDeclarationDir: true })],
+    name: 'NanoCurrency',
+    file: 'dist/nanocurrency.umd.js',
+    format: 'umd',
   },
+  { file: pkg.main, format: 'cjs' },
+  { file: pkg.module, format: 'es' },
 ];
 
-if (ENV === 'production') {
-  config[0].plugins.push(terser());
-  config[0].plugins.push(
-    license({
-      banner: licenseBanner,
-    })
-  );
-}
+const configs = outputs.map((output, index) => {
+  const config = {
+    input: 'src/index.ts',
+    output,
+    plugins: [
+      replace({
+        delimiters: ['', ''],
+        values: {
+          [WASM_PLACEHOLDER]: WASM_BASE64,
+        },
+      }),
+      resolve(),
+      commonjs(),
+      typescript({
+        useTsconfigDeclarationDir: true,
+        tsconfigOverride: { compilerOptions: { declaration: index === 0 } }, // only generate definitions once, otherwise crash
+      }),
+    ],
+  };
 
-export default config;
+  if (ENV === 'production' && output.format === 'umd') config.plugins.push(terser());
+  if (ENV === 'production' && output.format !== 'umd') config.plugins.push(autoExternal({}));
+  if (ENV === 'production') {
+    config.plugins.push(
+      license({
+        banner: LICENSE_BANNER,
+      })
+    );
+  }
+
+  return config;
+});
+
+export default configs;

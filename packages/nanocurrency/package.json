@@ -16,18 +16,23 @@
   },
   "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",
   "dependencies": {
+    "@types/node": "^11.11.0",
     "bignumber.js": "^8.0.0",
-    "blakejs": "^1.1.0"
+    "blakejs": "^1.1.0",
+    "jest": "^24.3.1"
   },
   "devDependencies": {
+    "assemblyscript": "AssemblyScript/assemblyscript",
     "cross-os": "^1.2.2",
     "cross-var": "^1.1.0",
-    "puppeteer": "^1.1.1",
+    "puppeteer": "^1.13.0",
     "rimraf": "^2.6.3",
     "rollup": "^1.6.0",
+    "rollup-plugin-auto-external": "3.0.0-alpha.0",
     "rollup-plugin-commonjs": "^9.0.0",
     "rollup-plugin-license": "^0.8.0",
     "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-replace": "^2.1.0",
     "rollup-plugin-terser": "^4.0.0",
     "rollup-plugin-typescript2": "^0.20.0",
     "tslint-config-airbnb": "^5.8.0",
@@ -59,18 +64,9 @@
     "url": "https://github.com/marvinroger/nanocurrency-js.git"
   },
   "scripts": {
-    "build:dev": "yarn build:dev:native && yarn build:dev:js",
-    "build:dev:js": "rimraf dist/ && cross-env NODE_ENV=development rollup -c",
-    "build:dev:native": "cross-env EMCC_ARGS=\"\" cross-os build:native__cross",
-    "build:native__common": "cross-var docker run --rm -v $PWD:/src trzeci/emscripten emcc -o native.js $EMCC_ARGS -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[\\\"cwrap\\\"]\" src/native/functions.c src/native/blake2/ref/blake2b-ref.c",
-    "build:native__cross": {
-      "darwin": "cross-env PWD=\"$(pwd)\" yarn build:native__common",
-      "linux": "cross-env PWD=\"$(pwd)\" yarn build:native__common",
-      "win32": "cross-env PWD=\"%cd%\" yarn build:native__common"
-    },
-    "build:prod": "yarn build:prod:native && yarn build:prod:js",
+    "build:prod": "yarn build:prod:assembly && yarn build:prod:js",
     "build:prod:js": "rimraf dist/ && cross-env NODE_ENV=production rollup -c",
-    "build:prod:native": "cross-env EMCC_ARGS=\"-O3 --closure 1 --llvm-lto 3\" cross-os build:native__cross",
+    "build:prod:assembly": "asc src/assembly/index.ts -b tmp/production.wasm --validate --optimize",
     "generate-docs": "typedoc src/index.ts",
     "format": "prettier --write \"{src,__tests__}/**/*.{ts,js}\"",
     "lint": "tslint --project . \"src/**/*.ts\"",

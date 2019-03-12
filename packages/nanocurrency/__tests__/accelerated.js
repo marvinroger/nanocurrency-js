@@ -7,8 +7,8 @@ const VALID_BLOCKS = require('./data/valid_blocks');
 const RANDOM_VALID_BLOCK = VALID_BLOCKS[0];
 
 const VALID_WORK = {
-  hash: '7f7122e843b27524f4f1d6bd14aefd1c8f01d36ae8653d37417533c0d4bc2be6',
-  work: '0000000000995bc3',
+  hash: 'e65cf3f83296f1abf0447775168bf08c78e9ec4dbaa83f43d87d1ee5ebd990ac',
+  work: '0000000000059600',
 };
 
 describe('computeWork', () => {

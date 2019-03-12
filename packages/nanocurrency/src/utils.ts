@@ -66,6 +66,23 @@ export function hexToByteArray(hex: string) {
 }
 
 /** @hidden */
+export function base64ToByteArray(base64: string) {
+  if (IS_NODE) {
+    return Buffer.from(base64, 'base64');
+  } else {
+    var raw = atob(base64);
+    var rawLength = raw.length;
+    var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+    for (let i = 0; i < rawLength; i++) {
+      array[i] = raw.charCodeAt(i);
+    }
+
+    return array;
+  }
+}
+
+/** @hidden */
 export function compareArrays(array1: Uint8Array, array2: Uint8Array) {
   for (let i = 0; i < array1.length; i++) {
     if (array1[i] !== array2[i]) return false;

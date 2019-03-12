@@ -4,6 +4,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "@marvinroger/dev-core": "^1.7.1",
     "@types/node": "^11.11.0",
     "@types/yargs": "^12.0.9",
     "cross-env": "^5.2.0",

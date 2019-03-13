@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import * as yargs from 'yargs';
 import * as nanocurrency from 'nanocurrency';
 

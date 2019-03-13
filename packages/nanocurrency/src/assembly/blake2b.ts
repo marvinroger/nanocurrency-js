@@ -1,3 +1,5 @@
+import { HEADER_SIZE } from 'internal/arraybuffer'
+
 export class Context {
   b: Uint8Array;
   h: Uint64Array;
@@ -8,32 +10,19 @@ export class Context {
 
 const HASH_LENGTH: u32 = 8;
 
-function ROTR64(x: u64, y: u64): u64 {
-  return (x >> y) ^ (x << (64 - y));
-}
-
 function B2B_GET64(arr: Uint8Array, i: u32): u64 {
-  return (
-    (<u64>arr[i]) ^
-    (<u64>((<u64>arr[i + 1]) << 8)) ^
-    (<u64>((<u64>arr[i + 2]) << 16)) ^
-    (<u64>((<u64>arr[i + 3]) << 24)) ^
-    (<u64>((<u64>arr[i + 4]) << 32)) ^
-    (<u64>((<u64>arr[i + 5]) << 40)) ^
-    (<u64>((<u64>arr[i + 6]) << 48)) ^
-    (<u64>((<u64>arr[i + 7]) << 56))
-  );
+  return load<u64>(changetype<usize>(arr.buffer) + arr.byteOffset + i, HEADER_SIZE);
 }
 
 function B2B_G(a: i32, b: i32, c: i32, d: i32, x: u64, y: u64): void {
   v[a] = v[a] + v[b] + x;
-  v[d] = ROTR64(v[d] ^ v[a], 32);
+  v[d] = rotr<u64>(v[d] ^ v[a], 32);
   v[c] = v[c] + v[d];
-  v[b] = ROTR64(v[b] ^ v[c], 24);
+  v[b] = rotr<u64>(v[b] ^ v[c], 24);
   v[a] = v[a] + v[b] + y;
-  v[d] = ROTR64(v[d] ^ v[a], 16);
+  v[d] = rotr<u64>(v[d] ^ v[a], 16);
   v[c] = v[c] + v[d];
-  v[b] = ROTR64(v[b] ^ v[c], 63);
+  v[b] = rotr<u64>(v[b] ^ v[c], 63);
 }
 
 let BLAKE2B_IV_DATA: u64[] = [

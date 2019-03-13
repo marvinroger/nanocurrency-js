@@ -4,7 +4,7 @@ import { logs } from './external';
 import { utoa64 } from 'internal/number';
 
 import { blake2bInit, blake2bUpdate, blake2bFinal } from './blake2b';
-import { bytesToUint64, uint64ToBytes, reverseBytes } from './utils';
+import { bytesToUint64, uint64ToBytes } from './utils';
 
 const WORK_THRESHOLD: u64 = 0xffffffc000000000;
 
@@ -13,7 +13,7 @@ function validateWork(blockHash: Uint8Array, work: Uint8Array): boolean {
   blake2bUpdate(work);
   blake2bUpdate(blockHash);
   let hash = blake2bFinal();
-  reverseBytes(hash);
+  hash.reverse();
 
   let hashInt: u64 = bytesToUint64(hash);
 
@@ -34,10 +34,10 @@ function work(blockHash: Uint8Array, workerIndex: u32, workerCount: u32): Uint8A
     if (work === upperBound) return failure;
 
     uint64ToBytes(work, workBytes);
-    reverseBytes(workBytes);
+    workBytes.reverse();
 
     if (validateWork(blockHash, workBytes)) {
-      reverseBytes(workBytes);
+      workBytes.reverse()
       return workBytes;
     }
 

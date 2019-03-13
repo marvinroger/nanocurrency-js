@@ -6,23 +6,12 @@ export function uint64ToBytes(input: u64, output: Uint8Array): void {
 }
 
 export function bytesToUint64(input: Uint8Array): u64 {
-  let ret: u64 = 0;
-
-  for (let i: u64 = 0; i < 8; i++) {
-    ret |= (<u64>input[<i32>i]) << (64 - 8 * (i + 1));
-  }
-
-  return ret;
-}
-
-export function reverseBytes(input: Uint8Array): void {
-  let i = input.length - 1;
-  let j = 0;
-  while (i > j) {
-    let tmp = input[i];
-    input[i] = input[j];
-    input[j] = tmp;
-    i--;
-    j++;
-  }
+  return ((<u64>input[0]) << 56) |
+  ((<u64>input[1]) << 48) |
+  ((<u64>input[2]) << 40) |
+  ((<u64>input[3]) << 32) |
+  ((<u64>input[4]) << 24) |
+  ((<u64>input[5]) << 16) |
+  ((<u64>input[6]) << 8) |
+  ((<u64>input[7]) << 0);
 }

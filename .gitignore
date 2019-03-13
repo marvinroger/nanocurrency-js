@@ -1,6 +1,5 @@
 ### App ###
 
-tmp/
 dist/
 /packages/nanocurrency/native.js
 

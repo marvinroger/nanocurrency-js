@@ -1,7 +1,7 @@
 {
   "name": "nanocurrency",
   "description": "A toolkit for the Nano cryptocurrency, allowing you to derive keys, generate seeds, hashes, signatures, proofs of work and blocks.",
-  "version": "0.0.0-development",
+  "version": "2.1.0",
   "author": {
     "name": "Marvin ROGER",
     "email": "dev@marvinroger.fr",
@@ -20,29 +20,24 @@
     "blakejs": "^1.1.0"
   },
   "devDependencies": {
+    "@types/node": "^11.11.0",
+    "cross-env": "^5.2.0",
     "cross-os": "^1.2.2",
     "cross-var": "^1.1.0",
     "puppeteer": "^1.1.1",
     "rimraf": "^2.6.3",
     "rollup": "^1.6.0",
+    "rollup-plugin-auto-external": "3.0.0-alpha.0",
     "rollup-plugin-commonjs": "^9.0.0",
     "rollup-plugin-license": "^0.8.0",
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-terser": "^4.0.0",
-    "rollup-plugin-typescript2": "^0.20.0",
-    "tslint-config-airbnb": "^5.8.0",
-    "tslint-config-prettier": "^1.12.0"
+    "rollup-plugin-typescript2": "^0.20.0"
   },
   "files": [
     "dist/"
   ],
-  "homepage": "https://github.com/marvinroger/nanocurrency-js",
-  "jest": {
-    "testPathIgnorePatterns": [
-      "<rootDir>/__tests__/data/",
-      "<rootDir>/node_modules/"
-    ]
-  },
+  "homepage": "https://github.com/marvinroger/nanocurrency-js/tree/master/packages/nanocurrency",
   "keywords": [
     "crypto",
     "currency",
@@ -62,7 +57,7 @@
     "build:dev": "yarn build:dev:native && yarn build:dev:js",
     "build:dev:js": "rimraf dist/ && cross-env NODE_ENV=development rollup -c",
     "build:dev:native": "cross-env EMCC_ARGS=\"\" cross-os build:native__cross",
-    "build:native__common": "cross-var docker run --rm -v $PWD:/src trzeci/emscripten emcc -o native.js $EMCC_ARGS -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[\\\"cwrap\\\"]\" src/native/functions.c src/native/blake2/ref/blake2b-ref.c",
+    "build:native__common": "cross-var docker run --rm -v $PWD:/src trzeci/emscripten:sdk-tag-1.38.29-64bit emcc -o assembly.js $EMCC_ARGS -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[\\\"cwrap\\\"]\" src/native/functions.c src/native/blake2/ref/blake2b-ref.c",
     "build:native__cross": {
       "darwin": "cross-env PWD=\"$(pwd)\" yarn build:native__common",
       "linux": "cross-env PWD=\"$(pwd)\" yarn build:native__common",
@@ -71,10 +66,9 @@
     "build:prod": "yarn build:prod:native && yarn build:prod:js",
     "build:prod:js": "rimraf dist/ && cross-env NODE_ENV=production rollup -c",
     "build:prod:native": "cross-env EMCC_ARGS=\"-O3 --closure 1 --llvm-lto 3\" cross-os build:native__cross",
-    "generate-docs": "typedoc src/index.ts",
-    "format": "prettier --write \"{src,__tests__}/**/*.{ts,js}\"",
-    "lint": "tslint --project . \"src/**/*.ts\"",
-    "prepublishOnly": "yarn build:prod:js",
-    "test": "jest"
+    "generate-docs": "dev-core generate-docs",
+    "lint": "dev-core lint",
+    "test": "dev-core test",
+    "prepublishOnly": "yarn build:prod"
   }
 }

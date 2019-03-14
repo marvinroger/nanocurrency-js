@@ -7,7 +7,7 @@ A [battle-tested](__tests__) toolkit for the Nano cryptocurrency.
 
 If you are looking for legacy blocks, you will want the `^1.0.0` versions.
 
-![Code showcase](https://raw.githubusercontent.com/marvinroger/nanocurrency-js/master/showcase.png)
+![Code showcase](https://raw.githubusercontent.com/marvinroger/nanocurrency-js/master/packages/nanocurrency/showcase.png)
 
 The documentation is available locally in [`docs/`](docs/) or online at [https://marvinroger.github.io/nanocurrency-js/packages/nanocurrency/docs/](https://marvinroger.github.io/nanocurrency-js/packages/nanocurrency/docs/).
 

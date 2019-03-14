@@ -952,6 +952,9 @@ img { max-width: 100%; }
 			<a href="globals.html#checkhash" class="tsd-kind-icon">check<wbr>Hash</a>
 		</li>
 		<li class=" tsd-kind-function">
+			<a href="globals.html#checkindex" class="tsd-kind-icon">check<wbr>Index</a>
+		</li>
+		<li class=" tsd-kind-function">
 			<a href="globals.html#checkkey" class="tsd-kind-icon">check<wbr>Key</a>
 		</li>
 		<li class=" tsd-kind-function">
@@ -1001,15 +1004,13 @@ img { max-width: 100%; }
 <div class="container container-main">
 	<div class="content-wrap">
 		<div class="tsd-panel tsd-typography">
-			<h1 id="nanocurrency-js">nanocurrency-js</h1>
+			<h1 id="nanocurrency">nanocurrency</h1>
 			<p><a href="https://www.npmjs.com/package/nanocurrency"><img src="https://img.shields.io/npm/v/nanocurrency.svg" alt="npm version"></a>
-				<a href="https://travis-ci.org/marvinroger/nanocurrency-js"><img src="https://travis-ci.org/marvinroger/nanocurrency-js.svg?branch=master" alt="build status"></a>
-			<a href="https://github.com/semantic-release/semantic-release"><img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="semantic-release"></a></p>
-			<hr>
+			<a href="https://travis-ci.org/marvinroger/nanocurrency-js"><img src="https://travis-ci.org/marvinroger/nanocurrency-js.svg?branch=master" alt="build status"></a></p>
 			<p>A <a href="__tests__">battle-tested</a> toolkit for the Nano cryptocurrency.</p>
 			<p>If you are looking for legacy blocks, you will want the <code>^1.0.0</code> versions.</p>
-			<p><img src="showcase.png" alt="Code showcase"></p>
-			<p>The documentation is available locally in <a href="docs/">docs/</a> or online at <a href="https://marvinroger.github.io/nanocurrency-js">https://marvinroger.github.io/nanocurrency-js</a>.</p>
+			<p><img src="https://raw.githubusercontent.com/marvinroger/nanocurrency-js/master/packages/nanocurrency/showcase.png" alt="Code showcase"></p>
+			<p>The documentation is available locally in <a href="docs/"><code>docs/</code></a> or online at <a href="https://marvinroger.github.io/nanocurrency-js/packages/nanocurrency/docs/">https://marvinroger.github.io/nanocurrency-js/packages/nanocurrency/docs/</a>.</p>
 			<hr>
 			<h2 id="features">Features</h2>
 			<ul>
@@ -1020,16 +1021,13 @@ img { max-width: 100%; }
 				<li>Compute and test proofs of work</li>
 				<li>Check the format of seeds, secret keys, public keys, addresses, amounts, etc.</li>
 				<li>Convert Nano units</li>
-				<li><strong>CLI doing all of the above</strong></li>
+				<li><strong><a href="https://www.npmjs.com/package/nanocurrency-cli">CLI doing all of the above</a></strong></li>
 			</ul>
 			<hr>
 			<h2 id="usage">Usage</h2>
 			<p>To install the library:</p>
 			<pre><code>npm <span class="hljs-keyword">install</span> nanocurrency
-<span class="hljs-comment"># or yarn add nanocurrency</span></code></pre><pre><code class="language-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> nanocurrency <span class="hljs-keyword">from</span> <span class="hljs-string">'nanocurrency'</span>;</code></pre>
-			<p>To install the CLI:</p>
-			<pre><code>npm install -g nanocurrency
-# <span class="hljs-keyword">or</span> yarn <span class="hljs-keyword">global</span> <span class="hljs-keyword">add</span> nanocurrency</code></pre><pre><code class="language-bash">nanocurrency --<span class="hljs-built_in">help</span></code></pre>
+<span class="hljs-comment"># or yarn add nanocurrency</span></code></pre><pre><code class="language-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> nanocurrency <span class="hljs-keyword">from</span> <span class="hljs-string">'nanocurrency'</span></code></pre>
 			<hr>
 			<h2 id="performance">Performance</h2>
 			<p>You might be wondering how fast is the work generation. There&#39;s a <code>pow-benchmark</code> example in the <code>examples/</code> directory.
@@ -1039,15 +1037,13 @@ img { max-width: 100%; }
 			<h2 id="contribute">Contribute</h2>
 			<p>Contributions are very welcome. To develop, make use of the following commands (using <a href="https://yarnpkg.com">Yarn</a>):</p>
 			<ul>
-				<li><p><code>yarn build:dev</code>: build the C++ code to WebAssembly and bundle the files into the <code>dist</code> directory, without optimization so that it is fast while developing. Note that you&#39;ll need to have Docker installed</p>
+				<li><p><code>yarn build:dev</code>: build the C++ code to WebAssembly and bundle the files into the <code>dist/</code> directory, without optimization so that it is fast while developing. Note that you&#39;ll need to have Docker installed</p>
 				</li>
 				<li><p><code>yarn test</code>: test the code</p>
 				</li>
 				<li><p><code>yarn lint</code>: lint the code against <a href="https://standardjs.com">JavaScript Standard Style</a></p>
 				</li>
-				<li><p><code>yarn format</code>: format the code with <a href="https://prettier.io">Prettier</a></p>
-				</li>
-				<li><p><code>yarn generate-docs</code>: generate the <code>DOCUMENTATION.md</code> file from the <a href="http://usejsdoc.org">JSDoc</a> annotations</p>
+				<li><p><code>yarn generate-docs</code>: generate the <code>docs/</code> website from the <a href="http://usejsdoc.org">JSDoc</a> annotations</p>
 				</li>
 			</ul>
 			<hr>
@@ -1087,6 +1083,7 @@ img { max-width: 100%; }
 							<li class="tsd-kind-function"><a href="globals.html#checkaddress" class="tsd-kind-icon">check<wbr>Address</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#checkamount" class="tsd-kind-icon">check<wbr>Amount</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#checkhash" class="tsd-kind-icon">check<wbr>Hash</a></li>
+							<li class="tsd-kind-function"><a href="globals.html#checkindex" class="tsd-kind-icon">check<wbr>Index</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#checkkey" class="tsd-kind-icon">check<wbr>Key</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#checkseed" class="tsd-kind-icon">check<wbr>Seed</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#checksignature" class="tsd-kind-icon">check<wbr>Signature</a></li>
@@ -1119,7 +1116,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/check.ts#L100">check.ts:100</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/check.ts#L114">check.ts:114</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1153,7 +1150,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/check.ts#L44">check.ts:44</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/check.ts#L46">check.ts:46</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1186,7 +1183,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/check.ts#L74">check.ts:74</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/check.ts#L88">check.ts:88</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1210,6 +1207,36 @@ img { max-width: 100%; }
 				</ul>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-function">
+				<a name="checkindex" class="tsd-anchor"></a>
+				<h3>check<wbr>Index</h3>
+				<ul class="tsd-signatures tsd-kind-function">
+					<li class="tsd-signature tsd-kind-icon">check<wbr>Index<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/check.ts#L76">check.ts:76</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Check if the given index is valid.</p>
+							</div>
+							<p><strong>Note:</strong> it only checks the format of the index.</p>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>index: <span class="tsd-signature-type">number</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						<p>Valid</p>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function">
 				<a name="checkkey" class="tsd-anchor"></a>
 				<h3>check<wbr>Key</h3>
 				<ul class="tsd-signatures tsd-kind-function">
@@ -1219,7 +1246,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/check.ts#L87">check.ts:87</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/check.ts#L101">check.ts:101</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1253,7 +1280,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/check.ts#L62">check.ts:62</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/check.ts#L64">check.ts:64</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1286,7 +1313,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/check.ts#L126">check.ts:126</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/check.ts#L140">check.ts:140</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1319,7 +1346,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/check.ts#L114">check.ts:114</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/check.ts#L128">check.ts:128</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1352,7 +1379,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/accelerated.ts#L71">accelerated.ts:71</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/accelerated.ts#L71">accelerated.ts:71</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1391,7 +1418,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/conversion.ts#L58">conversion.ts:58</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/conversion.ts#L58">conversion.ts:58</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1429,7 +1456,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/block.ts#L56">block.ts:56</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/block.ts#L56">block.ts:56</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1467,7 +1494,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/keys.ts#L99">keys.ts:99</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/keys.ts#L99">keys.ts:99</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1505,7 +1532,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/keys.ts#L66">keys.ts:66</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/keys.ts#L66">keys.ts:66</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1537,7 +1564,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/keys.ts#L40">keys.ts:40</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/keys.ts#L40">keys.ts:40</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1575,7 +1602,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/keys.ts#L19">keys.ts:19</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/keys.ts#L19">keys.ts:19</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1598,7 +1625,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/hash.ts#L47">hash.ts:47</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/hash.ts#L47">hash.ts:47</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1630,7 +1657,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/signature.ts#L26">signature.ts:26</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/signature.ts#L26">signature.ts:26</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1662,7 +1689,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/work.ts#L29">work.ts:29</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/work.ts#L29">work.ts:29</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1694,7 +1721,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/14aef9b/packages/nanocurrency/src/signature.ts#L54">signature.ts:54</a></li>
+								<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/88a9afd/packages/nanocurrency/src/signature.ts#L54">signature.ts:54</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">

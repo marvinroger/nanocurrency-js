@@ -36,6 +36,9 @@
     "build:prod": "tsc --build",
     "lint": "dev-core lint",
     "test": "dev-core test",
-    "prepublishOnly": "yarn build:prod"
+    "prepublishOnly": "yarn build:prod && yarn test && yarn lint"
+  },
+  "devDependencies": {
+    "json-stable-stringify-without-jsonify": "^1.0.1"
   }
 }

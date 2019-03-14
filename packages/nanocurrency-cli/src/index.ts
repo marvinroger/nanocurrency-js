@@ -384,6 +384,60 @@ yargs
         )
     )
   })
+  .command('create', 'create a [block]', yargs => {
+    return wrapSubcommand(
+      yargs.usage('usage: $0 create <item>').command(
+        'block',
+        'create a block',
+        yargs => {
+          return yargs
+            .usage('usage: $0 create block [options]')
+            .option('secret', {
+              demandOption: true,
+              describe: 'secret key to sign the block with',
+              type: 'string',
+            })
+            .option('balance', {
+              demandOption: true,
+              describe: 'resulting balance',
+              type: 'string',
+            })
+            .option('link', {
+              demandOption: true,
+              describe:
+                'link block hash or link address, in hexadecimal or address format',
+              type: 'string',
+            })
+            .option('previous', {
+              demandOption: true,
+              describe:
+                'hash of the previous block on the account chain, in hexadecimal format',
+              type: 'string',
+            })
+            .option('representative', {
+              demandOption: true,
+              describe: 'representative address',
+              type: 'string',
+            })
+            .option('work', {
+              demandOption: true,
+              describe: 'work to use',
+              type: 'string',
+            })
+        },
+        async argv => {
+          const block = nanocurrency.createBlock(argv.secret, {
+            balance: argv.balance,
+            link: argv.link,
+            previous: argv.previous,
+            representative: argv.representative,
+            work: argv.work,
+          })
+          console.log(JSON.stringify(block))
+        }
+      )
+    )
+  })
   .demandCommand(1, 'Please specify a command')
   .strict()
   .help()

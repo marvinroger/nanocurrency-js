@@ -1,8 +1,10 @@
 /* eslint-env jest */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 const path = require('path')
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
+const jsonStableStringify = require('json-stable-stringify-without-jsonify')
 const nano = require('nanocurrency')
 
 const cli = async args => {
@@ -296,6 +298,20 @@ describe('derive', () => {
     expect(code).toBe(0)
     expect(stdout.trimRight()).toBe(
       'xrb_114z6djfsi5657oug6pxeib9eczadnhwwaq69k44tcpjgfcgaadcusoda5xf'
+    )
+    expect(stderr).toBe('')
+  })
+})
+
+describe('create', () => {
+  test('block', async () => {
+    expect.assertions(3)
+    const { stdout, stderr, code } = await cli(
+      'create block --secret E5A523DF83DC3A79F9DD29940500F605D51C4FA14EF56BE5CE8299082CD8A4BD --balance 3829201371931432594706 --link xrb_3koo957rgp3qixffgygq7851ae9wsfimh58ssnezcsepdb3kku4qbnwx8ozp --previous 242B05CEBCBFE2A564C356E1A62F78240D67B33880B543C743E18AF67E460B16 --representative xrb_3dxd4z89ihf3rgxcgib4caodrw7uykwhuumwnqgk7bra5tf63xnms8jofpbn --work 66ea8c8c632b7849'
+    )
+    expect(code).toBe(0)
+    expect(jsonStableStringify(JSON.parse(stdout.trimRight()))).toBe(
+      '{"block":{"account":"xrb_1sryfjr4q7pitn7cu5z6pyy1fzpk4di8fb7ihb3dwkqn1b5st7wsd7ey7c9s","balance":"3829201371931432594706","link":"CAB538CB875837875AD779D729860430FCCB61378CD9CD19F565965A43296C57","link_as_account":"xrb_3koo957rgp3qixffgygq7851ae9wsfimh58ssnezcsepdb3kku4qbnwx8ozp","previous":"242B05CEBCBFE2A564C356E1A62F78240D67B33880B543C743E18AF67E460B16","representative":"xrb_3dxd4z89ihf3rgxcgib4caodrw7uykwhuumwnqgk7bra5tf63xnms8jofpbn","signature":"047AC2BD8D811E81F32F176083B9E9260D9AC50FA91E25E6EE1652344D17E8F934E8882A8829D7F77774576623D9C4CE1EBBB053ED7510A6E64EB45DA4677F0E","type":"state","work":"66ea8c8c632b7849"},"hash":"FA5EA85833EB7D2618DE2898C15E9812A9F2395F83A49E6086AD701565506CE6"}'
     )
     expect(stderr).toBe('')
   })

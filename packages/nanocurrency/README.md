@@ -3,8 +3,6 @@
 [![npm version](https://img.shields.io/npm/v/nanocurrency.svg)](https://www.npmjs.com/package/nanocurrency)
 [![build status](https://travis-ci.org/marvinroger/nanocurrency-js.svg?branch=master)](https://travis-ci.org/marvinroger/nanocurrency-js)
 
----
-
 A [battle-tested](__tests__) toolkit for the Nano cryptocurrency.
 
 If you are looking for legacy blocks, you will want the `^1.0.0` versions.

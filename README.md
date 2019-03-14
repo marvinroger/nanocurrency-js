@@ -2,11 +2,7 @@
 
 [![build status](https://travis-ci.org/marvinroger/nanocurrency-js.svg?branch=master)](https://travis-ci.org/marvinroger/nanocurrency-js)
 
----
-
-The nanocurrency-js monorepo.
-
----
+The `nanocurrency-js` monorepo.
 
 ## Packages
 
@@ -18,9 +14,7 @@ A battle-tested toolkit for the Nano cryptocurrency.
 
 The code lives in [`packages/nanocurrency/`](packages/nanocurrency/).
 
----
-
-# nanocurrency-cli
+### nanocurrency-cli
 
 [![npm version](https://img.shields.io/npm/v/nanocurrency-cli.svg)](https://www.npmjs.com/package/nanocurrency-cli)
 

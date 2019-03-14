@@ -3,12 +3,11 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import BigNumber from 'bignumber.js';
+import BigNumber from 'bignumber.js'
 
-import { checkNumber, checkString } from './check';
+import { checkNumber, checkString } from './check'
 
-// tslint:disable-next-line variable-name
-const TunedBigNumber = BigNumber.clone({ EXPONENTIAL_AT: 1e9 });
+const TunedBigNumber = BigNumber.clone({ EXPONENTIAL_AT: 1e9 })
 
 const ZEROES: { [index: string]: number | undefined } = {
   hex: 0,
@@ -19,7 +18,7 @@ const ZEROES: { [index: string]: number | undefined } = {
   NANO: 30,
   KNano: 33,
   MNano: 36,
-};
+}
 
 /** Nano unit. */
 export enum Unit {
@@ -44,9 +43,9 @@ export enum Unit {
 /** Convert parameters. */
 export interface ConvertParams {
   /** The unit to convert the value from */
-  from: Unit;
+  from: Unit
   /** The unit to convert the value to */
-  to: Unit;
+  to: Unit
 }
 
 /**
@@ -56,47 +55,47 @@ export interface ConvertParams {
  * @param params - Params
  * @returns Converted number
  */
-export function convert(value: string, params: ConvertParams) {
-  const paramsNotValid = new Error('From or to is not valid');
-  if (!params) throw paramsNotValid;
+export function convert(value: string, params: ConvertParams): string {
+  const paramsNotValid = new Error('From or to is not valid')
+  if (!params) throw paramsNotValid
 
-  const fromZeroes: number | undefined = ZEROES[params.from];
-  const toZeroes: number | undefined = ZEROES[params.to];
+  const fromZeroes: number | undefined = ZEROES[params.from]
+  const toZeroes: number | undefined = ZEROES[params.to]
 
   if (typeof fromZeroes === 'undefined' || typeof toZeroes === 'undefined') {
-    throw new Error('From or to is not valid');
+    throw new Error('From or to is not valid')
   }
 
-  const valueNotValid = new Error('Value is not valid');
-  if (!checkString) throw valueNotValid;
+  const valueNotValid = new Error('Value is not valid')
+  if (!checkString) throw valueNotValid
   if (params.from === 'hex') {
-    if (!/^[0-9a-fA-F]{32}$/.test(value)) throw valueNotValid;
+    if (!/^[0-9a-fA-F]{32}$/.test(value)) throw valueNotValid
   } else {
-    if (!checkNumber(value)) throw valueNotValid;
+    if (!checkNumber(value)) throw valueNotValid
   }
 
-  const difference = fromZeroes - toZeroes;
+  const difference = fromZeroes - toZeroes
 
-  let bigNumber;
+  let bigNumber
   if (params.from === 'hex') {
-    bigNumber = new TunedBigNumber(`0x${value}`);
+    bigNumber = new TunedBigNumber(`0x${value}`)
   } else {
-    bigNumber = new TunedBigNumber(value);
+    bigNumber = new TunedBigNumber(value)
   }
 
   if (difference < 0) {
     for (let i = 0; i < -difference; i++) {
-      bigNumber = bigNumber.dividedBy(10);
+      bigNumber = bigNumber.dividedBy(10)
     }
   } else if (difference > 0) {
     for (let i = 0; i < difference; i++) {
-      bigNumber = bigNumber.multipliedBy(10);
+      bigNumber = bigNumber.multipliedBy(10)
     }
   }
 
   if (params.to === 'hex') {
-    return bigNumber.toString(16).padStart(32, '0');
+    return bigNumber.toString(16).padStart(32, '0')
   }
 
-  return bigNumber.toString();
+  return bigNumber.toString()
 }

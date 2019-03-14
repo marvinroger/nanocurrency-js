@@ -3,30 +3,34 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import BigNumber from 'bignumber.js';
+import BigNumber from 'bignumber.js'
 
-import { parseAddress } from './parse';
+import { parseAddress } from './parse'
 
-const MAX_AMOUNT = new BigNumber('0xffffffffffffffffffffffffffffffff');
+const MAX_AMOUNT = new BigNumber('0xffffffffffffffffffffffffffffffff')
 
 /** @hidden */
-export function checkString(candidate: any) {
-  return typeof candidate === 'string';
+export function checkString(candidate: {}): boolean {
+  return typeof candidate === 'string'
 }
 
 /** @hidden */
-export function checkNumber(candidate: any) {
-  if (!checkString(candidate)) return false;
-  if (candidate.startsWith('.') || candidate.endsWith('.')) return false;
+export function checkNumber(candidate: {}): boolean {
+  if (!checkString(candidate)) return false
+  if (
+    (candidate as string).startsWith('.') ||
+    (candidate as string).endsWith('.')
+  )
+    return false
 
-  const numberWithoutDot = candidate.replace('.', '');
+  const numberWithoutDot = (candidate as string).replace('.', '')
   // more than one '.'
-  if (candidate.length - numberWithoutDot.length > 1) return false;
+  if ((candidate as string).length - numberWithoutDot.length > 1) return false
   for (const char of numberWithoutDot) {
-    if (char < '0' || char > '9') return false;
+    if (char < '0' || char > '9') return false
   }
 
-  return true;
+  return true
 }
 
 /**
@@ -37,13 +41,14 @@ export function checkNumber(candidate: any) {
  * @param amount - The amount to check
  * @returns Valid
  */
-export function checkAmount(amount: string) {
-  if (amount === '0') return true;
-  if (!checkString(amount) || !/^[1-9]{1}[0-9]{0,38}$/.test(amount)) return false;
+export function checkAmount(amount: string): boolean {
+  if (amount === '0') return true
+  if (!checkString(amount) || !/^[1-9]{1}[0-9]{0,38}$/.test(amount))
+    return false
 
-  const candidate = new BigNumber(amount);
+  const candidate = new BigNumber(amount)
 
-  return candidate.isLessThanOrEqualTo(MAX_AMOUNT);
+  return candidate.isLessThanOrEqualTo(MAX_AMOUNT)
 }
 
 /**
@@ -54,8 +59,8 @@ export function checkAmount(amount: string) {
  * @param seed - The seed to check
  * @returns Valid
  */
-export function checkSeed(seed: string) {
-  return checkString(seed) && /^[0-9a-fA-F]{64}$/.test(seed);
+export function checkSeed(seed: string): boolean {
+  return checkString(seed) && /^[0-9a-fA-F]{64}$/.test(seed)
 }
 
 /**
@@ -66,8 +71,8 @@ export function checkSeed(seed: string) {
  * @param hash - The hash to check
  * @returns Valid
  */
-export function checkHash(hash: string) {
-  return checkSeed(hash);
+export function checkHash(hash: string): boolean {
+  return checkSeed(hash)
 }
 
 /**
@@ -79,8 +84,8 @@ export function checkHash(hash: string) {
  * @param key - The key to check
  * @returns Valid
  */
-export function checkKey(key: string) {
-  return checkSeed(key);
+export function checkKey(key: string): boolean {
+  return checkSeed(key)
 }
 
 /**
@@ -92,10 +97,10 @@ export function checkKey(key: string) {
  * @param address - The address to check
  * @returns Valid
  */
-export function checkAddress(address: string) {
-  const parseResult = parseAddress(address);
+export function checkAddress(address: string): boolean {
+  const parseResult = parseAddress(address)
 
-  return parseResult.valid;
+  return parseResult.valid
 }
 
 /**
@@ -106,8 +111,8 @@ export function checkAddress(address: string) {
  * @param work - The work to check
  * @returns Valid
  */
-export function checkWork(work: string) {
-  return checkString(work) && /^[0-9a-fA-F]{16}$/.test(work);
+export function checkWork(work: string): boolean {
+  return checkString(work) && /^[0-9a-fA-F]{16}$/.test(work)
 }
 
 /**
@@ -118,6 +123,6 @@ export function checkWork(work: string) {
  * @param signature - The signature to check
  * @returns Valid
  */
-export function checkSignature(signature: string) {
-  return checkString(signature) && /^[0-9a-fA-F]{128}$/.test(signature);
+export function checkSignature(signature: string): boolean {
+  return checkString(signature) && /^[0-9a-fA-F]{128}$/.test(signature)
 }

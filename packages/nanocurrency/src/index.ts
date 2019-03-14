@@ -7,25 +7,36 @@
  * @module NanoCurrency
  */
 export {
+  checkAddress,
   checkAmount,
-  checkSeed,
   checkHash,
   checkKey,
-  checkAddress,
-  checkWork,
+  checkSeed,
   checkSignature,
-} from './check';
+  checkWork,
+} from './check'
 
-export { convert } from './conversion';
+export { ConvertParams, Unit, convert } from './conversion'
 
-export { generateSeed, deriveSecretKey, derivePublicKey, deriveAddress } from './keys';
+export {
+  DeriveAddressParams,
+  deriveAddress,
+  derivePublicKey,
+  deriveSecretKey,
+  generateSeed,
+} from './keys'
 
-export { hashBlock } from './hash';
+export { HashBlockParams, hashBlock } from './hash'
 
-export { signBlock, verifyBlock } from './signature';
+export {
+  SignBlockParams,
+  VerifyBlockParams,
+  signBlock,
+  verifyBlock,
+} from './signature'
 
-export { validateWork } from './work';
+export { ValidateWorkParams, validateWork } from './work'
 
-export { createBlock } from './block';
+export { Block, BlockData, BlockRepresentation, createBlock } from './block'
 
-export { computeWork } from './accelerated';
+export { ComputeWorkParams, computeWork } from './accelerated'

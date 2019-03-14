@@ -3,45 +3,61 @@
  * Copyright (c) 2018 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import { checkHash } from './check';
+import { checkHash } from './check'
 
-import Native from '../native';
+import loadAssembly from '../assembly'
 
-const C_BINDING: {
-  instance_: any;
-  work: null | ((blockHash: string, workerIndex: number, workerCount: number) => string);
-} = {
-  instance_: null,
-  work: null,
-};
+type WorkFunction = (
+  blockHash: string,
+  workerIndex: number,
+  workerCount: number
+) => string
 
-function loadWasm(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    try {
-      Native().then((native: any) => {
-        C_BINDING.instance_ = native;
-        C_BINDING.work = native.cwrap('emscripten_work', 'string', ['string', 'number', 'number']);
-
-        resolve();
-      });
-    } catch (err) {
-      reject(err);
-    }
-  });
+interface AssemblyWhenNotLoaded {
+  loaded: false
+  work: null
+}
+interface AssemblyWhenLoaded {
+  loaded: true
+  work: WorkFunction
 }
 
-async function loadWasmIfNotLoaded() {
-  if (C_BINDING.instance_ !== null) return;
+const ASSEMBLY: AssemblyWhenNotLoaded | AssemblyWhenLoaded = {
+  loaded: false,
+  work: null,
+}
 
-  await loadWasm();
+function loadWasm(): Promise<AssemblyWhenLoaded> {
+  return new Promise((resolve, reject) => {
+    if (ASSEMBLY.loaded) {
+      return resolve(ASSEMBLY)
+    }
+
+    try {
+      loadAssembly().then(assembly => {
+        let loaded = Object.assign(ASSEMBLY, {
+          loaded: true,
+          work: assembly.cwrap('emscripten_work', 'string', [
+            'string',
+            'number',
+            'number',
+          ]),
+        }) as AssemblyWhenLoaded
+
+        resolve(loaded)
+      })
+    } catch (err) {
+      reject(err)
+    }
+  })
 }
 
 /** Compute work parameters. */
 export interface ComputeWorkParams {
   /** The current worker index, starting at 0 */
-  workerIndex: number;
+  workerIndex: number
   /** The count of worker */
-  workerCount: number;
+  workerCount: number
 }
 
 /**
@@ -55,10 +71,10 @@ export interface ComputeWorkParams {
 export async function computeWork(
   blockHash: string,
   params: ComputeWorkParams = { workerIndex: 0, workerCount: 1 }
-) {
-  await loadWasmIfNotLoaded();
+): Promise<string | null> {
+  const assembly = await loadWasm()
 
-  if (!checkHash(blockHash)) throw new Error('Hash is not valid');
+  if (!checkHash(blockHash)) throw new Error('Hash is not valid')
   if (
     !Number.isInteger(params.workerIndex) ||
     !Number.isInteger(params.workerCount) ||
@@ -66,10 +82,10 @@ export async function computeWork(
     params.workerCount < 1 ||
     params.workerIndex > params.workerCount - 1
   ) {
-    throw new Error('Worker parameters are not valid');
+    throw new Error('Worker parameters are not valid')
   }
 
-  const work = C_BINDING.work!(blockHash, params.workerIndex, params.workerCount);
+  const work = assembly.work(blockHash, params.workerIndex, params.workerCount)
 
-  return work !== '0000000000000000' ? work : null;
+  return work !== '0000000000000000' ? work : null
 }

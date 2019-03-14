@@ -22,80 +22,82 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const alphabet = '13456789abcdefghijkmnopqrstuwxyz';
+const alphabet = '13456789abcdefghijkmnopqrstuwxyz'
 
 /**
  * Encode provided Uint8Array using the Nano-specific Base-32 implementeation.
  * @param view Input buffer formatted as a Uint8Array
  * @returns
+ * @hidden
  */
-export function encodeNanoBase32(view: Uint8Array) {
-  const length = view.length;
-  const leftover = (length * 8) % 5;
-  const offset = leftover === 0 ? 0 : 5 - leftover;
+export function encodeNanoBase32(view: Uint8Array): string {
+  const length = view.length
+  const leftover = (length * 8) % 5
+  const offset = leftover === 0 ? 0 : 5 - leftover
 
-  let value = 0;
-  let output = '';
-  let bits = 0;
+  let value = 0
+  let output = ''
+  let bits = 0
 
   for (let i = 0; i < length; i++) {
-    value = (value << 8) | view[i];
-    bits += 8;
+    value = (value << 8) | view[i]
+    bits += 8
 
     while (bits >= 5) {
-      output += alphabet[(value >>> (bits + offset - 5)) & 31];
-      bits -= 5;
+      output += alphabet[(value >>> (bits + offset - 5)) & 31]
+      bits -= 5
     }
   }
 
   if (bits > 0) {
-    output += alphabet[(value << (5 - (bits + offset))) & 31];
+    output += alphabet[(value << (5 - (bits + offset))) & 31]
   }
 
-  return output;
+  return output
 }
 
-function readChar(char: string) {
-  const idx = alphabet.indexOf(char);
+function readChar(char: string): number {
+  const idx = alphabet.indexOf(char)
 
   if (idx === -1) {
-    throw new Error(`Invalid character found: ${char}`);
+    throw new Error(`Invalid character found: ${char}`)
   }
 
-  return idx;
+  return idx
 }
 
 /**
  * Decodes a Nano-implementation Base32 encoded string into a Uint8Array
  * @param input A Nano-Base32 encoded string
  * @returns
+ * @hidden
  */
-export function decodeNanoBase32(input: string) {
-  const length = input.length;
-  const leftover = (length * 5) % 8;
-  const offset = leftover === 0 ? 0 : 8 - leftover;
+export function decodeNanoBase32(input: string): Uint8Array {
+  const length = input.length
+  const leftover = (length * 5) % 8
+  const offset = leftover === 0 ? 0 : 8 - leftover
 
-  let bits = 0;
-  let value = 0;
+  let bits = 0
+  let value = 0
 
-  let index = 0;
-  let output = new Uint8Array(Math.ceil((length * 5) / 8));
+  let index = 0
+  let output = new Uint8Array(Math.ceil((length * 5) / 8))
 
   for (let i = 0; i < length; i++) {
-    value = (value << 5) | readChar(input[i]);
-    bits += 5;
+    value = (value << 5) | readChar(input[i])
+    bits += 5
 
     if (bits >= 8) {
-      output[index++] = (value >>> (bits + offset - 8)) & 255;
-      bits -= 8;
+      output[index++] = (value >>> (bits + offset - 8)) & 255
+      bits -= 8
     }
   }
   if (bits > 0) {
-    output[index++] = (value << (bits + offset - 8)) & 255;
+    output[index++] = (value << (bits + offset - 8)) & 255
   }
 
   if (leftover !== 0) {
-    output = output.slice(1);
+    output = output.slice(1)
   }
-  return output;
+  return output
 }

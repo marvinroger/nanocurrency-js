@@ -1,4 +1,4 @@
-import { HEADER_SIZE } from 'internal/arraybuffer'
+import { HEADER_SIZE } from 'internal/arraybuffer';
 
 export class Context {
   b: Uint8Array;
@@ -15,17 +15,17 @@ function B2B_GET64(arr: Uint8Array, i: u32): u64 {
 }
 
 function B2B_G(a: i32, b: i32, c: i32, d: i32, x: u64, y: u64): void {
-  v[a] = v[a] + v[b] + x;
-  v[d] = rotr<u64>(v[d] ^ v[a], 32);
-  v[c] = v[c] + v[d];
-  v[b] = rotr<u64>(v[b] ^ v[c], 24);
-  v[a] = v[a] + v[b] + y;
-  v[d] = rotr<u64>(v[d] ^ v[a], 16);
-  v[c] = v[c] + v[d];
-  v[b] = rotr<u64>(v[b] ^ v[c], 63);
+  v[a] = unchecked(v[a]) + unchecked(v[b]) + x;
+  v[d] = rotr<u64>(unchecked(v[d]) ^ unchecked(v[a]), 32);
+  v[c] = unchecked(v[c]) + unchecked(v[d]);
+  v[b] = rotr<u64>(unchecked(v[b]) ^ unchecked(v[c]), 24);
+  v[a] = unchecked(v[a]) + unchecked(v[b]) + y;
+  v[d] = rotr<u64>(unchecked(v[d]) ^ unchecked(v[a]), 16);
+  v[c] = unchecked(v[c]) + unchecked(v[d]);
+  v[b] = rotr<u64>(unchecked(v[b]) ^ unchecked(v[c]), 63);
 }
 
-let BLAKE2B_IV_DATA: u64[] = [
+const BLAKE2B_IV: u64[] = [
   0x6a09e667f3bcc908,
   0xbb67ae8584caa73b,
   0x3c6ef372fe94f82b,
@@ -35,11 +35,6 @@ let BLAKE2B_IV_DATA: u64[] = [
   0x1f83d9abfb41bd6b,
   0x5be0cd19137e2179,
 ];
-
-let BLAKE2B_IV = new Uint64Array(BLAKE2B_IV_DATA.length);
-for (let i = 0; i < BLAKE2B_IV.length; i++) {
-  BLAKE2B_IV[i] = BLAKE2B_IV_DATA[i];
-}
 
 const SIGMA: u8[][] = [
   [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
@@ -70,18 +65,29 @@ let m = new Uint64Array(16);
 function blake2bCompress(last: boolean): void {
   let i = 0;
 
-  // init work variables
-  for (i = 0; i < 8; i++) {
-    v[i] = ctx.h[i];
-    v[i + 8] = BLAKE2B_IV[i];
-  }
+  v[0] = unchecked(ctx.h[0]);
+  v[8] = unchecked(BLAKE2B_IV[0]);
+  v[1] = unchecked(ctx.h[1]);
+  v[9] = unchecked(BLAKE2B_IV[1]);
+  v[2] = unchecked(ctx.h[2]);
+  v[10] = unchecked(BLAKE2B_IV[2]);
+  v[3] = unchecked(ctx.h[3]);
+  v[11] = unchecked(BLAKE2B_IV[3]);
+  v[4] = unchecked(ctx.h[4]);
+  v[12] = unchecked(BLAKE2B_IV[4]);
+  v[5] = unchecked(ctx.h[5]);
+  v[13] = unchecked(BLAKE2B_IV[5]);
+  v[6] = unchecked(ctx.h[6]);
+  v[14] = unchecked(BLAKE2B_IV[6]);
+  v[7] = unchecked(ctx.h[7]);
+  v[15] = unchecked(BLAKE2B_IV[7]);
 
-  v[12] = v[12] ^ ctx.t[0]; // low 64 bits of offset
-  v[13] = v[13] ^ ctx.t[1]; // high 64 bits
+  v[12] = unchecked(v[12]) ^ unchecked(ctx.t[0]); // low 64 bits of offset
+  v[13] = unchecked(v[13]) ^ unchecked(ctx.t[1]); // high 64 bits
 
   // last block flag set ?
   if (last) {
-    v[14] = ~v[14];
+    v[14] = unchecked(~v[14]);
   }
 
   // get little-endian words
@@ -91,26 +97,36 @@ function blake2bCompress(last: boolean): void {
 
   // twelve rounds of mixing
   for (i = 0; i < 12; i++) {
-    B2B_G(0, 4, 8, 12, m[SIGMA[i][0]], m[SIGMA[i][1]]);
-    B2B_G(1, 5, 9, 13, m[SIGMA[i][2]], m[SIGMA[i][3]]);
-    B2B_G(2, 6, 10, 14, m[SIGMA[i][4]], m[SIGMA[i][5]]);
-    B2B_G(3, 7, 11, 15, m[SIGMA[i][6]], m[SIGMA[i][7]]);
-    B2B_G(0, 5, 10, 15, m[SIGMA[i][8]], m[SIGMA[i][9]]);
-    B2B_G(1, 6, 11, 12, m[SIGMA[i][10]], m[SIGMA[i][11]]);
-    B2B_G(2, 7, 8, 13, m[SIGMA[i][12]], m[SIGMA[i][13]]);
-    B2B_G(3, 4, 9, 14, m[SIGMA[i][14]], m[SIGMA[i][15]]);
+    B2B_G(0, 4, 8, 12, unchecked(m[SIGMA[i][0]]), unchecked(m[SIGMA[i][1]]));
+    B2B_G(1, 5, 9, 13, unchecked(m[SIGMA[i][2]]), unchecked(m[SIGMA[i][3]]));
+    B2B_G(2, 6, 10, 14, unchecked(m[SIGMA[i][4]]), unchecked(m[SIGMA[i][5]]));
+    B2B_G(3, 7, 11, 15, unchecked(m[SIGMA[i][6]]), unchecked(m[SIGMA[i][7]]));
+    B2B_G(0, 5, 10, 15, unchecked(m[SIGMA[i][8]]), unchecked(m[SIGMA[i][9]]));
+    B2B_G(1, 6, 11, 12, unchecked(m[SIGMA[i][10]]), unchecked(m[SIGMA[i][11]]));
+    B2B_G(2, 7, 8, 13, unchecked(m[SIGMA[i][12]]), unchecked(m[SIGMA[i][13]]));
+    B2B_G(3, 4, 9, 14, unchecked(m[SIGMA[i][14]]), unchecked(m[SIGMA[i][15]]));
   }
 
-  for (i = 0; i < 8; ++i) {
-    ctx.h[i] = ctx.h[i] ^ v[i] ^ v[i + 8];
-  }
+  ctx.h[0] = unchecked(ctx.h[0]) ^ unchecked(v[0]) ^ unchecked(v[8]);
+  ctx.h[1] = unchecked(ctx.h[1]) ^ unchecked(v[1]) ^ unchecked(v[9]);
+  ctx.h[2] = unchecked(ctx.h[2]) ^ unchecked(v[2]) ^ unchecked(v[10]);
+  ctx.h[3] = unchecked(ctx.h[3]) ^ unchecked(v[3]) ^ unchecked(v[11]);
+  ctx.h[4] = unchecked(ctx.h[4]) ^ unchecked(v[4]) ^ unchecked(v[12]);
+  ctx.h[5] = unchecked(ctx.h[5]) ^ unchecked(v[5]) ^ unchecked(v[13]);
+  ctx.h[6] = unchecked(ctx.h[6]) ^ unchecked(v[6]) ^ unchecked(v[14]);
+  ctx.h[7] = unchecked(ctx.h[7]) ^ unchecked(v[7]) ^ unchecked(v[15]);
 }
 
 export function blake2bInit(): void {
   // initialize hash state
-  for (let i = 0; i < 8; i++) {
-    ctx.h[i] = BLAKE2B_IV[i];
-  }
+  ctx.h[0] = unchecked(BLAKE2B_IV[0]);
+  ctx.h[1] = unchecked(BLAKE2B_IV[1]);
+  ctx.h[2] = unchecked(BLAKE2B_IV[2]);
+  ctx.h[3] = unchecked(BLAKE2B_IV[3]);
+  ctx.h[4] = unchecked(BLAKE2B_IV[4]);
+  ctx.h[5] = unchecked(BLAKE2B_IV[5]);
+  ctx.h[6] = unchecked(BLAKE2B_IV[6]);
+  ctx.h[7] = unchecked(BLAKE2B_IV[7]);
 
   ctx.h[0] ^= 0x01010000 ^ (0 << 8) ^ ctx.outlen;
 
@@ -118,13 +134,11 @@ export function blake2bInit(): void {
   ctx.t[1] = 0;
   ctx.c = 0;
 
-  for (let i = 0; i < 128; i++) {
-    ctx.b[i] = 0;
-  }
+  ctx.b.fill(0);
 }
 
 export function blake2bUpdate(input: Uint8Array): void {
-  for (let i = 0; i < input.length; i++) {
+  for (let i = 0, len = input.length; i < len; i++) {
     if (ctx.c === 128) {
       // buffer full ?
       ctx.t[0] += ctx.c; // add counters
@@ -135,7 +149,7 @@ export function blake2bUpdate(input: Uint8Array): void {
       blake2bCompress(false); // compress (not last)
       ctx.c = 0; // counter to zero
     }
-    ctx.b[ctx.c++] = input[i];
+    ctx.b[ctx.c++] = unchecked(input[i]);
   }
 }
 
@@ -154,8 +168,8 @@ export function blake2bFinal(): Uint8Array {
   blake2bCompress(true); // final block flag = 1
 
   // little endian convert and store
-  for (let i: u64 = 0; i < ctx.outlen; i++) {
-    output[<i32>i] = (<u32>(ctx.h[(<i32>i) >> 3] >> (8 * (i & 7)))) & 0xff;
+  for (let i: u64 = 0, len = ctx.outlen; i < len; i++) {
+    output[<i32>i] = (<u32>(unchecked(ctx.h[(<i32>i) >> 3]) >> (8 * (i & 7)))) & 0xff;
   }
   return output;
 }

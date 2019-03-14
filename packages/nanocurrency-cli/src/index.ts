@@ -169,10 +169,8 @@ yargs
         },
         async argv => {
           const converted = await nanocurrency.convert(argv.input, {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            from: argv.from as any,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            to: argv.to as any,
+            from: argv.from as nanocurrency.Unit,
+            to: argv.to as nanocurrency.Unit,
           })
           console.log(converted)
         }

@@ -7,6 +7,8 @@ import BigNumber from 'bignumber.js'
 
 import { parseAddress } from './parse'
 
+const MIN_INDEX = 0
+const MAX_INDEX = Math.pow(2, 32) - 1
 const MAX_AMOUNT = new BigNumber('0xffffffffffffffffffffffffffffffff')
 
 /** @hidden */
@@ -61,6 +63,18 @@ export function checkAmount(amount: string): boolean {
  */
 export function checkSeed(seed: string): boolean {
   return checkString(seed) && /^[0-9a-fA-F]{64}$/.test(seed)
+}
+
+/**
+ * Check if the given index is valid.
+ *
+ * **Note:** it only checks the format of the index.
+ *
+ * @param index- The index to check
+ * @returns Valid
+ */
+export function checkIndex(index: number): boolean {
+  return Number.isInteger(index) && index >= MIN_INDEX && index <= MAX_INDEX
 }
 
 /**

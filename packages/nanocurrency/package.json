@@ -69,6 +69,6 @@
     "generate-docs": "dev-core generate-docs",
     "lint": "dev-core lint",
     "test": "dev-core test",
-    "prepublishOnly": "yarn build:prod"
+    "prepublishOnly": "yarn build:prod && yarn test && yarn lint && yarn generate-docs"
   }
 }

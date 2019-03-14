@@ -6,7 +6,7 @@ const INVALID_SEEDS = [
   'z947ee0115014a4d49a804e7fc7248e31690b80033ce7a6e3a07bdf93b2584ff',
 ]
 
-const INVALID_INDEXES = ['', '0', -1, 1.1]
+const INVALID_INDEXES = ['', '0', -1, 1.1, Math.pow(2, 32)]
 
 const INVALID_SECRET_KEYS = [
   '',

@@ -10,6 +10,7 @@ export {
   checkAddress,
   checkAmount,
   checkHash,
+  checkIndex,
   checkKey,
   checkSeed,
   checkSignature,

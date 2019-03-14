@@ -45,6 +45,23 @@ describe('check', () => {
     }
   })
 
+  test('index', async () => {
+    expect.assertions(6)
+    {
+      const { stdout, stderr, code } = await cli('check index --candidate 1234')
+      expect(code).toBe(0)
+      expect(stdout.trimRight()).toBe('true')
+      expect(stderr).toBe('')
+    }
+
+    {
+      const { stdout, stderr, code } = await cli('check index --candidate foo')
+      expect(code).toBe(0)
+      expect(stdout.trimRight()).toBe('false')
+      expect(stderr).toBe('')
+    }
+  })
+
   test('amount', async () => {
     expect.assertions(6)
     {

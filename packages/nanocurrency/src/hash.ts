@@ -26,7 +26,7 @@ export interface HashBlockParams {
    * `0000000000000000000000000000000000000000000000000000000000000000` if `open` block.
    */
   previous: string
-  /** The destination address */
+  /** The representative address */
   representative: string
   /** The resulting balance, in raw */
   balance: string

@@ -16,7 +16,7 @@ yargs
   .usage('usage: $0 <command>')
   .command(
     'check',
-    'check a [seed|amount|hash|key|address|work|signature]',
+    'check a [seed|index|amount|hash|key|address|work|signature]',
     yargs => {
       return wrapSubcommand(
         yargs
@@ -35,6 +35,23 @@ yargs
             },
             argv => {
               const valid = nanocurrency.checkSeed(argv.candidate)
+              console.log(valid)
+            }
+          )
+          .command(
+            'index',
+            'check an index',
+            yargs => {
+              return yargs
+                .usage('usage: $0 check index [options]')
+                .option('candidate', {
+                  demandOption: true,
+                  describe: 'candidate to check',
+                  type: 'number',
+                })
+            },
+            argv => {
+              const valid = nanocurrency.checkIndex(argv.candidate)
               console.log(valid)
             }
           )

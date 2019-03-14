@@ -5,7 +5,7 @@
  */
 import { blake2b, blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
 
-import { checkKey, checkSeed } from './check'
+import { checkIndex, checkKey, checkSeed } from './check'
 import { derivePublicFromSecret } from './nacl'
 import { byteArrayToHex, getRandomBytes, hexToByteArray } from './utils'
 import { parseAddress } from './parse'
@@ -39,7 +39,7 @@ export function generateSeed(): Promise<string> {
  */
 export function deriveSecretKey(seed: string, index: number): string {
   if (!checkSeed(seed)) throw new Error('Seed is not valid')
-  if (!Number.isInteger(index) || index < 0) {
+  if (!checkIndex(index)) {
     throw new Error('Index is not valid')
   }
 

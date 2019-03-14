@@ -17,7 +17,7 @@ export interface BlockData {
   work: string | null
   /** The hash of the previous block on the account chain, in hexadecimal format */
   previous: string
-  /** The destination address */
+  /** The representative address */
   representative: string
   /** The resulting balance */
   balance: string

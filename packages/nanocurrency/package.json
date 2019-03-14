@@ -37,13 +37,7 @@
   "files": [
     "dist/"
   ],
-  "homepage": "https://github.com/marvinroger/nanocurrency-js",
-  "jest": {
-    "testPathIgnorePatterns": [
-      "<rootDir>/__tests__/data/",
-      "<rootDir>/node_modules/"
-    ]
-  },
+  "homepage": "https://github.com/marvinroger/nanocurrency-js/tree/master/packages/nanocurrency",
   "keywords": [
     "crypto",
     "currency",

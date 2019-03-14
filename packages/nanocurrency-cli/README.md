@@ -42,7 +42,7 @@ nanocurrency --help
 
 Contributions are very welcome. To develop, make use of the following commands (using [Yarn](https://yarnpkg.com)):
 
-- `yarn build:prod`: build the into the `dist` directory
+- `yarn build:prod`: build the into the `dist/` directory
 
 - `yarn test`: test the code
 

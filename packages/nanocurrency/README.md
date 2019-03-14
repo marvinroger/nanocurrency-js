@@ -11,7 +11,7 @@ If you are looking for legacy blocks, you will want the `^1.0.0` versions.
 
 ![Code showcase](https://raw.githubusercontent.com/marvinroger/nanocurrency-js/master/showcase.png)
 
-The documentation is available locally in [docs/](docs/) or online at [https://marvinroger.github.io/nanocurrency-js](https://marvinroger.github.io/nanocurrency-js).
+The documentation is available locally in [`docs/`](docs/) or online at [https://marvinroger.github.io/nanocurrency-js/packages/nanocurrency/docs/](https://marvinroger.github.io/nanocurrency-js/packages/nanocurrency/docs/).
 
 ---
 
@@ -56,7 +56,7 @@ Considering you can pre-compute and cache the work prior to an actual transactio
 
 Contributions are very welcome. To develop, make use of the following commands (using [Yarn](https://yarnpkg.com)):
 
-- `yarn build:dev`: build the C++ code to WebAssembly and bundle the files into the `dist` directory, without optimization so that it is fast while developing. Note that you'll need to have Docker installed
+- `yarn build:dev`: build the C++ code to WebAssembly and bundle the files into the `dist/` directory, without optimization so that it is fast while developing. Note that you'll need to have Docker installed
 
 - `yarn test`: test the code
 

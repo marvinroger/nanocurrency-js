@@ -14,8 +14,6 @@ The nanocurrency-js monorepo.
 
 [![npm version](https://img.shields.io/npm/v/nanocurrency.svg)](https://www.npmjs.com/package/nanocurrency)
 
----
-
 A battle-tested toolkit for the Nano cryptocurrency.
 
 The code lives in [`packages/nanocurrency/`](packages/nanocurrency/).
@@ -25,8 +23,6 @@ The code lives in [`packages/nanocurrency/`](packages/nanocurrency/).
 # nanocurrency-cli
 
 [![npm version](https://img.shields.io/npm/v/nanocurrency-cli.svg)](https://www.npmjs.com/package/nanocurrency-cli)
-
----
 
 A CLI for the Nano cryptocurrency. Uses the `nanocurrency` package.
 

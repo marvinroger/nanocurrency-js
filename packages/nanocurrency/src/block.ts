@@ -7,7 +7,7 @@ import { checkAddress, checkAmount, checkHash, checkKey } from './check'
 
 import { deriveAddress, derivePublicKey } from './keys'
 
-import { hashBlock } from './hash'
+import { unsafeHashBlock } from './hash'
 
 import { signBlock } from './signature'
 
@@ -137,7 +137,9 @@ export function createBlock(secretKey: string, data: BlockData): Block {
 
   const publicKey = derivePublicKey(secretKey)
   const account = deriveAddress(publicKey)
-  const hash = hashBlock({
+  // we use unsafeHashBlock because we already
+  // checked the input
+  const hash = unsafeHashBlock({
     account,
     previous: correctedPrevious,
     representative: data.representative,

@@ -38,6 +38,34 @@ export interface HashBlockParams {
   link: string
 }
 
+/** @hidden */
+export function unsafeHashBlock(params: HashBlockParams): string {
+  const accountBytes = hexToByteArray(derivePublicKey(params.account))
+  const previousBytes = hexToByteArray(params.previous)
+  const representativeBytes = hexToByteArray(
+    derivePublicKey(params.representative)
+  )
+  const balanceHex = convert(params.balance, { from: Unit.raw, to: Unit.hex })
+  const balanceBytes = hexToByteArray(balanceHex)
+  let linkBytes: Uint8Array
+  if (checkAddress(params.link)) {
+    linkBytes = hexToByteArray(derivePublicKey(params.link))
+  } else {
+    linkBytes = hexToByteArray(params.link)
+  }
+
+  const context = blake2bInit(32)
+  blake2bUpdate(context, STATE_BLOCK_PREAMBLE_BYTES)
+  blake2bUpdate(context, accountBytes)
+  blake2bUpdate(context, previousBytes)
+  blake2bUpdate(context, representativeBytes)
+  blake2bUpdate(context, balanceBytes)
+  blake2bUpdate(context, linkBytes)
+  const hashBytes = blake2bFinal(context)
+
+  return byteArrayToHex(hashBytes)
+}
+
 /**
  * Hash a state block.
  *
@@ -51,31 +79,9 @@ export function hashBlock(params: HashBlockParams): string {
     throw new Error('Representative is not valid')
   }
   if (!checkAmount(params.balance)) throw new Error('Balance is not valid')
-  let linkBytes: Uint8Array
-  if (checkAddress(params.link)) {
-    linkBytes = hexToByteArray(derivePublicKey(params.link))
-  } else if (checkHash(params.link)) {
-    linkBytes = hexToByteArray(params.link)
-  } else {
+  if (!checkAddress(params.link) && !checkHash(params.link)) {
     throw new Error('Link is not valid')
   }
 
-  const accountBytes = hexToByteArray(derivePublicKey(params.account))
-  const previousBytes = hexToByteArray(params.previous)
-  const representativeBytes = hexToByteArray(
-    derivePublicKey(params.representative)
-  )
-  const balanceHex = convert(params.balance, { from: Unit.raw, to: Unit.hex })
-  const balanceBytes = hexToByteArray(balanceHex)
-
-  const context = blake2bInit(32)
-  blake2bUpdate(context, STATE_BLOCK_PREAMBLE_BYTES)
-  blake2bUpdate(context, accountBytes)
-  blake2bUpdate(context, previousBytes)
-  blake2bUpdate(context, representativeBytes)
-  blake2bUpdate(context, balanceBytes)
-  blake2bUpdate(context, linkBytes)
-  const hashBytes = blake2bFinal(context)
-
-  return byteArrayToHex(hashBytes)
+  return unsafeHashBlock(params)
 }

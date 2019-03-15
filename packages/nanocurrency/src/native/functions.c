@@ -26,18 +26,14 @@ void hex_to_bytes(const char* const hex, uint8_t* const dst) {
   }
 }
 
-const uint8_t UINT64_LENGTH = 8;
 void uint64_to_bytes(const uint64_t src, uint8_t* const dst) {
-  for (unsigned int i = 0; i < UINT64_LENGTH; i++) {
-    dst[i] = (uint8_t)((src >> 8 * ((UINT64_LENGTH - 1) - i)) & 0xFF);
-  }
+  memcpy(dst, &src, sizeof(src));
 }
 
 uint64_t bytes_to_uint64(const uint8_t* const src) {
   uint64_t ret = 0;
-  for (unsigned int i = 0; i < 8; i++) {
-    ret |= (((uint64_t)src[i]) << (64 - (8 * (i + 1))));
-  }
+
+  memcpy(&ret, src, sizeof(ret));
 
   return ret;
 }
@@ -71,7 +67,6 @@ uint8_t validate_work(const uint8_t* const block_hash, uint8_t* const work) {
   blake2b_update(&hash, block_hash, BLOCK_HASH_LENGTH);
   blake2b_final(&hash, output, WORK_HASH_LENGTH);
 
-  reverse_bytes(output, WORK_HASH_LENGTH);
   const uint64_t output_int = bytes_to_uint64(output);
 
   return output_int >= WORK_THRESHOLD;
@@ -92,11 +87,11 @@ void work(const uint8_t* const block_hash, const uint8_t worker_index, const uin
     if (work == upper_bound) return;
 
     uint64_to_bytes(work, work_bytes);
-    reverse_bytes(work_bytes, WORK_LENGTH);
 
     if (validate_work(block_hash, work_bytes)) {
       reverse_bytes(work_bytes, WORK_LENGTH);
-      memcpy(dst, work_bytes, WORK_LENGTH);
+      dst[0] = 1;
+      memcpy(dst + 1, work_bytes, WORK_LENGTH);
       return;
     }
 
@@ -105,19 +100,17 @@ void work(const uint8_t* const block_hash, const uint8_t worker_index, const uin
 }
 
 
-char stack_string[BLOCK_HASH_LENGTH + 1];
+char stack_string[2 + BLOCK_HASH_LENGTH + 1];
 
 EMSCRIPTEN_KEEPALIVE
 const char* emscripten_work(const char* const block_hash_hex, const uint8_t worker_index, const uint8_t worker_count) {
   uint8_t block_hash_bytes[BLOCK_HASH_LENGTH];
   hex_to_bytes(block_hash_hex, block_hash_bytes);
 
-  uint8_t work_[WORK_LENGTH];
-  for (unsigned int i = 0; i < WORK_LENGTH; i++) {
-    work_[i] = 0;
-  }
+  uint8_t work_[1 + WORK_LENGTH];
+  work_[0] = 0;
   work(block_hash_bytes, worker_index, worker_count, work_);
-  bytes_to_hex(work_, WORK_LENGTH, stack_string);
+  bytes_to_hex(work_, 1 + WORK_LENGTH, stack_string);
 
   return stack_string;
 }

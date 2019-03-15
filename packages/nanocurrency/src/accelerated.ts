@@ -86,6 +86,11 @@ export async function computeWork(
   }
 
   const work = assembly.work(blockHash, params.workerIndex, params.workerCount)
+  const success = work[1] === '1'
 
-  return work !== '0000000000000000' ? work : null
+  if (!success) {
+    return null
+  }
+
+  return work.substr(2)
 }

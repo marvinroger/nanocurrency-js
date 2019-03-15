@@ -5,8 +5,8 @@ const nano = require('../dist/nanocurrency.cjs')
 const { INVALID_HASHES } = require('./data/invalid')
 
 const VALID_WORK = {
-  hash: 'e65cf3f83296f1abf0447775168bf08c78e9ec4dbaa83f43d87d1ee5ebd990ac',
-  work: '0000000000059600',
+  hash: 'b9cb6b51b8eb869af085c4c03e7dc539943d0bdde13b21436b687c9c7ea56cb0',
+  work: '0000000000010600',
 }
 
 describe('computeWork', () => {

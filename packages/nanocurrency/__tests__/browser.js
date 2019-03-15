@@ -47,7 +47,7 @@ describe('browser', () => {
                 '(',
                 function() {
                   NanoCurrency.computeWork(
-                    'e65cf3f83296f1abf0447775168bf08c78e9ec4dbaa83f43d87d1ee5ebd990ac'
+                    'b9cb6b51b8eb869af085c4c03e7dc539943d0bdde13b21436b687c9c7ea56cb0'
                   ).then(work => {
                     postMessage(work)
                   })
@@ -76,6 +76,6 @@ describe('browser', () => {
       { umdScript }
     )
 
-    expect(result).toBe('0000000000059600')
+    expect(result).toBe('0000000000010600')
   })
 })

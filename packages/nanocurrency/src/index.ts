@@ -38,6 +38,16 @@ export {
 
 export { ValidateWorkParams, validateWork } from './work'
 
-export { Block, BlockData, BlockRepresentation, createBlock } from './block'
+export {
+  Block,
+  CommonBlockData,
+  OpenBlockData,
+  ChangeBlockData,
+  SendBlockData,
+  ReceiveBlockData,
+  BlockData,
+  BlockRepresentation,
+  createBlock,
+} from './block'
 
 export { ComputeWorkParams, computeWork } from './accelerated'

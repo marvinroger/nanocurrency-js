@@ -8,6 +8,7 @@ const {
   INVALID_AMOUNTS,
   INVALID_ADDRESSES,
   INVALID_HASHES_AND_ADDRESSES,
+  INVALID_BLOCK_COMBINATIONS,
 } = require('./data/invalid')
 
 const VALID_STATE_BLOCKS = require('./data/valid_blocks')
@@ -114,6 +115,21 @@ describe('state', () => {
           link: invalidLink,
         })
       }).toThrowError('Link is not valid')
+    }
+  })
+
+  test('throws with invalid combination', () => {
+    expect.assertions(INVALID_BLOCK_COMBINATIONS.length)
+    for (let invalidBlockCombination of INVALID_BLOCK_COMBINATIONS) {
+      expect(() => {
+        nano.createBlock(invalidBlockCombination.secretKey, {
+          work: invalidBlockCombination.work,
+          previous: invalidBlockCombination.previous,
+          representative: invalidBlockCombination.representative,
+          balance: invalidBlockCombination.balance,
+          link: invalidBlockCombination.link,
+        })
+      }).toThrowError('Block is impossible')
     }
   })
 })

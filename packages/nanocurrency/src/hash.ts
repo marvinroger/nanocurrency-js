@@ -51,11 +51,14 @@ export function hashBlock(params: HashBlockParams): string {
     throw new Error('Representative is not valid')
   }
   if (!checkAmount(params.balance)) throw new Error('Balance is not valid')
-  let linkIsAddress = false
-  let linkIsBlockHash = false
-  if (checkAddress(params.link)) linkIsAddress = true
-  else if (checkHash(params.link)) linkIsBlockHash = true
-  else throw new Error('Link is not valid')
+  let linkBytes: Uint8Array
+  if (checkAddress(params.link)) {
+    linkBytes = hexToByteArray(derivePublicKey(params.link))
+  } else if (checkHash(params.link)) {
+    linkBytes = hexToByteArray(params.link)
+  } else {
+    throw new Error('Link is not valid')
+  }
 
   const accountBytes = hexToByteArray(derivePublicKey(params.account))
   const previousBytes = hexToByteArray(params.previous)
@@ -64,12 +67,6 @@ export function hashBlock(params: HashBlockParams): string {
   )
   const balanceHex = convert(params.balance, { from: Unit.raw, to: Unit.hex })
   const balanceBytes = hexToByteArray(balanceHex)
-  let linkBytes
-  if (linkIsAddress) {
-    linkBytes = hexToByteArray(derivePublicKey(params.link))
-  } else if (linkIsBlockHash) {
-    linkBytes = hexToByteArray(params.link)
-  }
 
   const context = blake2bInit(32)
   blake2bUpdate(context, STATE_BLOCK_PREAMBLE_BYTES)

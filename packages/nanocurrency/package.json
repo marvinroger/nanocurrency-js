@@ -1,7 +1,7 @@
 {
   "name": "nanocurrency",
   "description": "A toolkit for the Nano cryptocurrency, allowing you to derive keys, generate seeds, hashes, signatures, proofs of work and blocks.",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "author": {
     "name": "Marvin ROGER",
     "email": "dev@marvinroger.fr",

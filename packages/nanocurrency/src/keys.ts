@@ -107,7 +107,13 @@ export function deriveAddress(
   params: DeriveAddressParams = {}
 ): string {
   if (!checkKey(publicKey)) throw new Error('Public key is not valid')
-
+  if (
+    (params.nos && params.nollar) ||
+    (params.nos && params.banano) ||
+    (params.nollar && params.banano)
+  ) {
+    throw new Error('Multiple prefix params set.')
+  }
   const publicKeyBytes = hexToByteArray(publicKey)
   const paddedPublicKeyBytes = hexToByteArray(publicKey)
 

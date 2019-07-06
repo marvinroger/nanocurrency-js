@@ -87,6 +87,12 @@ export function derivePublicKey(secretKeyOrAddress: string): string {
 export interface DeriveAddressParams {
   /** Whether to use nano_ instead of xrb_ */
   useNanoPrefix?: boolean
+  /** Whether to use NOS prefix nos_ instead of xrb_ or nano_ */
+  nos?: boolean
+  /** Whether to use Nollar prefix usd_ instead of xrb_ or nano_ */
+  nollar?: boolean
+  /** Whether to use Banano prefix ban_ instead of xrb_ or nano_ */
+  banano?: boolean
 }
 
 /**
@@ -107,6 +113,9 @@ export function deriveAddress(
 
   let prefix = 'xrb_'
   if (params.useNanoPrefix === true) prefix = 'nano_'
+  if (params.nos === true) prefix = 'nos_'
+  if (params.nollar === true) prefix = 'usd_'
+  if (params.banano === true) prefix = 'ban_'
 
   const encodedPublicKey = encodeNanoBase32(paddedPublicKeyBytes)
 

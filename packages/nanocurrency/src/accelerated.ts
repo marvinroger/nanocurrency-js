@@ -3,53 +3,22 @@
  * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
+import initWasm, * as wasmExports from 'nanocurrency-wasm'
+import wasmAsDataUrl from '../wasm/pkg/nanocurrency_wasm_bg.wasm'
 import { checkHash } from './check'
 
-import loadAssembly from '../assembly'
+let ASSEMBLY_LOADED = false
 
-type WorkFunction = (
-  blockHash: string,
-  workerIndex: number,
-  workerCount: number
-) => string
+async function loadWasm(): Promise<void> {
+  if (ASSEMBLY_LOADED) {
+    return
+  }
 
-interface AssemblyWhenNotLoaded {
-  loaded: false
-  work: null
-}
-interface AssemblyWhenLoaded {
-  loaded: true
-  work: WorkFunction
-}
+  const wasmRes = await fetch(wasmAsDataUrl)
+  const wasmBinary = await wasmRes.arrayBuffer()
 
-const ASSEMBLY: AssemblyWhenNotLoaded | AssemblyWhenLoaded = {
-  loaded: false,
-  work: null,
-}
-
-function loadWasm(): Promise<AssemblyWhenLoaded> {
-  return new Promise((resolve, reject) => {
-    if (ASSEMBLY.loaded) {
-      return resolve(ASSEMBLY)
-    }
-
-    try {
-      loadAssembly().then(assembly => {
-        let loaded = Object.assign(ASSEMBLY, {
-          loaded: true,
-          work: assembly.cwrap('emscripten_work', 'string', [
-            'string',
-            'number',
-            'number',
-          ]),
-        }) as AssemblyWhenLoaded
-
-        resolve(loaded)
-      })
-    } catch (err) {
-      reject(err)
-    }
-  })
+  await initWasm(wasmBinary)
+  ASSEMBLY_LOADED = true
 }
 
 /** Compute work parameters. */
@@ -58,6 +27,8 @@ export interface ComputeWorkParams {
   workerIndex: number
   /** The count of worker */
   workerCount: number
+  /** The work threshold, in 8 bytes hex format */
+  workThreshold: string
 }
 
 /**
@@ -70,10 +41,12 @@ export interface ComputeWorkParams {
  */
 export async function computeWork(
   blockHash: string,
-  params: ComputeWorkParams = { workerIndex: 0, workerCount: 1 }
+  params: ComputeWorkParams = {
+    workerIndex: 0,
+    workerCount: 1,
+    workThreshold: 'ffffffc000000000',
+  }
 ): Promise<string | null> {
-  const assembly = await loadWasm()
-
   if (!checkHash(blockHash)) throw new Error('Hash is not valid')
   if (
     !Number.isInteger(params.workerIndex) ||
@@ -85,12 +58,18 @@ export async function computeWork(
     throw new Error('Worker parameters are not valid')
   }
 
-  const work = assembly.work(blockHash, params.workerIndex, params.workerCount)
-  const success = work[1] === '1'
+  await loadWasm()
 
-  if (!success) {
+  const work = wasmExports.work(
+    blockHash,
+    params.workerIndex,
+    params.workerCount,
+    params.workThreshold
+  )
+
+  if (!work) {
     return null
   }
 
-  return work.substr(2)
+  return work
 }

@@ -4,18 +4,31 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import initWasm, * as wasmExports from 'nanocurrency-wasm'
-import wasmAsDataUrl from '../wasm/pkg/nanocurrency_wasm_bg.wasm'
-import { checkHash } from './check'
+import wasmAsDataUrl from '../wasm/pkg/nanocurrency_wasm_bg_snip.wasm'
+import { checkHash, checkWorkThreshold } from './check'
+import { byteArrayToHex, hexToByteArray } from './utils'
 
 let ASSEMBLY_LOADED = false
+let IS_NODE = false
+try {
+  IS_NODE =
+    Object.prototype.toString.call(global.process) === '[object process]'
+} catch (_e) {}
 
 async function loadWasm(): Promise<void> {
   if (ASSEMBLY_LOADED) {
     return
   }
 
-  const wasmRes = await fetch(wasmAsDataUrl)
-  const wasmBinary = await wasmRes.arrayBuffer()
+  let wasmBinary!: ArrayBuffer
+
+  if (IS_NODE) {
+    const base64 = wasmAsDataUrl.replace('data:application/wasm;base64,', '')
+    wasmBinary = Buffer.from(base64, 'base64')
+  } else {
+    const wasmRes = await self.fetch(wasmAsDataUrl)
+    wasmBinary = await wasmRes.arrayBuffer()
+  }
 
   await initWasm(wasmBinary)
   ASSEMBLY_LOADED = true
@@ -28,7 +41,7 @@ export interface ComputeWorkParams {
   /** The count of worker */
   workerCount: number
   /** The work threshold, in 8 bytes hex format */
-  workThreshold: string
+  workThreshold?: string
 }
 
 /**
@@ -41,13 +54,13 @@ export interface ComputeWorkParams {
  */
 export async function computeWork(
   blockHash: string,
-  params: ComputeWorkParams = {
-    workerIndex: 0,
-    workerCount: 1,
-    workThreshold: 'ffffffc000000000',
-  }
+  params: ComputeWorkParams = { workerIndex: 0, workerCount: 1 }
 ): Promise<string | null> {
+  const { workThreshold = 'ffffffc000000000' } = params
+
   if (!checkHash(blockHash)) throw new Error('Hash is not valid')
+  if (!checkWorkThreshold(workThreshold))
+    throw new Error('The work threshold is not valid')
   if (
     !Number.isInteger(params.workerIndex) ||
     !Number.isInteger(params.workerCount) ||
@@ -60,16 +73,19 @@ export async function computeWork(
 
   await loadWasm()
 
+  const blockHashBytes = hexToByteArray(blockHash)
+  const workThresholdSerialized = hexToByteArray(workThreshold)
+
   const work = wasmExports.work(
-    blockHash,
+    blockHashBytes,
     params.workerIndex,
     params.workerCount,
-    params.workThreshold
+    workThresholdSerialized
   )
 
   if (!work) {
     return null
   }
 
-  return work
+  return byteArrayToHex(work)
 }

@@ -6,6 +6,18 @@
 /**
  * @module NanoCurrency
  */
+export { computeWork, ComputeWorkParams } from './accelerated'
+export {
+  Block,
+  BlockData,
+  BlockRepresentation,
+  ChangeBlockData,
+  CommonBlockData,
+  createBlock,
+  OpenBlockData,
+  ReceiveBlockData,
+  SendBlockData,
+} from './block'
 export {
   checkAddress,
   checkAmount,
@@ -15,39 +27,21 @@ export {
   checkSeed,
   checkSignature,
   checkWork,
+  checkWorkThreshold,
 } from './check'
-
-export { ConvertParams, Unit, convert } from './conversion'
-
+export { convert, ConvertParams, Unit } from './conversion'
+export { hashBlock, HashBlockParams } from './hash'
 export {
-  DeriveAddressParams,
   deriveAddress,
+  DeriveAddressParams,
   derivePublicKey,
   deriveSecretKey,
   generateSeed,
 } from './keys'
-
-export { HashBlockParams, hashBlock } from './hash'
-
 export {
-  SignBlockParams,
-  VerifyBlockParams,
   signBlock,
+  SignBlockParams,
   verifyBlock,
+  VerifyBlockParams,
 } from './signature'
-
-export { ValidateWorkParams, validateWork } from './work'
-
-export {
-  Block,
-  CommonBlockData,
-  OpenBlockData,
-  ChangeBlockData,
-  SendBlockData,
-  ReceiveBlockData,
-  BlockData,
-  BlockRepresentation,
-  createBlock,
-} from './block'
-
-export { ComputeWorkParams, computeWork } from './accelerated'
+export { validateWork, ValidateWorkParams } from './work'

@@ -1,12 +1,11 @@
+#![no_std]
+
 mod utils;
 
 use blake2::digest::{Input, VariableOutput};
 use blake2::VarBlake2b;
-use hex::FromHex;
-use hex::ToHex;
 use wasm_bindgen::prelude::*;
 
-const BLOCK_HASH_LENGTH: usize = 32;
 const WORK_LENGTH: usize = 8;
 const WORK_HASH_LENGTH: usize = WORK_LENGTH;
 
@@ -25,7 +24,7 @@ fn validate_work(block_hash: &[u8], work_threshold: u64, work: &[u8]) -> bool {
 }
 
 fn find_work<'a>(
-  block_hash: &[u8; BLOCK_HASH_LENGTH],
+  block_hash: &[u8],
   worker_index: u32,
   worker_count: u32,
   work_threshold: u64,
@@ -60,23 +59,35 @@ fn find_work<'a>(
 
 #[wasm_bindgen]
 pub fn work(
-  block_hash_hex: String,
+  block_hash: &[u8],
   worker_index: u32,
   worker_count: u32,
-  work_threshold: String,
-) -> Option<String> {
-  let block_hash = <[u8; BLOCK_HASH_LENGTH]>::from_hex(block_hash_hex).expect("Decoding failed");
-  let work_threshold_int = utils::transform_hex_to_u64(&work_threshold);
+  work_threshold: &[u8],
+) -> Option<js_sys::Uint8Array> {
+  let work_threshold_int = utils::transform_array_of_u8_to_u64_le(work_threshold);
   let mut work_output = [0 as u8; WORK_LENGTH];
 
   return match find_work(
-    &block_hash,
+    block_hash,
     worker_index,
     worker_count,
     work_threshold_int,
     &mut work_output,
   ) {
-    Some(work) => Some(work.encode_hex::<String>()),
+    Some(work) => {
+      let array = js_sys::Array::new_with_length(WORK_LENGTH as u32);
+      array.set(0, JsValue::from_f64(work[0] as f64));
+      array.set(1, JsValue::from_f64(work[1] as f64));
+      array.set(2, JsValue::from_f64(work[2] as f64));
+      array.set(3, JsValue::from_f64(work[3] as f64));
+      array.set(4, JsValue::from_f64(work[4] as f64));
+      array.set(5, JsValue::from_f64(work[5] as f64));
+      array.set(6, JsValue::from_f64(work[6] as f64));
+      array.set(7, JsValue::from_f64(work[7] as f64));
+
+      let typed_array = js_sys::Uint8Array::new(&array);
+      return Some(typed_array);
+    }
     None => None,
   };
 }

@@ -980,11 +980,6 @@
     universal-user-agent "^2.0.0"
     url-template "^2.0.8"
 
-"@rollup/plugin-wasm@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@rollup/plugin-wasm/-/plugin-wasm-3.0.0.tgz#a757ba29d63621bdb6f4f3dfbb08d6aa2b3fd3ab"
-  integrity sha512-ggiUAwvjKN3jbGbdYs0zLus4rDa8ug08tigb4vyur/miPcaDJG178cgeJw+zVV1rOQk9rtzK5V+nZg31AcgU/w==
-
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@samverschueren/stream-to-observable/-/stream-to-observable-0.3.0.tgz#ecdf48d532c58ea477acfcab80348424f8d0662f"

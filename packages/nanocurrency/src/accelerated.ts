@@ -6,6 +6,7 @@
 import initWasm, * as wasmExports from 'nanocurrency-wasm'
 import wasmAsDataUrl from '../wasm/pkg/nanocurrency.wasm'
 import { checkHash, checkWorkThreshold } from './check'
+import { DEFAULT_WORK_THRESHOLD } from './constants'
 import { byteArrayToHex, hexToByteArray } from './utils'
 
 let ASSEMBLY_LOADED = false
@@ -56,7 +57,7 @@ export async function computeWork(
   blockHash: string,
   params: ComputeWorkParams = { workerIndex: 0, workerCount: 1 }
 ): Promise<string | null> {
-  const { workThreshold = 'ffffffc000000000' } = params
+  const { workThreshold = DEFAULT_WORK_THRESHOLD } = params
 
   if (!checkHash(blockHash)) throw new Error('Hash is not valid')
   if (!checkWorkThreshold(workThreshold))

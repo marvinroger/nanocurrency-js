@@ -4,7 +4,7 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import initWasm, * as wasmExports from 'nanocurrency-wasm'
-import wasmAsDataUrl from '../wasm/pkg/nanocurrency_wasm_bg_snip.wasm'
+import wasmAsDataUrl from '../wasm/pkg/nanocurrency.wasm'
 import { checkHash, checkWorkThreshold } from './check'
 import { byteArrayToHex, hexToByteArray } from './utils'
 

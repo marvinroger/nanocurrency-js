@@ -1,15 +1,15 @@
 /*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
- * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
+ * Copyright (c) 2019 Marvin ROGER <bonjour+code at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import { checkAddress, checkAmount, checkHash, checkKey } from './check'
-
-import { deriveAddress, derivePublicKey } from './keys'
-
 import { unsafeHashBlock } from './hash'
-
+import { deriveAddress, derivePublicKey } from './keys'
 import { signBlock } from './signature'
+
+
+
 
 const BLANK_HASH =
   '0000000000000000000000000000000000000000000000000000000000000000'

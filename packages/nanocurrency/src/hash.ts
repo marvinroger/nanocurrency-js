@@ -1,17 +1,17 @@
 /*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
- * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
+ * Copyright (c) 2019 Marvin ROGER <bonjour+code at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import { blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
-
 import { checkAddress, checkAmount, checkHash } from './check'
-
 import { convert, Unit } from './conversion'
-
+import { derivePublicKey } from './keys'
 import { byteArrayToHex, hexToByteArray } from './utils'
 
-import { derivePublicKey } from './keys'
+
+
+
 
 const STATE_BLOCK_PREAMBLE_BYTES = new Uint8Array(32)
 STATE_BLOCK_PREAMBLE_BYTES[31] = 6

@@ -14,6 +14,7 @@ let IS_NODE = false
 try {
   IS_NODE =
     Object.prototype.toString.call(global.process) === '[object process]'
+  // eslint-disable-next-line no-empty
 } catch (_e) {}
 
 async function loadWasm(): Promise<void> {
@@ -32,6 +33,7 @@ async function loadWasm(): Promise<void> {
   }
 
   await initWasm(wasmBinary)
+  // eslint-disable-next-line require-atomic-updates
   ASSEMBLY_LOADED = true
 }
 

@@ -4,7 +4,7 @@
     "packages/*"
   ],
   "dependencies": {
-    "@marvinroger/dev-core": "^1.7.1",
+    "@marvinroger/fusee": "^3.3.0",
     "lerna": "^3.13.1",
     "typescript": "^3.3.3333"
   },

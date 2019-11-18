@@ -16,25 +16,24 @@
   },
   "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",
   "dependencies": {
-    "bignumber.js": "^8.0.0",
+    "bignumber.js": "^9.0.0",
     "blakejs": "^1.1.0",
-    "nanocurrency-wasm": "link:./wasm/pkg",
-    "typescript": "^3.3.3333"
+    "nanocurrency-wasm": "link:./wasm/pkg"
   },
   "devDependencies": {
-    "@types/node": "^11.11.0",
-    "cross-env": "^5.2.0",
+    "@types/node": "^12.12.8",
+    "cross-env": "^6.0.3",
     "cross-os": "^1.2.2",
     "cross-var": "^1.1.0",
-    "puppeteer": "^1.1.1",
-    "rimraf": "^2.6.3",
+    "puppeteer": "^2.0.0",
+    "rimraf": "^3.0.0",
     "rollup": "^1.6.0",
     "rollup-plugin-auto-external": "3.0.0-alpha.0",
-    "rollup-plugin-commonjs": "^9.0.0",
-    "rollup-plugin-license": "^0.8.0",
-    "rollup-plugin-node-resolve": "^4.0.0",
-    "rollup-plugin-terser": "^4.0.0",
-    "rollup-plugin-typescript2": "^0.20.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-license": "^0.12.1",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.1.2",
+    "rollup-plugin-typescript2": "^0.25.2",
     "rollup-plugin-url": "^3.0.0"
   },
   "files": [
@@ -69,9 +68,9 @@
     "build:prod": "yarn build:prod:assembly && yarn build:prod:js",
     "build:prod:js": "rimraf dist/ && cross-env NODE_ENV=production rollup -c",
     "build:prod:assembly": "cross-env WASM_PACK_MODE=\"--release\" cross-os build:assembly__cross",
-    "generate-docs": "dev-core generate-docs",
-    "lint": "dev-core lint",
-    "test": "dev-core test",
+    "generate-docs": "fusee generate-docs",
+    "lint": "fusee lint",
+    "test": "fusee test",
     "prepublishOnly": "yarn build:prod && yarn test && yarn lint && yarn generate-docs"
   }
 }

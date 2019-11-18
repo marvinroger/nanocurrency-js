@@ -10,7 +10,7 @@
   "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",
   "dependencies": {
     "nanocurrency": ">= 2.2.0 < 3.0.0",
-    "yargs": "^13.0.0"
+    "yargs": "^15.0.1"
   },
   "files": [
     "dist/"
@@ -34,8 +34,8 @@
   },
   "scripts": {
     "build:prod": "tsc --build",
-    "lint": "dev-core lint",
-    "test": "dev-core test",
+    "lint": "fusee lint",
+    "test": "fusee test",
     "prepublishOnly": "yarn build:prod && yarn test && yarn lint"
   },
   "devDependencies": {

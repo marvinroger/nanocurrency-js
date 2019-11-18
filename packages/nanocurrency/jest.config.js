@@ -1,9 +1,8 @@
-const devCore = require('@marvinroger/dev-core').getJestConfig()
+/* eslint-disable */
+
+const fusee = require('../../fusee').getJestConfig()
 
 module.exports = {
-  ...devCore,
-  testPathIgnorePatterns: [
-    ...devCore.testPathIgnorePatterns,
-    '/__tests__/data/',
-  ],
+  ...fusee,
+  testPathIgnorePatterns: [...fusee.testPathIgnorePatterns, '/__tests__/data/'],
 }

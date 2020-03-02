@@ -1,7 +1,7 @@
 # nanocurrency
 
 [![npm version](https://img.shields.io/npm/v/nanocurrency.svg)](https://www.npmjs.com/package/nanocurrency)
-[![build status](https://travis-ci.org/marvinroger/nanocurrency-js.svg?branch=master)](https://travis-ci.org/marvinroger/nanocurrency-js)
+![![Test](https://github.com/marvinroger/nanocurrency-js/workflows/Test/badge.svg)](https://github.com/marvinroger/nanocurrency-js/actions?query=branch%3Amaster+workflow%3ATest)
 
 A [battle-tested](__tests__) toolkit for the Nano cryptocurrency.
 

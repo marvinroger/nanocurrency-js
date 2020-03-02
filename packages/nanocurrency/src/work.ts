@@ -5,12 +5,10 @@
  */
 import BigNumber from 'bignumber.js'
 import { blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
-
-import { checkHash, checkWork } from './check'
-
+import { checkHash, checkThreshold, checkWork } from './check'
 import { byteArrayToHex, hexToByteArray } from './utils'
 
-const WORK_THRESHOLD = new BigNumber('0xffffffc000000000')
+const DEFAULT_WORK_THRESHOLD = 'ffffffc000000000'
 
 /** Validate work parameters. */
 export interface ValidateWorkParams {
@@ -18,6 +16,8 @@ export interface ValidateWorkParams {
   blockHash: string
   /** The work to validate */
   work: string
+  /** The threshold to validate against. Defaults to ffffffc000000000 */
+  threshold?: string
 }
 
 /**
@@ -27,9 +27,13 @@ export interface ValidateWorkParams {
  * @returns Valid
  */
 export function validateWork(params: ValidateWorkParams): boolean {
+  const thresholdHex = params.threshold ?? DEFAULT_WORK_THRESHOLD
+
   if (!checkHash(params.blockHash)) throw new Error('Hash is not valid')
   if (!checkWork(params.work)) throw new Error('Work is not valid')
+  if (!checkThreshold(thresholdHex)) throw new Error('Threshold is not valid')
 
+  const threshold = new BigNumber(`0x${thresholdHex}`)
   const hashBytes = hexToByteArray(params.blockHash)
   const workBytes = hexToByteArray(params.work).reverse()
 
@@ -40,5 +44,5 @@ export function validateWork(params: ValidateWorkParams): boolean {
   const outputHex = byteArrayToHex(output)
   const outputBigNumber = new BigNumber(`0x${outputHex}`)
 
-  return outputBigNumber.isGreaterThanOrEqualTo(WORK_THRESHOLD)
+  return outputBigNumber.isGreaterThanOrEqualTo(threshold)
 }

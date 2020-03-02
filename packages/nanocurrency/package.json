@@ -16,23 +16,23 @@
   },
   "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",
   "dependencies": {
-    "bignumber.js": "^8.0.0",
+    "bignumber.js": "^9.0.0",
     "blakejs": "^1.1.0"
   },
   "devDependencies": {
-    "@types/node": "^11.11.0",
-    "cross-env": "^5.2.0",
+    "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "@types/node": "^13.7.7",
+    "cross-env": "^7.0.0",
     "cross-os": "^1.2.2",
     "cross-var": "^1.1.0",
-    "puppeteer": "^1.1.1",
-    "rimraf": "^2.6.3",
+    "puppeteer": "^2.1.1",
+    "rimraf": "^3.0.2",
     "rollup": "^1.6.0",
     "rollup-plugin-auto-external": "3.0.0-alpha.0",
-    "rollup-plugin-commonjs": "^9.0.0",
-    "rollup-plugin-license": "^0.8.0",
-    "rollup-plugin-node-resolve": "^4.0.0",
-    "rollup-plugin-terser": "^4.0.0",
-    "rollup-plugin-typescript2": "^0.20.0"
+    "rollup-plugin-license": "^0.13.0",
+    "rollup-plugin-terser": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.26.0"
   },
   "files": [
     "dist/"
@@ -66,9 +66,9 @@
     "build:prod": "yarn build:prod:assembly && yarn build:prod:js",
     "build:prod:js": "rimraf dist/ && cross-env NODE_ENV=production rollup -c",
     "build:prod:assembly": "cross-env EMCC_ARGS=\"-s FILESYSTEM=0 -O3 --closure 1 --llvm-lto 3\" cross-os build:assembly__cross",
-    "generate-docs": "dev-core generate-docs",
-    "lint": "dev-core lint",
-    "test": "dev-core test",
+    "generate-docs": "fusee generate-docs",
+    "lint": "fusee lint",
+    "test": "fusee test",
     "prepublishOnly": "yarn build:prod && yarn test && yarn lint && yarn generate-docs"
   }
 }

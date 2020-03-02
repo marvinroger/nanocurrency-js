@@ -28,7 +28,7 @@ export function getRandomBytes(count: number): Promise<Uint8Array> {
     const bytes = new Uint8Array(count)
     fillRandom(bytes)
       .then(() => {
-        resolve(bytes)
+        return resolve(bytes)
       })
       .catch(reject)
   })

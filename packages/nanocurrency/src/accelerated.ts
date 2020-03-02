@@ -3,9 +3,8 @@
  * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import { checkHash } from './check'
-
 import loadAssembly from '../assembly'
+import { checkHash } from './check'
 
 type WorkFunction = (
   blockHash: string,
@@ -34,8 +33,9 @@ function loadWasm(): Promise<AssemblyWhenLoaded> {
     }
 
     try {
+      /* eslint-disable promise/catch-or-return, promise/always-return */
       loadAssembly().then(assembly => {
-        let loaded = Object.assign(ASSEMBLY, {
+        const loaded = Object.assign(ASSEMBLY, {
           loaded: true,
           work: assembly.cwrap('emscripten_work', 'string', [
             'string',
@@ -46,6 +46,7 @@ function loadWasm(): Promise<AssemblyWhenLoaded> {
 
         resolve(loaded)
       })
+      /* eslint-enable promise/catch-or-return, promise/always-return */
     } catch (err) {
       reject(err)
     }

@@ -4,7 +4,6 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import BigNumber from 'bignumber.js'
-
 import { parseAddress } from './parse'
 
 const MIN_INDEX = 0
@@ -63,6 +62,18 @@ export function checkAmount(amount: string): boolean {
  */
 export function checkSeed(seed: string): boolean {
   return checkString(seed) && /^[0-9a-fA-F]{64}$/.test(seed)
+}
+
+/**
+ * Check if the given threshold is valid.
+ *
+ * **Note:** it only checks the format of the threshold.
+ *
+ * @param threshold - The threshold to check
+ * @returns Valid
+ */
+export function checkThreshold(threshold: string): boolean {
+  return checkString(threshold) && /^[0-9a-fA-F]{16}$/.test(threshold)
 }
 
 /**

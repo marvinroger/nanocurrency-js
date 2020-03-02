@@ -4,12 +4,11 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import { blake2b, blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
-
 import { checkIndex, checkKey, checkSeed } from './check'
 import { derivePublicFromSecret } from './nacl'
-import { byteArrayToHex, getRandomBytes, hexToByteArray } from './utils'
-import { parseAddress } from './parse'
 import { encodeNanoBase32 } from './nano-base32'
+import { parseAddress } from './parse'
+import { byteArrayToHex, getRandomBytes, hexToByteArray } from './utils'
 
 /**
  * Generate a cryptographically secure seed.
@@ -24,7 +23,7 @@ export function generateSeed(): Promise<string> {
           return `${hex}${`0${i.toString(16)}`.slice(-2)}`
         }, '')
 
-        resolve(seedHex)
+        return resolve(seedHex)
       })
       .catch(reject)
   })

@@ -34,8 +34,8 @@
   },
   "scripts": {
     "build:prod": "tsc --build",
-    "lint": "dev-core lint",
-    "test": "dev-core test",
+    "lint": "fusee lint",
+    "test": "fusee test",
     "prepublishOnly": "yarn build:prod && yarn test && yarn lint"
   },
   "devDependencies": {

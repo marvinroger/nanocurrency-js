@@ -13,6 +13,12 @@ const VALID_CONVERSIONS = [
     result: '1000000000000000000000000000000',
   },
   {
+    value: '1',
+    from: 'raw',
+    to: 'Nano',
+    result: '0.000000000000000000000000000001',
+  },
+  {
     value: '2000000000000000000000000000000',
     from: 'raw',
     to: 'Nano',

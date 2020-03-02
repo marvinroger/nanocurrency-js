@@ -4,10 +4,12 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import BigNumber from 'bignumber.js'
-
 import { checkNumber, checkString } from './check'
 
-const TunedBigNumber = BigNumber.clone({ EXPONENTIAL_AT: 1e9 })
+const TunedBigNumber = BigNumber.clone({
+  EXPONENTIAL_AT: 1e9,
+  DECIMAL_PLACES: 1e9,
+})
 
 const ZEROES: { [index: string]: number | undefined } = {
   hex: 0,

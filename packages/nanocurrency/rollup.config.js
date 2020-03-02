@@ -36,7 +36,6 @@ const configs = outputs.map((output, index) => {
       resolve(),
       commonjs(),
       typescript({
-        objectHashIgnoreUnknownHack: true,
         useTsconfigDeclarationDir: true,
         tsconfigOverride: { compilerOptions: { declaration: index === 0 } }, // only generate definitions once, otherwise crash
       }),

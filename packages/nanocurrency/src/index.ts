@@ -28,7 +28,6 @@ export {
   checkSignature,
   checkThreshold,
   checkWork,
-  checkWorkThreshold,
 } from './check'
 export { convert, ConvertParams, Unit } from './conversion'
 export { hashBlock, HashBlockParams } from './hash'

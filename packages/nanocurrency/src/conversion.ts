@@ -4,7 +4,7 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import BigNumber from 'bignumber.js'
-import { checkNumber, checkString } from './check'
+import { checkNumber } from './check'
 
 /** Nano unit. */
 export enum Unit {
@@ -69,7 +69,6 @@ export function convert(value: string, params: ConvertParams): string {
   }
 
   const valueNotValid = new Error('Value is not valid')
-  if (!checkString) throw valueNotValid
   if (params.from === 'hex') {
     if (!/^[0-9a-fA-F]{32}$/.test(value)) throw valueNotValid
   } else {

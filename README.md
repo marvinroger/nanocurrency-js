@@ -1,6 +1,6 @@
 # nanocurrency-js
 
-![![Test](https://github.com/marvinroger/nanocurrency-js/workflows/Test/badge.svg)](https://github.com/marvinroger/nanocurrency-js/actions?query=branch%3Amaster+workflow%3ATest)
+[![Test](https://github.com/marvinroger/nanocurrency-js/workflows/Test/badge.svg)](https://github.com/marvinroger/nanocurrency-js/actions?query=branch%3Amaster+workflow%3ATest)
 
 The `nanocurrency-js` monorepo.
 

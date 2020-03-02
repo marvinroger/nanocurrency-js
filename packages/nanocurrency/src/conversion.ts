@@ -4,20 +4,7 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import BigNumber from 'bignumber.js'
-import { checkNumber, checkString } from './check'
-
-const TunedBigNumber = BigNumber.clone({ EXPONENTIAL_AT: 1e9 })
-
-const ZEROES: { [index: string]: number | undefined } = {
-  hex: 0,
-  raw: 0,
-  nano: 24,
-  knano: 27,
-  Nano: 30,
-  NANO: 30,
-  KNano: 33,
-  MNano: 36,
-}
+import { checkNumber } from './check'
 
 /** Nano unit. */
 export enum Unit {
@@ -38,6 +25,22 @@ export enum Unit {
   /** 10^36 raw */
   MNano = 'MNano',
 }
+
+const ZEROES: { [unit in keyof typeof Unit]: number } = {
+  hex: 0,
+  raw: 0,
+  nano: 24,
+  knano: 27,
+  Nano: 30,
+  NANO: 30,
+  KNano: 33,
+  MNano: 36,
+}
+
+const TunedBigNumber = BigNumber.clone({
+  EXPONENTIAL_AT: 1e9,
+  DECIMAL_PLACES: ZEROES.MNano,
+})
 
 /** Convert parameters. */
 export interface ConvertParams {
@@ -66,7 +69,6 @@ export function convert(value: string, params: ConvertParams): string {
   }
 
   const valueNotValid = new Error('Value is not valid')
-  if (!checkString) throw valueNotValid
   if (params.from === 'hex') {
     if (!/^[0-9a-fA-F]{32}$/.test(value)) throw valueNotValid
   } else {

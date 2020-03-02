@@ -26,6 +26,7 @@ export {
   checkKey,
   checkSeed,
   checkSignature,
+  checkThreshold,
   checkWork,
   checkWorkThreshold,
 } from './check'

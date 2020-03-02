@@ -65,14 +65,14 @@ export function checkSeed(seed: string): boolean {
 }
 
 /**
- * Check if the given work threshold is valid.
+ * Check if the given threshold is valid.
  *
  * **Note:** it only checks the format of the threshold.
  *
  * @param threshold - The threshold to check
  * @returns Valid
  */
-export function checkWorkThreshold(threshold: string): boolean {
+export function checkThreshold(threshold: string): boolean {
   return checkString(threshold) && /^[0-9a-fA-F]{16}$/.test(threshold)
 }
 

@@ -6,22 +6,6 @@
 import BigNumber from 'bignumber.js'
 import { checkNumber, checkString } from './check'
 
-const TunedBigNumber = BigNumber.clone({
-  EXPONENTIAL_AT: 1e9,
-  DECIMAL_PLACES: 1e9,
-})
-
-const ZEROES: { [index: string]: number | undefined } = {
-  hex: 0,
-  raw: 0,
-  nano: 24,
-  knano: 27,
-  Nano: 30,
-  NANO: 30,
-  KNano: 33,
-  MNano: 36,
-}
-
 /** Nano unit. */
 export enum Unit {
   /** 10^0 raw in hexadecimal format */
@@ -41,6 +25,22 @@ export enum Unit {
   /** 10^36 raw */
   MNano = 'MNano',
 }
+
+const ZEROES: { [unit in keyof typeof Unit]: number } = {
+  hex: 0,
+  raw: 0,
+  nano: 24,
+  knano: 27,
+  Nano: 30,
+  NANO: 30,
+  KNano: 33,
+  MNano: 36,
+}
+
+const TunedBigNumber = BigNumber.clone({
+  EXPONENTIAL_AT: 1e9,
+  DECIMAL_PLACES: ZEROES.MNano,
+})
 
 /** Convert parameters. */
 export interface ConvertParams {

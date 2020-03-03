@@ -1,4 +1,4 @@
-pub fn transform_u64_to_array_of_u8_be(x: u64, dst: &mut [u8; 8]) {
+pub fn transform_u64_to_array_of_u8_be(x: u64, dst: &mut [u8]) {
     dst[7] = ((x >> 56) & 0xff) as u8;
     dst[6] = ((x >> 48) & 0xff) as u8;
     dst[5] = ((x >> 40) & 0xff) as u8;
@@ -29,6 +29,10 @@ pub fn transform_array_of_u8_to_u64_le(x: &[u8]) -> u64 {
         + ((x[5] as u64) << 16)
         + ((x[6] as u64) << 8)
         + ((x[7] as u64) << 0)
+}
+
+pub fn transform_array_of_u8_to_u32_le(x: &[u8]) -> u32 {
+    ((x[0] as u32) << 24) + ((x[1] as u32) << 16) + ((x[2] as u32) << 8) + ((x[3] as u32) << 0)
 }
 
 pub fn reverse_array(x: &mut [u8], length: usize) {

@@ -3,38 +3,66 @@
  * Copyright (c) 2019 Marvin ROGER <bonjour+code at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import initWasm, * as wasmExports from 'nanocurrency-wasm'
-import wasmAsDataUrl from '../wasm/pkg/nanocurrency.wasm'
+import wasm from '../wasm/bin/nanocurrency.wasm'
 import { checkHash, checkThreshold } from './check'
 import { DEFAULT_WORK_THRESHOLD } from './constants'
 import { byteArrayToHex, hexToByteArray } from './utils'
 
-let ASSEMBLY_LOADED = false
-let IS_NODE = false
-try {
-  IS_NODE =
-    Object.prototype.toString.call(global.process) === '[object process]'
-  // eslint-disable-next-line no-empty
-} catch (_e) {}
+interface Assembly {
+  getSharedMemory: () => Uint8Array
+  work: (
+    hash: string,
+    workerIndex: number,
+    workerCount: number,
+    threshold: string
+  ) => null | string
+}
 
-async function loadWasm(): Promise<void> {
-  if (ASSEMBLY_LOADED) {
-    return
+let assembly: Assembly | undefined = undefined
+
+async function loadWasm(): Promise<Assembly> {
+  if (assembly) {
+    return assembly
   }
 
-  let wasmBinary!: ArrayBuffer
+  const { instance } = await wasm({})
+  assembly = {
+    getSharedMemory() {
+      const memory = instance.exports.memory
+      const sharedMemoryPointer = instance.exports.get_shared_memory_pointer()
 
-  if (IS_NODE) {
-    const base64 = wasmAsDataUrl.replace('data:application/wasm;base64,', '')
-    wasmBinary = Buffer.from(base64, 'base64')
-  } else {
-    const wasmRes = await self.fetch(wasmAsDataUrl)
-    wasmBinary = await wasmRes.arrayBuffer()
+      return new Uint8Array(memory.buffer, sharedMemoryPointer, 57)
+    },
+    work(hash, workerIndex, workerCount, threshold) {
+      const hashBytes = hexToByteArray(hash)
+      const thresholdBytes = hexToByteArray(threshold)
+
+      const sharedMemory = this.getSharedMemory()
+      const dataview = new DataView(
+        sharedMemory.buffer,
+        sharedMemory.byteOffset,
+        sharedMemory.byteLength
+      )
+
+      sharedMemory.set(hashBytes, 0)
+      dataview.setUint32(32, workerIndex, true)
+      dataview.setUint32(36, workerCount, true)
+      sharedMemory.set(thresholdBytes, 40)
+
+      instance.exports.work()
+
+      const found = sharedMemory[48] === 1
+      const output = sharedMemory.slice(49, 57)
+
+      if (!found) {
+        return null
+      }
+
+      return byteArrayToHex(output)
+    },
   }
 
-  await initWasm(wasmBinary)
-  // eslint-disable-next-line require-atomic-updates
-  ASSEMBLY_LOADED = true
+  return assembly
 }
 
 /** Compute work parameters. */
@@ -74,21 +102,12 @@ export async function computeWork(
     throw new Error('Worker parameters are not valid')
   }
 
-  await loadWasm()
+  const assembly = await loadWasm()
 
-  const blockHashBytes = hexToByteArray(blockHash)
-  const workThresholdSerialized = hexToByteArray(workThreshold)
-
-  const work = wasmExports.work(
-    blockHashBytes,
+  return assembly.work(
+    blockHash,
     params.workerIndex,
     params.workerCount,
-    workThresholdSerialized
+    workThreshold
   )
-
-  if (!work) {
-    return null
-  }
-
-  return byteArrayToHex(work)
 }

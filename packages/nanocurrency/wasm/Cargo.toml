@@ -1,19 +1,14 @@
 [package]
 name = "nanocurrency-wasm"
 version = "0.1.0"
-authors = ["Marvin ROGER <bonjour+git@marvinroger.fr>"]
+authors = ["Marvin ROGER <bonjour+code@marvinroger.fr>"]
 edition = "2018"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-wasm-bindgen = "0.2"
 blake2 = "0.8"
-js-sys = "0.3"
-
-[dev-dependencies]
-wasm-bindgen-test = "0.2"
 
 [profile.release]
 lto = true

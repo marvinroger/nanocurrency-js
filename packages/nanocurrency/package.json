@@ -17,13 +17,12 @@
   "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",
   "dependencies": {
     "bignumber.js": "^9.0.0",
-    "blakejs": "^1.1.0",
-    "nanocurrency-wasm": "link:./wasm/pkg"
+    "blakejs": "^1.1.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
-    "@rollup/plugin-url": "^4.0.2",
+    "@rollup/plugin-wasm": "^3.0.0",
     "@types/node": "^13.7.7",
     "cross-env": "^7.0.0",
     "cross-os": "^1.2.2",

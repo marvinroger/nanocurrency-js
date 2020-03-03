@@ -4,7 +4,7 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import { terser } from 'rollup-plugin-terser'
 import license from 'rollup-plugin-license'
-import url from 'rollup-plugin-url'
+import wasm from '@rollup/plugin-wasm'
 
 import pkg from './package.json'
 
@@ -39,7 +39,7 @@ const configs = outputs.map((output, index) => {
         useTsconfigDeclarationDir: true,
         tsconfigOverride: { compilerOptions: { declaration: index === 0 } }, // only generate definitions once, otherwise crash
       }),
-      url({ limit: Infinity, include: ['**/*.wasm'] }),
+      wasm(),
       autoExternal({
         dependencies: output.format !== 'umd',
       }),
@@ -47,7 +47,7 @@ const configs = outputs.map((output, index) => {
   }
 
   if (ENV === 'production') {
-    config.plugins.push(terser())
+    config.plugins.push(terser({ output: { comments: false } }))
 
     config.plugins.push(
       license({

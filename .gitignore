@@ -1,7 +1,6 @@
 ### App ###
 
 dist/
-/packages/nanocurrency/assembly.js
 
 ### TS ###
 

@@ -46,22 +46,17 @@ fn find_work<'a>(
 
   let mut hash_params = Params::new();
   hash_params.hash_length(WORK_HASH_LENGTH);
-  let mut work: u64 = lower_bound;
 
-  loop {
-    if work == upper_bound {
-      return false;
-    };
-
+  for work in lower_bound..upper_bound {
     utils::transform_u64_to_array_of_u8_be(work, work_output);
 
     if validate_work(&hash_params, block_hash, work_threshold, work_output) {
       utils::reverse_array(work_output, WORK_LENGTH);
       return true;
     }
-
-    work += 1;
   }
+
+  false
 }
 
 #[no_mangle]

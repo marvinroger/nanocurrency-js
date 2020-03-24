@@ -57,8 +57,8 @@
   "scripts": {
     "build:dev": "yarn build:dev:assembly && yarn build:dev:js",
     "build:dev:js": "rimraf dist/ && cross-env NODE_ENV=development rollup -c",
-    "build:dev:assembly": "cross-env WASM_PACK_MODE=\"--dev\" cross-os build:assembly__cross",
-    "build:assembly__common": "cross-var docker run --rm -v $PWD/wasm:/src -w /src -e WASM_PACK_MODE='$WASM_PACK_MODE' docker.pkg.github.com/marvinroger/nanocurrency-js/rust-wasm-builder:1.39.0_0.8.1_0.4.0_1.39.1 /bin/bash ./build.sh",
+    "build:dev:assembly": "cross-env WASM_MODE=\"debug\" cross-os build:assembly__cross",
+    "build:assembly__common": "cross-var docker run --rm -v $PWD/wasm:/src -w /src -e WASM_MODE='$WASM_MODE' marvinroger/rust-wasm-builder:2 /bin/bash ./build.sh",
     "build:assembly__cross": {
       "darwin": "cross-env PWD=\"$(pwd)\" yarn build:assembly__common",
       "linux": "cross-env PWD=\"$(pwd)\" yarn build:assembly__common",
@@ -66,7 +66,7 @@
     },
     "build:prod": "yarn build:prod:assembly && yarn build:prod:js",
     "build:prod:js": "rimraf dist/ && cross-env NODE_ENV=production rollup -c",
-    "build:prod:assembly": "cross-env WASM_PACK_MODE=\"--release\" cross-os build:assembly__cross",
+    "build:prod:assembly": "cross-env WASM_MODE=\"release\" cross-os build:assembly__cross",
     "generate-docs": "fusee generate-docs",
     "lint": "fusee lint",
     "test": "fusee test",

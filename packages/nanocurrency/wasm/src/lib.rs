@@ -41,18 +41,18 @@ pub extern "C" fn work() {
   let worker_count_int = utils::transform_array_of_u8_to_u32_le(worker_count);
   let work_threshold_int = utils::transform_array_of_u8_to_u64_le(work_threshold);
 
-  work_success[0] = if matches!(
-    pow::find_work(
-      block_hash,
-      worker_index_int,
-      worker_count_int,
-      work_threshold_int,
-      &mut work_output,
-    ),
-    Some(_)
-  ) {
-    1
-  } else {
-    0
+  let work_result = pow::find_work(
+    block_hash,
+    worker_index_int,
+    worker_count_int,
+    work_threshold_int,
+  );
+
+  match work_result {
+    Some(work) => {
+      work_success[0] = 1;
+      utils::transform_u64_to_array_of_u8_le(work, &mut work_output);
+    }
+    None => work_success[0] = 0,
   }
 }

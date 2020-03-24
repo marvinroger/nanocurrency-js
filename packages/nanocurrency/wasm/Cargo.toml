@@ -8,7 +8,7 @@ edition = "2018"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-blake2 = "0.8"
+blake2b_simd = "0.5"
 
 [profile.release]
 lto = true

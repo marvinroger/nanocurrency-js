@@ -1,9 +1,9 @@
 #![no_std]
+#![warn(clippy::all)]
 
 mod utils;
 
-use blake2::digest::{Input, VariableOutput};
-use blake2::VarBlake2b;
+use blake2b_simd::Params;
 
 const WORK_LENGTH: usize = 8;
 const WORK_HASH_LENGTH: usize = WORK_LENGTH;
@@ -13,18 +13,15 @@ const WORK_HASH_LENGTH: usize = WORK_LENGTH;
 static mut SHARED_MEMORY: [u8; 32 + 4 + 4 + 8 + 1 + 8] = [0; 57];
 
 fn validate_work(block_hash: &[u8], work_threshold: u64, work: &[u8]) -> bool {
-  let mut hasher = VarBlake2b::new(WORK_HASH_LENGTH).unwrap();
-  let mut valid = false;
+  let hash = Params::new()
+    .hash_length(WORK_HASH_LENGTH)
+    .to_state()
+    .update(work)
+    .update(block_hash)
+    .finalize();
 
-  // hasher.input(work.to_be_bytes())
-  hasher.input(work);
-  hasher.input(block_hash);
-  hasher.variable_result(|hash| {
-    let output_int = utils::transform_array_of_u8_to_u64_be(hash);
-    valid = output_int >= work_threshold;
-  });
-
-  return valid;
+  let output_int = utils::transform_array_of_u8_to_u64_be(hash.as_bytes());
+  output_int >= work_threshold
 }
 
 fn find_work<'a>(
@@ -69,31 +66,40 @@ pub extern "C" fn get_shared_memory_pointer() -> *const u8 {
     pointer = SHARED_MEMORY.as_ptr();
   }
 
-  return pointer;
+  pointer
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn work() -> () {
-  let block_hash = &SHARED_MEMORY[0..32];
-  let worker_index = &SHARED_MEMORY[32..36];
-  let worker_count = &SHARED_MEMORY[36..40];
-  let work_threshold = &SHARED_MEMORY[40..48];
+pub extern "C" fn work() {
+  let block_hash: &[u8];
+  let worker_index: &[u8];
+  let worker_count: &[u8];
+  let work_threshold: &[u8];
+  let work_success: &mut [u8];
+  let mut work_output: &mut [u8];
 
-  let work_success = &mut SHARED_MEMORY[48..49];
-  let mut work_output = &mut SHARED_MEMORY[49..57];
+  unsafe {
+    block_hash = &SHARED_MEMORY[0..32];
+    worker_index = &SHARED_MEMORY[32..36];
+    worker_count = &SHARED_MEMORY[36..40];
+    work_threshold = &SHARED_MEMORY[40..48];
+    work_success = &mut SHARED_MEMORY[48..49];
+    work_output = &mut SHARED_MEMORY[49..57];
+  }
 
   let worker_index_int = utils::transform_array_of_u8_to_u32_le(worker_index);
   let worker_count_int = utils::transform_array_of_u8_to_u32_le(worker_count);
   let work_threshold_int = utils::transform_array_of_u8_to_u64_le(work_threshold);
 
-  match find_work(
+  work_success[0] = if find_work(
     block_hash,
     worker_index_int,
     worker_count_int,
     work_threshold_int,
     &mut work_output,
   ) {
-    true => work_success[0] = 1,
-    _ => work_success[0] = 0,
+    1
+  } else {
+    0
   }
 }

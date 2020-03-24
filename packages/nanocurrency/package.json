@@ -16,6 +16,7 @@
   },
   "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",
   "dependencies": {
+    "@marvinroger/fusee": "^3.3.0",
     "bignumber.js": "^9.0.0",
     "blakejs": "^1.1.0"
   },
@@ -29,7 +30,7 @@
     "cross-var": "^1.1.0",
     "puppeteer": "^2.1.1",
     "rimraf": "^3.0.2",
-    "rollup": "^1.6.0",
+    "rollup": "^2.2.0",
     "rollup-plugin-auto-external": "3.0.0-alpha.0",
     "rollup-plugin-license": "^0.13.0",
     "rollup-plugin-terser": "^5.2.0",

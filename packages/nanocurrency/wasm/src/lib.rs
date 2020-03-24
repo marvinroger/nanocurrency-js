@@ -12,9 +12,13 @@ const WORK_HASH_LENGTH: usize = WORK_LENGTH;
 // 8 for threshold, 1 for success, 8 for work
 static mut SHARED_MEMORY: [u8; 32 + 4 + 4 + 8 + 1 + 8] = [0; 57];
 
-fn validate_work(block_hash: &[u8], work_threshold: u64, work: &[u8]) -> bool {
-  let hash = Params::new()
-    .hash_length(WORK_HASH_LENGTH)
+fn validate_work(
+  hash_params: &Params,
+  block_hash: &[u8],
+  work_threshold: u64,
+  work: &[u8],
+) -> bool {
+  let hash = hash_params
     .to_state()
     .update(work)
     .update(block_hash)
@@ -40,6 +44,8 @@ fn find_work<'a>(
     u64::max_value()
   };
 
+  let mut hash_params = Params::new();
+  hash_params.hash_length(WORK_HASH_LENGTH);
   let mut work: u64 = lower_bound;
 
   loop {
@@ -49,7 +55,7 @@ fn find_work<'a>(
 
     utils::transform_u64_to_array_of_u8_be(work, work_output);
 
-    if validate_work(block_hash, work_threshold, work_output) {
+    if validate_work(&hash_params, block_hash, work_threshold, work_output) {
       utils::reverse_array(work_output, WORK_LENGTH);
       return true;
     }

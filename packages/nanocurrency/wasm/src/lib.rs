@@ -6,17 +6,11 @@ mod utils;
 
 // 32 for hash, 4 for worker index, 4 for worker count
 // 8 for threshold, 1 for success, 8 for work
-static mut SHARED_MEMORY: [u8; 32 + 4 + 4 + 8 + 1 + 8] = [0; 57];
+static mut WORK_MEMORY: [u8; 32 + 4 + 4 + 8 + 1 + 8] = [0; 57];
 
 #[no_mangle]
-pub extern "C" fn get_shared_memory_pointer() -> *const u8 {
-  let pointer: *const u8;
-
-  unsafe {
-    pointer = SHARED_MEMORY.as_ptr();
-  }
-
-  pointer
+pub extern "C" fn get_work_memory_pointer() -> *const u8 {
+  unsafe { utils::get_pointer(&WORK_MEMORY) }
 }
 
 #[no_mangle]
@@ -29,12 +23,12 @@ pub extern "C" fn work() {
   let mut work_output: &mut [u8];
 
   unsafe {
-    block_hash = &SHARED_MEMORY[0..32];
-    worker_index = &SHARED_MEMORY[32..36];
-    worker_count = &SHARED_MEMORY[36..40];
-    work_threshold = &SHARED_MEMORY[40..48];
-    work_success = &mut SHARED_MEMORY[48..49];
-    work_output = &mut SHARED_MEMORY[49..57];
+    block_hash = &WORK_MEMORY[0..32];
+    worker_index = &WORK_MEMORY[32..36];
+    worker_count = &WORK_MEMORY[36..40];
+    work_threshold = &WORK_MEMORY[40..48];
+    work_success = &mut WORK_MEMORY[48..49];
+    work_output = &mut WORK_MEMORY[49..57];
   }
 
   let worker_index_int = utils::transform_array_of_u8_to_u32_le(worker_index);

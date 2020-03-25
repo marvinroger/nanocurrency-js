@@ -9,7 +9,6 @@ import { DEFAULT_WORK_THRESHOLD } from './constants'
 import { byteArrayToHex, hexToByteArray } from './utils'
 
 interface Assembly {
-  getSharedMemory: () => Uint8Array
   work: (
     hash: string,
     workerIndex: number,
@@ -27,17 +26,15 @@ async function loadWasm(): Promise<Assembly> {
 
   const { instance } = await wasm({})
   assembly = {
-    getSharedMemory() {
-      const memory = instance.exports.memory
-      const sharedMemoryPointer = instance.exports.get_shared_memory_pointer()
-
-      return new Uint8Array(memory.buffer, sharedMemoryPointer, 57)
-    },
     work(hash, workerIndex, workerCount, threshold) {
       const hashBytes = hexToByteArray(hash)
       const thresholdBytes = hexToByteArray(threshold)
 
-      const sharedMemory = this.getSharedMemory()
+      const memory = instance.exports.memory
+      const memoryPointer = instance.exports.get_work_memory_pointer()
+
+      const sharedMemory = new Uint8Array(memory.buffer, memoryPointer, 57)
+
       const dataview = new DataView(
         sharedMemory.buffer,
         sharedMemory.byteOffset,

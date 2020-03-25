@@ -5,7 +5,7 @@ declare module '*.wasm' {
     instance: {
       exports: {
         memory: WebAssembly.Memory
-        get_shared_memory_pointer: () => number
+        get_work_memory_pointer: () => number
         work: () => void
       }
     }

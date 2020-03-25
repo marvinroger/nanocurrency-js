@@ -45,3 +45,7 @@ pub fn transform_array_of_u8_to_u64_le(x: &[u8]) -> u64 {
 pub fn transform_array_of_u8_to_u32_le(x: &[u8]) -> u32 {
     ((x[0] as u32) << 24) + ((x[1] as u32) << 16) + ((x[2] as u32) << 8) + x[3] as u32
 }
+
+pub fn get_pointer(memory: &[u8]) -> *const u8 {
+    memory.as_ptr() as *const u8
+}

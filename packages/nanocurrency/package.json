@@ -16,7 +16,6 @@
   },
   "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",
   "dependencies": {
-    "@marvinroger/fusee": "^3.3.0",
     "bignumber.js": "^9.0.0",
     "blakejs": "^1.1.0"
   },

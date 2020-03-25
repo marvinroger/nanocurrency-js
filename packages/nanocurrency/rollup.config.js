@@ -14,7 +14,7 @@ const LICENSE_BANNER = `
 /*!
 * nanocurrency-js v${pkg.version}: A toolkit for the Nano cryptocurrency.
 * Copyright (c) <%= moment().format('YYYY') %> Marvin ROGER <bonjour+code at marvinroger dot fr>
-* Licensed under GPL-3.0 (https://git.io/vAZsK)
+* Licensed under GPL-3.0 (https://git.io/JvSg6)
 */
 `.trim()
 

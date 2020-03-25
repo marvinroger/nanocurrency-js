@@ -1,13 +1,11 @@
 /*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
  * Copyright (c) 2019 Marvin ROGER <bonjour+code at marvinroger dot fr>
- * Licensed under GPL-3.0 (https://git.io/vAZsK)
+ * Licensed under GPL-3.0 (https://git.io/JvSg6)
  */
 import { checkHash, checkKey, checkSignature } from './check'
 import { signDetached, verifyDetached } from './nacl'
 import { byteArrayToHex, hexToByteArray } from './utils'
-
-
 
 /** Sign block parameters. */
 export interface SignBlockParams {

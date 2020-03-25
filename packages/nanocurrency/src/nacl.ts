@@ -1,7 +1,7 @@
 /*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
  * Copyright (c) 2019 Marvin ROGER <bonjour+code at marvinroger dot fr>
- * Licensed under GPL-3.0 (https://git.io/vAZsK)
+ * Licensed under GPL-3.0 (https://git.io/JvSg6)
  */
 // originally from https://github.com/dchest/tweetnacl-js
 // adapted for Nano and TypeScript by Marvin ROGER

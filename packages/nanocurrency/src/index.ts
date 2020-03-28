@@ -6,7 +6,14 @@
 /**
  * @module NanoCurrency
  */
-export { computeWork, ComputeWorkParams } from './accelerated'
+export {
+  computeWork,
+  ComputeWorkParams,
+  derivePrivate,
+  derivePublic,
+  encodeAddress,
+  testSeedMatchesAddressPattern,
+} from './accelerated'
 export {
   Block,
   BlockData,

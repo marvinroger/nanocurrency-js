@@ -1,19 +1,20 @@
-use crate::utils;
-use blake2b_simd::Params;
+use crate::utils::{FromBigEndian, ToBigEndian};
+use crypto::blake2b;
+use crypto::digest::Digest;
 
 const WORK_LENGTH: usize = 8;
 const WORK_HASH_LENGTH: usize = WORK_LENGTH;
 
-fn validate_work(hash_params: &Params, block_hash: &[u8], work_threshold: u64, work: u64) -> bool {
-    let mut work_bytes = [0u8; WORK_LENGTH];
-    utils::transform_u64_to_array_of_u8_be(work, &mut work_bytes);
+fn validate_work(block_hash: &[u8], work_threshold: u64, work: u64) -> bool {
+    let work_bytes = work.to_big_endian();
 
-    let hash = hash_params
-        .to_state()
-        .update(&work_bytes)
-        .update(block_hash)
-        .finalize();
-    let output_int = utils::transform_array_of_u8_to_u64_be(hash.as_bytes());
+    let mut buffer = [0u8; WORK_HASH_LENGTH];
+    let mut hasher = blake2b::Blake2b::new(WORK_HASH_LENGTH);
+    hasher.input(&work_bytes);
+    hasher.input(block_hash);
+    hasher.result(&mut buffer);
+
+    let output_int = buffer.from_big_endian();
     output_int >= work_threshold
 }
 
@@ -30,11 +31,9 @@ pub fn find_work(
     } else {
         u64::max_value()
     };
-    let mut hash_params = Params::new();
-    hash_params.hash_length(WORK_HASH_LENGTH);
 
     for work in lower_bound..upper_bound {
-        if validate_work(&hash_params, block_hash, work_threshold, work) {
+        if validate_work(block_hash, work_threshold, work) {
             return Some(work);
         }
     }

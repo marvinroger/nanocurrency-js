@@ -1,21 +1,35 @@
 use crate::base32;
+use crate::custom_ed25519;
 use crate::utils::ToBigEndian;
-use crypto::blake2b;
-use crypto::curve25519;
+use crypto::blake2b::Blake2b;
 use crypto::digest::Digest;
 
+/// A Nano seed
 pub struct Seed(pub [u8; 32]);
+/// A Nano account private key
 pub struct PrivateKey(pub [u8; 32]);
+/// A Nano account public key
 pub struct PublicKey(pub [u8; 32]);
+/// A Nano account address
 pub struct Address(pub [u8; 60]);
+/// A Nano address pattern
+///
+/// An address pattern is a 60 characters string matching the
+/// `^[13*][13-9a-km-uw-z*]{59}$` regex.
+///
+/// # Example
+///
+/// - `*mroger*****************************************************`
+///
 pub struct AddressPattern(pub [u8; 60]);
 
 impl Seed {
+    /// Derive a Nano private key
     pub fn derive_private_key(&self, index: u32) -> PrivateKey {
         let index_bytes = index.to_big_endian();
 
         let mut buffer = [0u8; 32];
-        let mut hasher = blake2b::Blake2b::new(32);
+        let mut hasher = Blake2b::new(32);
         hasher.input(&self.0);
         hasher.input(&index_bytes);
         hasher.result(&mut buffer);
@@ -25,24 +39,19 @@ impl Seed {
 }
 
 impl PrivateKey {
+    /// Derive a Nano public key
     pub fn derive_public_key(&self) -> PublicKey {
-        let mut buffer = [0u8; 64];
+        let public_key = custom_ed25519::keypair(&self.0);
 
-        let mut hasher = blake2b::Blake2b::new(64);
-        hasher.input(&self.0);
-        hasher.result(&mut buffer);
-        buffer[0] &= 248;
-        buffer[31] &= 127;
-        buffer[31] |= 64;
-
-        PublicKey(curve25519::ge_scalarmult_base(&buffer).to_bytes())
+        PublicKey(public_key)
     }
 }
 
 impl PublicKey {
+    /// Compute the public key checksum
     pub fn compute_checksum(&self) -> [u8; 5] {
         let mut checksum = [0u8; 5];
-        let mut hasher = blake2b::Blake2b::new(5);
+        let mut hasher = Blake2b::new(5);
         hasher.input(&self.0);
         hasher.result(&mut checksum);
         checksum.reverse();
@@ -50,6 +59,7 @@ impl PublicKey {
         checksum
     }
 
+    /// Encode an account address
     pub fn encode_address(&self) -> Address {
         let mut address = [0u8; 60];
         base32::encode(&self.0, &mut address[..52]);
@@ -60,6 +70,7 @@ impl PublicKey {
 }
 
 impl Address {
+    // Decode an account address
     pub fn decode(&self) -> Result<PublicKey, &'static str> {
         let public_key_part = &self.0[..52];
         let checksum_part = &self.0[52..];
@@ -87,6 +98,7 @@ impl Address {
         }
     }
 
+    /// Match the address against a pattern
     pub fn match_pattern(&self, pattern: &AddressPattern) -> bool {
         pattern
             .0

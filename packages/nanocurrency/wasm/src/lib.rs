@@ -5,8 +5,10 @@
 extern crate arrayref;
 
 mod base32;
+mod custom_ed25519;
 mod keys;
 mod pow;
+mod signature;
 mod utils;
 
 use keys::{Address, AddressPattern, PrivateKey, PublicKey, Seed};
@@ -170,3 +172,6 @@ pub extern "C" fn test_seed_matches_address_pattern() {
     0
   };
 }
+
+// TODO sign block
+// verify block

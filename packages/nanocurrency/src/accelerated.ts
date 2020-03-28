@@ -18,6 +18,7 @@ interface Assembly {
   derivePublic: (secretKey: string) => string
   deriveSecret: (seed: string, index: number) => string
   encodeAddress: (publicKey: string) => string
+  decodeAddress: (address: string) => string
   testSeedMatchesAddressPattern: (
     seed: Uint8Array,
     addressPattern: Uint8Array
@@ -68,13 +69,13 @@ async function loadWasm(): Promise<Assembly> {
       const secretKeyBytes = hexToByteArray(secretKey)
 
       const memory = instance.exports.memory
-      const memoryPointer = instance.exports.io_ptr_derive_public()
+      const memoryPointer = instance.exports.io_ptr_derive_public_key()
 
       const sharedMemory = new Uint8Array(memory.buffer, memoryPointer, 64)
 
       sharedMemory.set(secretKeyBytes, 0)
 
-      instance.exports.derive_public()
+      instance.exports.derive_public_key()
 
       const output = sharedMemory.slice(33)
 
@@ -84,7 +85,7 @@ async function loadWasm(): Promise<Assembly> {
       const seedBytes = hexToByteArray(seed)
 
       const memory = instance.exports.memory
-      const memoryPointer = instance.exports.io_ptr_derive_secret()
+      const memoryPointer = instance.exports.io_ptr_derive_private_key()
 
       const sharedMemory = new Uint8Array(memory.buffer, memoryPointer, 68)
       const dataview = new DataView(
@@ -96,7 +97,7 @@ async function loadWasm(): Promise<Assembly> {
       sharedMemory.set(seedBytes, 0)
       dataview.setUint32(32, index, true)
 
-      instance.exports.derive_secret()
+      instance.exports.derive_private_key()
 
       const output = sharedMemory.slice(36)
 
@@ -116,6 +117,30 @@ async function loadWasm(): Promise<Assembly> {
       const output = sharedMemory.slice(32)
 
       return String.fromCharCode.apply(null, Array.from(output))
+    },
+    decodeAddress(address) {
+      const addressBytes = new Uint8Array(60)
+      for (let i = 0, strLen = address.length; i < strLen; i++) {
+        addressBytes[i] = address.charCodeAt(i)
+      }
+
+      const memory = instance.exports.memory
+      const memoryPointer = instance.exports.io_ptr_decode_address()
+
+      const sharedMemory = new Uint8Array(memory.buffer, memoryPointer, 93)
+      sharedMemory.set(addressBytes, 0)
+
+      instance.exports.decode_address()
+
+      const valid = sharedMemory[60] === 1
+
+      if (!valid) {
+        throw new Error('Invalid address')
+      }
+
+      const output = sharedMemory.slice(61)
+
+      return byteArrayToHex(output)
     },
     testSeedMatchesAddressPattern(seed, addressPattern) {
       const memory = instance.exports.memory
@@ -214,19 +239,18 @@ export async function derivePrivate(
   return assembly.deriveSecret(seed, index)
 }
 
-/**
- * Find a work value that meets the difficulty for the given hash.
- * Require WebAssembly support.
- *
- * @param secretKey - The secret key to derive the public key from
- * @returns The public key
- */
 export async function encodeAddress(publicKey: string): Promise<string> {
   if (!checkKey(publicKey)) throw new Error('Public key is not valid')
 
   const assembly = await loadWasm()
 
   return assembly.encodeAddress(publicKey)
+}
+
+export async function decodeAddress(address: string): Promise<string> {
+  const assembly = await loadWasm()
+
+  return assembly.decodeAddress(address)
 }
 
 /**

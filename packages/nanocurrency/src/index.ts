@@ -9,6 +9,7 @@
 export {
   computeWork,
   ComputeWorkParams,
+  decodeAddress,
   derivePrivate,
   derivePublic,
   encodeAddress,

@@ -9,7 +9,7 @@ mod keys;
 mod pow;
 mod utils;
 
-use keys::{AddressPattern, PrivateKey, PublicKey, Seed};
+use keys::{Address, AddressPattern, PrivateKey, PublicKey, Seed};
 use utils::{FromLittleEndian, ToLittleEndian, ToPointer};
 
 macro_rules! io {
@@ -65,42 +65,40 @@ pub extern "C" fn work() {
   }
 }
 
-static mut DERIVE_PUBLIC_IO: [u8; 32 + 32] = [0; 64];
-io!(io_ptr_derive_public, &DERIVE_PUBLIC_IO);
+static mut DERIVE_PUBLIC_KEY_IO: [u8; 32 + 32] = [0; 64];
+io!(io_ptr_derive_public_key, &DERIVE_PUBLIC_KEY_IO);
 
 #[no_mangle]
-pub extern "C" fn derive_public() {
-  let private: PrivateKey;
-  let public: &mut [u8];
+pub extern "C" fn derive_public_key() {
+  let in_private_key: PrivateKey;
+  let out_public_key: &mut [u8; 32];
 
   unsafe {
-    private = PrivateKey(*array_ref!(DERIVE_SECRET_IO, 0, 32));
-    public = &mut DERIVE_PUBLIC_IO[32..64];
+    in_private_key = PrivateKey(*array_ref!(DERIVE_PRIVATE_KEY_IO, 0, 32));
+    out_public_key = array_mut_ref!(DERIVE_PRIVATE_KEY_IO, 32, 32);
   }
 
-  let public_key = private.derive_public_key();
-  public.copy_from_slice(&public_key.0);
+  let public_key = in_private_key.derive_public_key();
+  out_public_key.copy_from_slice(&public_key.0);
 }
 
-static mut DERIVE_SECRET_IO: [u8; 32 + 4 + 32] = [0u8; 68];
-io!(io_ptr_derive_secret, &DERIVE_SECRET_IO);
+static mut DERIVE_PRIVATE_KEY_IO: [u8; 32 + 4 + 32] = [0u8; 68];
+io!(io_ptr_derive_private_key, &DERIVE_PRIVATE_KEY_IO);
 
 #[no_mangle]
-pub extern "C" fn derive_secret() {
-  let seed: Seed;
-  let index: &[u8];
-  let private: &mut [u8];
+pub extern "C" fn derive_private_key() {
+  let in_seed: Seed;
+  let in_index: u32;
+  let out_private_key: &mut [u8; 32];
 
   unsafe {
-    seed = Seed(*array_ref!(DERIVE_SECRET_IO, 0, 32));
-    index = &DERIVE_SECRET_IO[32..36];
-    private = &mut DERIVE_SECRET_IO[36..68];
+    in_seed = Seed(*array_ref!(DERIVE_PRIVATE_KEY_IO, 0, 32));
+    in_index = (*array_ref!(DERIVE_PRIVATE_KEY_IO, 32, 4)).from_little_endian();
+    out_private_key = array_mut_ref!(DERIVE_PRIVATE_KEY_IO, 36, 32);
   }
 
-  let index_int = (*array_ref!(index, 0, 4)).from_little_endian();
-
-  let private_key = seed.derive_private_key(index_int);
-  private.copy_from_slice(&private_key.0);
+  let private_key = in_seed.derive_private_key(in_index);
+  out_private_key.copy_from_slice(&private_key.0);
 }
 
 static mut ENCODE_ADDRESS_IO: [u8; 32 + 60] = [0u8; 92];
@@ -108,16 +106,40 @@ io!(io_ptr_encode_address, &ENCODE_ADDRESS_IO);
 
 #[no_mangle]
 pub extern "C" fn encode_address() {
-  let public: PublicKey;
-  let address: &mut [u8; 60];
+  let in_public_key: PublicKey;
+  let out_address: &mut [u8; 60];
 
   unsafe {
-    public = PublicKey(*array_ref!(ENCODE_ADDRESS_IO, 0, 32));
-    address = array_mut_ref!(ENCODE_ADDRESS_IO, 32, 60);
+    in_public_key = PublicKey(*array_ref!(ENCODE_ADDRESS_IO, 0, 32));
+    out_address = array_mut_ref!(ENCODE_ADDRESS_IO, 32, 60);
   }
 
-  let address_result = public.encode_address();
-  address.copy_from_slice(&address_result.0);
+  let address = in_public_key.encode_address();
+  out_address.copy_from_slice(&address.0);
+}
+
+static mut DECODE_ADDRESS_IO: [u8; 60 + 1 + 32] = [0u8; 93];
+io!(io_ptr_decode_address, &DECODE_ADDRESS_IO);
+
+#[no_mangle]
+pub extern "C" fn decode_address() {
+  let in_address: Address;
+  let out_valid: &mut [u8; 1];
+  let out_public_key: &mut [u8; 32];
+
+  unsafe {
+    in_address = Address(*array_ref!(DECODE_ADDRESS_IO, 0, 60));
+    out_valid = array_mut_ref!(DECODE_ADDRESS_IO, 60, 1);
+    out_public_key = array_mut_ref!(DECODE_ADDRESS_IO, 61, 32);
+  }
+
+  match in_address.decode() {
+    Ok(public_key) => {
+      out_valid[0] = 1;
+      out_public_key.copy_from_slice(&public_key.0);
+    }
+    Err(_) => out_valid[0] = 0,
+  }
 }
 
 static mut TEST_SEED_MATCHES_ADDRESS_PATTERN_IO: [u8; 32 + 60 + 1] = [0u8; 93];
@@ -128,21 +150,21 @@ io!(
 
 #[no_mangle]
 pub extern "C" fn test_seed_matches_address_pattern() {
-  let seed: Seed;
-  let pattern: AddressPattern;
-  let matches: &mut [u8; 1];
+  let in_seed: Seed;
+  let in_pattern: AddressPattern;
+  let out_matches: &mut [u8; 1];
 
   unsafe {
-    seed = Seed(*array_ref!(TEST_SEED_MATCHES_ADDRESS_PATTERN_IO, 0, 32));
-    pattern = AddressPattern(*array_ref!(TEST_SEED_MATCHES_ADDRESS_PATTERN_IO, 32, 60));
-    matches = array_mut_ref!(TEST_SEED_MATCHES_ADDRESS_PATTERN_IO, 92, 1);
+    in_seed = Seed(*array_ref!(TEST_SEED_MATCHES_ADDRESS_PATTERN_IO, 0, 32));
+    in_pattern = AddressPattern(*array_ref!(TEST_SEED_MATCHES_ADDRESS_PATTERN_IO, 32, 60));
+    out_matches = array_mut_ref!(TEST_SEED_MATCHES_ADDRESS_PATTERN_IO, 92, 1);
   }
 
-  let private_key = seed.derive_private_key(0);
+  let private_key = in_seed.derive_private_key(0);
   let public_key = private_key.derive_public_key();
   let address = public_key.encode_address();
 
-  matches[0] = if address.match_pattern(&pattern) {
+  out_matches[0] = if address.match_pattern(&in_pattern) {
     1
   } else {
     0

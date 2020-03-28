@@ -24,6 +24,11 @@ pub fn find_work(
     worker_count: u32,
     work_threshold: u64,
 ) -> Option<u64> {
+    assert!(
+        worker_count > worker_index,
+        "Worker count must be greater than worker index"
+    );
+
     let interval: u64 = (u64::max_value() - u64::min_value()) / worker_count as u64;
     let lower_bound: u64 = u64::min_value() + (worker_index as u64 * interval);
     let upper_bound: u64 = if worker_index != worker_count - 1 {

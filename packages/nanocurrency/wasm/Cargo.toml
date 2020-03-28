@@ -11,6 +11,7 @@ crate-type = ["cdylib", "rlib"]
 arrayref = "0.3.6"
 rust-crypto-wasm = "0.3.1"
 
+
 [profile.release]
 lto = true
 opt-level = 3

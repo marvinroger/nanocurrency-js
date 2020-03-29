@@ -1,14 +1,16 @@
 use crate::base32;
 use crate::custom_ed25519;
-use crate::utils::ToBigEndian;
 use crypto::blake2b::Blake2b;
 use crypto::digest::Digest;
 
 /// A Nano seed
+#[derive(Debug, PartialEq)]
 pub struct Seed(pub [u8; 32]);
 /// A Nano account private key
+#[derive(Debug, PartialEq)]
 pub struct PrivateKey(pub [u8; 32]);
 /// A Nano account public key
+#[derive(Debug, PartialEq)]
 pub struct PublicKey(pub [u8; 32]);
 /// A Nano account address
 pub struct Address(pub [u8; 60]);
@@ -26,7 +28,7 @@ pub struct AddressPattern(pub [u8; 60]);
 impl Seed {
     /// Derive a Nano private key
     pub fn derive_private_key(&self, index: u32) -> PrivateKey {
-        let index_bytes = index.to_big_endian();
+        let index_bytes = index.to_be_bytes();
 
         let mut buffer = [0u8; 32];
         let mut hasher = Blake2b::new(32);
@@ -106,4 +108,54 @@ impl Address {
             .enumerate()
             .all(|(i, &c)| c == b'*' || c == self.0[i])
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_derive_private_key() {
+        let seed = Seed(hexupper!(
+            "E73D16E75D58D89B07B90B784D6308E5AF52DB34E2D43662E8C30F9745A4B36D"
+        ));
+
+        assert_eq!(
+            seed.derive_private_key(50),
+            PrivateKey(hexupper!(
+                "937BC31DCFF4588820CD9C774D680FFA056FB50B02ADFBC2B4BA5C3F7C6DC8F0"
+            ))
+        );
+    }
+
+    #[test]
+    fn test_derive_public_key() {
+        let private_key = PrivateKey(hexupper!(
+            "937BC31DCFF4588820CD9C774D680FFA056FB50B02ADFBC2B4BA5C3F7C6DC8F0"
+        ));
+
+        assert_eq!(
+            private_key.derive_public_key(),
+            PublicKey(hexupper!(
+                "B12E6B0221295B8674F78FA3D8DB71FC3127207804D2FD8BEC5FF4F6046721F5"
+            ))
+        );
+    }
+
+    // TODO
+    // #[test]
+    // fn test_encode_address() {
+    //     let public_key = PublicKey(hexupper!(
+    //         "B12E6B0221295B8674F78FA3D8DB71FC3127207804D2FD8BEC5FF4F6046721F5"
+    //     ));
+
+    //     assert_eq!(
+    //         public_key.encode_address(),
+    //         Address(*array_ref!(
+    //             "3ebgfe344ccuisthh5x5u5fq5z3j6wi9i38kzp7yrqznyr48gahock1rsnbn".as_bytes(),
+    //             0,
+    //             60
+    //         ))
+    //     );
+    // }
 }

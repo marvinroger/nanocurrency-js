@@ -4,6 +4,10 @@
 #[macro_use]
 extern crate arrayref;
 
+#[cfg(test)]
+#[macro_use]
+extern crate data_encoding_macro;
+
 mod base32;
 mod custom_ed25519;
 mod keys;
@@ -12,7 +16,7 @@ mod signature;
 mod utils;
 
 use keys::{Address, AddressPattern, PrivateKey, PublicKey, Seed};
-use utils::{FromLittleEndian, ToLittleEndian, ToPointer};
+use utils::ToPointer;
 
 macro_rules! io {
   ($name:ident, $target:expr) => {
@@ -46,9 +50,9 @@ pub extern "C" fn work() {
     work_output = &mut WORK_IO[49..57];
   }
 
-  let worker_index_int = (*array_ref!(worker_index, 0, 4)).from_little_endian();
-  let worker_count_int = (*array_ref!(worker_count, 0, 4)).from_little_endian();
-  let work_threshold_int = (*array_ref!(work_threshold, 0, 8)).from_little_endian();
+  let worker_index_int = u32::from_le_bytes(*array_ref!(worker_index, 0, 4));
+  let worker_count_int = u32::from_le_bytes(*array_ref!(worker_count, 0, 4));
+  let work_threshold_int = u64::from_le_bytes(*array_ref!(work_threshold, 0, 8));
 
   let work_result = pow::find_work(
     block_hash,
@@ -60,7 +64,7 @@ pub extern "C" fn work() {
   match work_result {
     Some(work) => {
       work_success[0] = 1;
-      let work_bytes = work.to_little_endian();
+      let work_bytes = work.to_le_bytes();
       work_output.copy_from_slice(&work_bytes);
     }
     None => work_success[0] = 0,
@@ -95,7 +99,7 @@ pub extern "C" fn derive_private_key() {
 
   unsafe {
     in_seed = Seed(*array_ref!(DERIVE_PRIVATE_KEY_IO, 0, 32));
-    in_index = (*array_ref!(DERIVE_PRIVATE_KEY_IO, 32, 4)).from_little_endian();
+    in_index = u32::from_le_bytes(*array_ref!(DERIVE_PRIVATE_KEY_IO, 32, 4));
     out_private_key = array_mut_ref!(DERIVE_PRIVATE_KEY_IO, 36, 32);
   }
 

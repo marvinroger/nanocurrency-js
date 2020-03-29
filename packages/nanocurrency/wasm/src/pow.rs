@@ -1,4 +1,3 @@
-use crate::utils::{FromBigEndian, ToBigEndian};
 use crypto::blake2b::Blake2b;
 use crypto::digest::Digest;
 
@@ -6,14 +5,19 @@ const WORK_LENGTH: usize = 8;
 const WORK_HASH_LENGTH: usize = WORK_LENGTH;
 
 fn validate_work(hasher: &mut Blake2b, block_hash: &[u8], work_threshold: u64, work: u64) -> bool {
-    let work_bytes = work.to_big_endian();
+    let work_bytes = work.to_be_bytes();
 
     let mut buffer = [0u8; WORK_HASH_LENGTH];
     hasher.input(&work_bytes);
     hasher.input(block_hash);
     hasher.result(&mut buffer);
 
-    let output_int = buffer.from_big_endian();
+    let output_int = if cfg!(target_endian = "little") {
+        u64::from_be_bytes(buffer)
+    } else {
+        u64::from_le_bytes(buffer)
+    };
+
     output_int >= work_threshold
 }
 

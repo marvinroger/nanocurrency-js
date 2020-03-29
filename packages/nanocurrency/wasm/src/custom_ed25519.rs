@@ -4,7 +4,7 @@ use crypto::digest::Digest;
 use crypto::util::fixed_time_eq;
 
 /// Taken from rust-crypto-wasm 0.3.1 to use Blake2b
-pub fn keypair(seed: &[u8]) -> [u8; 32] {
+pub fn keypair(seed: &[u8; 32]) -> [u8; 32] {
     let secret: [u8; 64] = {
         let mut hash_output: [u8; 64] = [0; 64];
         let mut hasher = Blake2b::new(64);
@@ -22,13 +22,11 @@ pub fn keypair(seed: &[u8]) -> [u8; 32] {
 }
 
 /// Taken from rust-crypto-wasm 0.3.1 to use Blake2b
-pub fn sign(message: &[u8], secret_key: &[u8]) -> [u8; 64] {
-    let seed = &secret_key[0..32];
-    let public_key = &secret_key[32..64];
+pub fn sign(message: &[u8], secret_key: &[u8; 32], public_key: &[u8; 32]) -> [u8; 64] {
     let az: [u8; 64] = {
         let mut hash_output: [u8; 64] = [0; 64];
         let mut hasher = Blake2b::new(64);
-        hasher.input(seed);
+        hasher.input(secret_key);
         hasher.result(&mut hash_output);
         hash_output[0] &= 248;
         hash_output[31] &= 127;
@@ -97,7 +95,7 @@ fn check_s_lt_l(s: &[u8]) -> bool {
 }
 
 /// Taken from rust-crypto-wasm 0.3.1 to use Blake2b
-pub fn verify(message: &[u8], public_key: &[u8], signature: &[u8]) -> bool {
+pub fn verify(message: &[u8], public_key: &[u8; 32], signature: &[u8; 64]) -> bool {
     if check_s_lt_l(&signature[32..64]) {
         return false;
     }

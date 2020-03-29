@@ -1,5 +1,6 @@
 use crate::base32;
 use crate::custom_ed25519;
+use core::fmt;
 use crypto::blake2b::Blake2b;
 use crypto::digest::Digest;
 
@@ -24,6 +25,18 @@ pub struct Address(pub [u8; 60]);
 /// - `*mroger*****************************************************`
 ///
 pub struct AddressPattern(pub [u8; 60]);
+
+impl PartialEq for Address {
+    fn eq(&self, other: &Self) -> bool {
+        self.0.iter().zip(other.0.iter()).all(|(&a, &b)| a == b)
+    }
+}
+
+impl fmt::Debug for Address {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_list().entries(self.0.iter()).finish()
+    }
+}
 
 impl Seed {
     /// Derive a Nano private key
@@ -88,12 +101,7 @@ impl Address {
         let checksum = *array_ref!(base32::decode(checksum_part, &mut checksum_buffer), 0, 5);
         let valid_checksum = public_key.compute_checksum();
 
-        let is_checksum_valid = checksum
-            .iter()
-            .zip(valid_checksum.iter())
-            .all(|(a, b)| a == b);
-
-        if is_checksum_valid {
+        if valid_checksum == checksum {
             Ok(public_key)
         } else {
             Err("The checksum is invalid")
@@ -142,20 +150,37 @@ mod tests {
         );
     }
 
-    // TODO
-    // #[test]
-    // fn test_encode_address() {
-    //     let public_key = PublicKey(hexupper!(
-    //         "B12E6B0221295B8674F78FA3D8DB71FC3127207804D2FD8BEC5FF4F6046721F5"
-    //     ));
+    #[test]
+    fn test_encode_address() {
+        let public_key = PublicKey(hexupper!(
+            "B12E6B0221295B8674F78FA3D8DB71FC3127207804D2FD8BEC5FF4F6046721F5"
+        ));
 
-    //     assert_eq!(
-    //         public_key.encode_address(),
-    //         Address(*array_ref!(
-    //             "3ebgfe344ccuisthh5x5u5fq5z3j6wi9i38kzp7yrqznyr48gahock1rsnbn".as_bytes(),
-    //             0,
-    //             60
-    //         ))
-    //     );
-    // }
+        assert_eq!(
+            public_key.encode_address(),
+            Address(*array_ref!(
+                "3ebgfe344ccuisthh5x5u5fq5z3j6wi9i38kzp7yrqznyr48gahock1rsnbn".as_bytes(),
+                0,
+                60
+            ))
+        );
+    }
+
+    #[test]
+    fn test_decode_address() {
+        let address = Address(*array_ref!(
+            "3ebgfe344ccuisthh5x5u5fq5z3j6wi9i38kzp7yrqznyr48gahock1rsnbn".as_bytes(),
+            0,
+            60
+        ));
+
+        assert_eq!(
+            address.decode().unwrap(),
+            PublicKey(hexupper!(
+                "B12E6B0221295B8674F78FA3D8DB71FC3127207804D2FD8BEC5FF4F6046721F5"
+            ))
+        );
+
+        // TODO test with invalid address
+    }
 }

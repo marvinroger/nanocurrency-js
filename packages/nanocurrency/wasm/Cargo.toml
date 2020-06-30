@@ -1,0 +1,19 @@
+[package]
+name = "nanocurrency-wasm"
+version = "0.1.0"
+authors = ["Marvin ROGER <bonjour+code@marvinroger.fr>"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+arrayref = "0.3.6"
+rust-crypto-wasm = "0.3.1"
+
+[dev-dependencies]
+data-encoding-macro = "0.1.8"
+
+[profile.release]
+lto = true
+opt-level = 3

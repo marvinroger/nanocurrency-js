@@ -1,0 +1,1 @@
+export const DEFAULT_WORK_THRESHOLD = 'ffffffc000000000'

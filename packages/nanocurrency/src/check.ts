@@ -1,7 +1,7 @@
 /*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
- * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
- * Licensed under GPL-3.0 (https://git.io/vAZsK)
+ * Copyright (c) 2019 Marvin ROGER <bonjour+code at marvinroger dot fr>
+ * Licensed under GPL-3.0 (https://git.io/JvSg6)
  */
 import BigNumber from 'bignumber.js'
 import { parseAddress } from './parse'

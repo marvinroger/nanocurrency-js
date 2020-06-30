@@ -10,7 +10,7 @@
   "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",
   "dependencies": {
     "nanocurrency": ">= 2.2.0 < 3.0.0",
-    "yargs": "^13.0.0"
+    "yargs": "^15.0.1"
   },
   "files": [
     "dist/"

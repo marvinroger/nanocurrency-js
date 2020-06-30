@@ -1,13 +1,12 @@
 /*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
- * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
- * Licensed under GPL-3.0 (https://git.io/vAZsK)
+ * Copyright (c) 2019 Marvin ROGER <bonjour+code at marvinroger dot fr>
+ * Licensed under GPL-3.0 (https://git.io/JvSg6)
  */
 import { blake2b } from 'blakejs'
-
-import { compareArrays } from './utils'
 import { checkString } from './check'
 import { decodeNanoBase32 } from './nano-base32'
+import { compareArrays } from './utils'
 
 /** @hidden */
 export interface ParseAddressResult {

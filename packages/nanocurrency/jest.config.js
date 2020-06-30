@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const fusee = require('../../fusee').getJestConfig()
 
 module.exports = {

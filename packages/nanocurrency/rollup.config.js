@@ -4,6 +4,7 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import { terser } from 'rollup-plugin-terser'
 import license from 'rollup-plugin-license'
+import wasm from '@rollup/plugin-wasm'
 
 import pkg from './package.json'
 
@@ -12,8 +13,8 @@ const ENV = process.env.NODE_ENV
 const LICENSE_BANNER = `
 /*!
 * nanocurrency-js v${pkg.version}: A toolkit for the Nano cryptocurrency.
-* Copyright (c) <%= moment().format('YYYY') %> Marvin ROGER <dev at marvinroger dot fr>
-* Licensed under GPL-3.0 (https://git.io/vAZsK)
+* Copyright (c) <%= moment().format('YYYY') %> Marvin ROGER <bonjour+code at marvinroger dot fr>
+* Licensed under GPL-3.0 (https://git.io/JvSg6)
 */
 `.trim()
 
@@ -38,6 +39,7 @@ const configs = outputs.map((output, index) => {
         useTsconfigDeclarationDir: true,
         tsconfigOverride: { compilerOptions: { declaration: index === 0 } }, // only generate definitions once, otherwise crash
       }),
+      wasm(),
       autoExternal({
         dependencies: output.format !== 'umd',
       }),
@@ -45,7 +47,7 @@ const configs = outputs.map((output, index) => {
   }
 
   if (ENV === 'production') {
-    config.plugins.push(terser())
+    config.plugins.push(terser({ output: { comments: false } }))
 
     config.plugins.push(
       license({

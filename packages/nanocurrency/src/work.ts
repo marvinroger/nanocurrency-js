@@ -1,14 +1,13 @@
 /*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
- * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
- * Licensed under GPL-3.0 (https://git.io/vAZsK)
+ * Copyright (c) 2019 Marvin ROGER <bonjour+code at marvinroger dot fr>
+ * Licensed under GPL-3.0 (https://git.io/JvSg6)
  */
 import BigNumber from 'bignumber.js'
 import { blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
 import { checkHash, checkThreshold, checkWork } from './check'
+import { DEFAULT_WORK_THRESHOLD } from './constants'
 import { byteArrayToHex, hexToByteArray } from './utils'
-
-const DEFAULT_WORK_THRESHOLD = 'ffffffc000000000'
 
 /** Validate work parameters. */
 export interface ValidateWorkParams {

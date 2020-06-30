@@ -5,7 +5,7 @@ const nano = require('./dist/nanocurrency.cjs')
 async function main() {
   console.time()
   const blockHash =
-    'b9cb6b51b8eb869af085c4c03e7dc539943d0bdde13b21436b687c9c7ea56cb0'
+    '40cdc45899503f25e8ccba26c1df1fad2b046cb3d2c9e45c05fb2127ed2a52bf'
   const work = await nano.computeWork(blockHash)
   console.timeEnd()
 

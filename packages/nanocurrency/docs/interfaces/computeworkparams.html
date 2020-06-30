@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ComputeWorkParams | nanocurrency - v2.4.0</title>
+	<title>ComputeWorkParams | nanocurrency - v2.5.0</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -2335,7 +2335,7 @@ img {
 		<div class="container">
 			<div class="table-wrap">
 				<div class="table-cell">
-					<strong><a href="../index.html">nanocurrency - v2.4.0</a></strong>
+					<strong><a href="../index.html">nanocurrency - v2.5.0</a></strong>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -2384,6 +2384,9 @@ img {
 			<a href="computeworkparams.html" class="tsd-kind-icon">Compute<wbr>Work<wbr>Params</a>
 			<ul>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
+					<a href="computeworkparams.html#workthreshold" class="tsd-kind-icon">work<wbr>Threshold</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-interface">
 					<a href="computeworkparams.html#workercount" class="tsd-kind-icon">worker<wbr>Count</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
@@ -2420,6 +2423,9 @@ img {
 		</li>
 		<li class=" tsd-kind-type-alias">
 			<a href="../globals.html#blockdata" class="tsd-kind-icon">Block<wbr>Data</a>
+		</li>
+		<li class=" tsd-kind-variable">
+			<a href="../globals.html#default_work_threshold" class="tsd-kind-icon">DEFAULT_<wbr>WORK_<wbr>THRESHOLD</a>
 		</li>
 		<li class=" tsd-kind-function">
 			<a href="../globals.html#checkaddress" class="tsd-kind-icon">check<wbr>Address</a>
@@ -2507,6 +2513,7 @@ img {
 					<section class="tsd-index-section ">
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="computeworkparams.html#workthreshold" class="tsd-kind-icon">work<wbr>Threshold</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="computeworkparams.html#workercount" class="tsd-kind-icon">worker<wbr>Count</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="computeworkparams.html#workerindex" class="tsd-kind-icon">worker<wbr>Index</a></li>
 						</ul>
@@ -2517,12 +2524,27 @@ img {
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Properties</h2>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="workercount" class="tsd-anchor"></a>
-				<h3>worker<wbr>Count</h3>
-				<div class="tsd-signature tsd-kind-icon">worker<wbr>Count<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<a name="workthreshold" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagOptional">Optional</span> work<wbr>Threshold</h3>
+				<div class="tsd-signature tsd-kind-icon">work<wbr>Threshold<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/a7d0743/packages/nanocurrency/src/accelerated.ts#L61">accelerated.ts:61</a></li>
+						<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/bdf12f0/packages/nanocurrency/src/accelerated.ts#L66">accelerated.ts:66</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The work threshold, in hex format. Defaults to <code>ffffffc000000000</code></p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<a name="workercount" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagOptional">Optional</span> worker<wbr>Count</h3>
+				<div class="tsd-signature tsd-kind-icon">worker<wbr>Count<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/bdf12f0/packages/nanocurrency/src/accelerated.ts#L64">accelerated.ts:64</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2533,11 +2555,11 @@ img {
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 				<a name="workerindex" class="tsd-anchor"></a>
-				<h3>worker<wbr>Index</h3>
-				<div class="tsd-signature tsd-kind-icon">worker<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<h3><span class="tsd-flag ts-flagOptional">Optional</span> worker<wbr>Index</h3>
+				<div class="tsd-signature tsd-kind-icon">worker<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/a7d0743/packages/nanocurrency/src/accelerated.ts#L59">accelerated.ts:59</a></li>
+						<li>Defined in <a href="https://github.com/marvinroger/nanocurrency-js/blob/bdf12f0/packages/nanocurrency/src/accelerated.ts#L62">accelerated.ts:62</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">

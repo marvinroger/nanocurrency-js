@@ -78,7 +78,11 @@ export async function computeWork(
   blockHash: string,
   params: ComputeWorkParams = {}
 ): Promise<string | null> {
-  const { workerIndex = 0, workerCount = 1, workThreshold = DEFAULT_WORK_THRESHOLD } = params
+  const {
+    workerIndex = 0,
+    workerCount = 1,
+    workThreshold = DEFAULT_WORK_THRESHOLD,
+  } = params
 
   const assembly = await loadWasm()
 

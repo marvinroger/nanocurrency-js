@@ -11,7 +11,6 @@
 
 #include "blake2/ref/blake2.h"
 
-const uint64_t WORK_THRESHOLD = 0xffffffc000000000;
 const uint8_t BLOCK_HASH_LENGTH = 32;
 const uint8_t WORK_LENGTH = 8;
 
@@ -58,7 +57,7 @@ void reverse_bytes(uint8_t* const src, const uint8_t length) {
 }
 
 const uint8_t WORK_HASH_LENGTH = 8;
-uint8_t validate_work(const uint8_t* const block_hash, uint8_t* const work) {
+uint8_t validate_work(const uint8_t* const block_hash, uint64_t work_threshold, uint8_t* const work) {
   blake2b_state hash;
   uint8_t output[WORK_HASH_LENGTH];
 
@@ -69,12 +68,12 @@ uint8_t validate_work(const uint8_t* const block_hash, uint8_t* const work) {
 
   const uint64_t output_int = bytes_to_uint64(output);
 
-  return output_int >= WORK_THRESHOLD;
+  return output_int >= work_threshold;
 }
 
 const uint64_t MIN_UINT64 = 0x0000000000000000;
 const uint64_t MAX_UINT64 = 0xffffffffffffffff;
-void work(const uint8_t* const block_hash, const uint8_t worker_index, const uint8_t worker_count, uint8_t* const dst) {
+void work(const uint8_t* const block_hash, uint64_t work_threshold, const uint8_t worker_index, const uint8_t worker_count, uint8_t* const dst) {
   const uint64_t interval = (MAX_UINT64 - MIN_UINT64) / worker_count;
 
   const uint64_t lower_bound = MIN_UINT64 + (worker_index * interval);
@@ -88,7 +87,7 @@ void work(const uint8_t* const block_hash, const uint8_t worker_index, const uin
 
     uint64_to_bytes(work, work_bytes);
 
-    if (validate_work(block_hash, work_bytes)) {
+    if (validate_work(block_hash, work_threshold, work_bytes)) {
       reverse_bytes(work_bytes, WORK_LENGTH);
       dst[0] = 1;
       memcpy(dst + 1, work_bytes, WORK_LENGTH);
@@ -103,13 +102,19 @@ void work(const uint8_t* const block_hash, const uint8_t worker_index, const uin
 char stack_string[2 + BLOCK_HASH_LENGTH + 1];
 
 EMSCRIPTEN_KEEPALIVE
-const char* emscripten_work(const char* const block_hash_hex, const uint8_t worker_index, const uint8_t worker_count) {
+const char* emscripten_work(const char* const block_hash_hex, const char* const work_threshold_hex, const uint8_t worker_index, const uint8_t worker_count) {
   uint8_t block_hash_bytes[BLOCK_HASH_LENGTH];
   hex_to_bytes(block_hash_hex, block_hash_bytes);
 
+  uint8_t work_threshold_bytes[WORK_LENGTH];
+  hex_to_bytes(work_threshold_hex, work_threshold_bytes);
+  reverse_bytes(work_threshold_bytes, WORK_LENGTH);
+  uint64_t work_threshold = bytes_to_uint64(work_threshold_bytes);
+
+
   uint8_t work_[1 + WORK_LENGTH];
   work_[0] = 0;
-  work(block_hash_bytes, worker_index, worker_count, work_);
+  work(block_hash_bytes, work_threshold, worker_index, worker_count, work_);
   bytes_to_hex(work_, 1 + WORK_LENGTH, stack_string);
 
   return stack_string;

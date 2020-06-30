@@ -1,5 +1,5 @@
 interface Cwrap {
-  (fun: 'emscripten_work', ret: 'string', params: ['string', 'number', 'number']): (blockHash: string, workerIndex: number, workerCount: number) => string
+  (fun: 'emscripten_work', ret: 'string', params: ['string', 'string', 'number', 'number']): (blockHash: string, workThreshold: string, workerIndex: number, workerCount: number) => string
 }
 
 declare interface Assembly {

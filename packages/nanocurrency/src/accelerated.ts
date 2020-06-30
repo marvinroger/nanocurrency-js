@@ -4,10 +4,12 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import loadAssembly from '../assembly'
-import { checkHash } from './check'
+import { checkHash, checkThreshold } from './check'
+import { DEFAULT_WORK_THRESHOLD } from './work'
 
 type WorkFunction = (
   blockHash: string,
+  workThreshold: string,
   workerIndex: number,
   workerCount: number
 ) => string
@@ -39,6 +41,7 @@ function loadWasm(): Promise<AssemblyWhenLoaded> {
           loaded: true,
           work: assembly.cwrap('emscripten_work', 'string', [
             'string',
+            'string',
             'number',
             'number',
           ]),
@@ -56,9 +59,11 @@ function loadWasm(): Promise<AssemblyWhenLoaded> {
 /** Compute work parameters. */
 export interface ComputeWorkParams {
   /** The current worker index, starting at 0 */
-  workerIndex: number
+  workerIndex?: number
   /** The count of worker */
-  workerCount: number
+  workerCount?: number
+  /** The work threshold, in hex format. Defaults to `ffffffc000000000` */
+  workThreshold?: string
 }
 
 /**
@@ -71,22 +76,25 @@ export interface ComputeWorkParams {
  */
 export async function computeWork(
   blockHash: string,
-  params: ComputeWorkParams = { workerIndex: 0, workerCount: 1 }
+  params: ComputeWorkParams = {}
 ): Promise<string | null> {
+  const { workerIndex = 0, workerCount = 1, workThreshold = DEFAULT_WORK_THRESHOLD } = params
+
   const assembly = await loadWasm()
 
   if (!checkHash(blockHash)) throw new Error('Hash is not valid')
+  if (!checkThreshold(workThreshold)) throw new Error('Threshold is not valid')
   if (
-    !Number.isInteger(params.workerIndex) ||
-    !Number.isInteger(params.workerCount) ||
-    params.workerIndex < 0 ||
-    params.workerCount < 1 ||
-    params.workerIndex > params.workerCount - 1
+    !Number.isInteger(workerIndex) ||
+    !Number.isInteger(workerCount) ||
+    workerIndex < 0 ||
+    workerCount < 1 ||
+    workerIndex > workerCount - 1
   ) {
     throw new Error('Worker parameters are not valid')
   }
 
-  const work = assembly.work(blockHash, params.workerIndex, params.workerCount)
+  const work = assembly.work(blockHash, workThreshold, workerIndex, workerCount)
   const success = work[1] === '1'
 
   if (!success) {

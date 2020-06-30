@@ -8,7 +8,7 @@ import { blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
 import { checkHash, checkThreshold, checkWork } from './check'
 import { byteArrayToHex, hexToByteArray } from './utils'
 
-const DEFAULT_WORK_THRESHOLD = 'ffffffc000000000'
+export const DEFAULT_WORK_THRESHOLD = 'ffffffc000000000'
 
 /** Validate work parameters. */
 export interface ValidateWorkParams {

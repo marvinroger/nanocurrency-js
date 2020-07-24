@@ -76,14 +76,23 @@ export interface Block {
   block: BlockRepresentation
 }
 
+/** Block params. */
+export interface BlockParams {
+  /** Whether to use nano_ instead of xrb_ */
+  useNanoPrefix?: boolean
+  /** Whether to use ban_ instead of xrb_ */
+  useBananoPrefix?: boolean
+}
+
 /**
  * Create a state block.
  *
  * @param secretKey - The secret key to create the block from, in hexadecimal format
  * @param data - Block data
+ * @param BlockParams - Optional block settings
  * @returns Block
  */
-export function createBlock(secretKey: string, data: BlockData): Block {
+export function createBlock(secretKey: string, data: BlockData, params: BlockParams = {}): Block {
   if (!checkKey(secretKey)) throw new Error('Secret key is not valid')
   if (typeof data.work === 'undefined') throw new Error('Work is not set')
   if (!checkAddress(data.representative)) {
@@ -136,7 +145,7 @@ export function createBlock(secretKey: string, data: BlockData): Block {
   }
 
   const publicKey = derivePublicKey(secretKey)
-  const account = deriveAddress(publicKey)
+  const account = (params.useNanoPrefix === true) ? deriveAddress(publicKey,{useNanoPrefix:true}) : (params.useBananoPrefix === true) ? deriveAddress(publicKey,{useBananoPrefix:true}) : deriveAddress(publicKey)
   // we use unsafeHashBlock because we already
   // checked the input
   const hash = unsafeHashBlock({

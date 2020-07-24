@@ -20,13 +20,13 @@ export function parseAddress(address: {}): ParseAddressResult {
   const invalid = { valid: false, publicKeyBytes: null }
   if (
     !checkString(address) ||
-    !/^(xrb_|nano_)[13][13-9a-km-uw-z]{59}$/.test(address as string)
+    !/^(xrb_|nano_|ban_)[13][13-9a-km-uw-z]{59}$/.test(address as string)
   ) {
     return invalid
   }
 
   let prefixLength
-  if ((address as string).startsWith('xrb_')) {
+  if ((address as string).startsWith('xrb_') || (address as string).startsWith('ban_')) {
     prefixLength = 4
   } else {
     // nano_

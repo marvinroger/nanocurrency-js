@@ -44,4 +44,4 @@ export {
   verifyBlock,
   VerifyBlockParams,
 } from './signature'
-export { validateWork, ValidateWorkParams } from './work'
+export { validateWork, ValidateWorkParams, getWorkDifficulty, GetDifficultyMultiplierParams, getDifficultyMultiplier, GetWorkDifficultyParams } from './work'

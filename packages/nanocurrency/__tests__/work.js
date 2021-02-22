@@ -85,3 +85,74 @@ describe('validation', () => {
     }
   })
 })
+
+describe('difficulty', () => {
+  test('calculates correct difficulty', () => {
+    expect(
+      nano.getWorkDifficulty({
+        blockHash: '7E5E6CBC887A30464FB2E0573455D9384C639D23F638430922445AE628697121',
+        work: 'ce00225c66af3e69',
+      })
+    ).toBe('fffffffba684718d')
+  })
+
+  test('throws with invalid hashes', () => {
+    expect.assertions(INVALID_HASHES.length)
+    for (let invalidHash of INVALID_HASHES) {
+      expect(() =>
+        nano.getWorkDifficulty({
+          blockHash: invalidHash,
+          work: RANDOM_VALID_BLOCK.block.data.work,
+        })
+      ).toThrowError('Hash is not valid')
+    }
+  })
+
+  test('throws with invalid works', () => {
+    expect.assertions(INVALID_WORKS.length)
+    for (let invalidWork of INVALID_WORKS) {
+      expect(() =>
+        nano.getWorkDifficulty({
+          blockHash: RANDOM_VALID_BLOCK.block.hash,
+          work: invalidWork,
+        })
+      ).toThrowError('Work is not valid')
+    }
+  })
+})
+
+describe('multiplier', () => {
+  test('calculates correct multiplier', () => {
+    expect(
+      nano.getDifficultyMultiplier({
+        difficulty: 'fffffffba684718d',
+      })
+    ).toBeCloseTo(14.714194345574768, 10)
+  })
+
+  test('throws with invalid difficulty', () => {
+    expect.assertions(INVALID_THRESHOLDS.length)
+    for (const invalidThreshold of INVALID_THRESHOLDS) {
+      expect(() =>
+        nano.getDifficultyMultiplier({
+          difficulty: invalidThreshold,
+        })
+      ).toThrowError('Difficulty is not valid')
+    }
+  })
+
+  test('throws with invalid threshold', () => {
+    expect.assertions(INVALID_THRESHOLDS.length)
+    for (const invalidThreshold of INVALID_THRESHOLDS) {
+      expect(() =>
+        nano.getDifficultyMultiplier({
+          difficulty: nano.getWorkDifficulty({
+            blockHash: RANDOM_VALID_BLOCK.block.hash,
+            work: RANDOM_VALID_BLOCK.block.data.work,
+          }),
+          threshold: invalidThreshold,
+        })
+      ).toThrowError('Threshold is not valid')
+    }
+  })
+})

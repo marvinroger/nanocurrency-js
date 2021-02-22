@@ -9,6 +9,7 @@ import { checkHash, checkThreshold, checkWork } from './check'
 import { byteArrayToHex, hexToByteArray } from './utils'
 
 export const DEFAULT_WORK_THRESHOLD = 'ffffffc000000000'
+export const MAX_WORK_THRESHOLD = '10000000000000000'
 
 /** Get work difficulty parameters. */
 export interface GetWorkDifficultyParams {
@@ -93,8 +94,8 @@ export function getDifficultyMultiplier(params: GetDifficultyMultiplierParams): 
   if (!checkThreshold(thresholdHex)) throw new Error('Threshold is not valid')
   if (!checkThreshold(params.difficulty)) throw new Error('Difficulty is not valid')
 
-  const threshold = new BigNumber(`0x${thresholdHex}`)
-  const difficulty = new BigNumber(`0x${params.difficulty}`)
+  const threshold = new BigNumber(`0x${MAX_WORK_THRESHOLD}`).minus(new BigNumber(`0x${thresholdHex}`))
+  const difficulty = new BigNumber(`0x${MAX_WORK_THRESHOLD}`).minus(new BigNumber(`0x${params.difficulty}`))
 
   return threshold.dividedBy(difficulty).toNumber();
 }

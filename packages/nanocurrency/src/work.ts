@@ -79,6 +79,7 @@ export function validateWork(params: ValidateWorkParams): boolean {
 export interface GetDifficultyMultiplierParams {
   /** The block hash to check the work against */
   difficulty: string
+  /** The threshold to calculate against. Defaults to ffffffc000000000 */
   threshold?: string
 }
 

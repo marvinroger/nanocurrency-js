@@ -91,6 +91,7 @@ export function getDifficultyMultiplier(params: GetDifficultyMultiplierParams): 
   const thresholdHex = params.threshold ?? DEFAULT_WORK_THRESHOLD
 
   if (!checkThreshold(thresholdHex)) throw new Error('Threshold is not valid')
+  if (!checkThreshold(params.difficulty)) throw new Error('Difficulty is not valid')
 
   const threshold = new BigNumber(`0x${thresholdHex}`)
   const difficulty = new BigNumber(`0x${params.difficulty}`)

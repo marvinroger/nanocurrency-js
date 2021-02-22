@@ -20,20 +20,11 @@ export interface ValidateWorkParams {
   threshold?: string
 }
 
-/**
- * Validate whether or not the work value meets the difficulty for the given hash.
- *
- * @param params - Parameters
- * @returns Valid
- */
-export function validateWork(params: ValidateWorkParams): boolean {
-  const thresholdHex = params.threshold ?? DEFAULT_WORK_THRESHOLD
-
+/** @hidden */
+export function getWorkDifficultyBigNumber(params: GetWorkDifficultyParams): BigNumber {
   if (!checkHash(params.blockHash)) throw new Error('Hash is not valid')
   if (!checkWork(params.work)) throw new Error('Work is not valid')
-  if (!checkThreshold(thresholdHex)) throw new Error('Threshold is not valid')
 
-  const threshold = new BigNumber(`0x${thresholdHex}`)
   const hashBytes = hexToByteArray(params.blockHash)
   const workBytes = hexToByteArray(params.work).reverse()
 
@@ -43,6 +34,23 @@ export function validateWork(params: ValidateWorkParams): boolean {
   const output = blake2bFinal(context).reverse()
   const outputHex = byteArrayToHex(output)
   const outputBigNumber = new BigNumber(`0x${outputHex}`)
+
+  return outputBigNumber
+}
+
+/**
+ * Validate whether or not the work value meets the difficulty for the given hash.
+ *
+ * @param params - Parameters
+ * @returns Valid
+ */
+export function validateWork(params: ValidateWorkParams): boolean {
+  const thresholdHex = params.threshold ?? DEFAULT_WORK_THRESHOLD
+
+  if (!checkThreshold(thresholdHex)) throw new Error('Threshold is not valid')
+
+  const outputBigNumber = getWorkDifficultyBigNumber({ blockHash: params.blockHash, work: params.work })
+  const threshold = new BigNumber(`0x${thresholdHex}`)
 
   return outputBigNumber.isGreaterThanOrEqualTo(threshold)
 }
@@ -62,19 +70,7 @@ export interface GetWorkDifficultyParams {
  * @returns Difficulty
  */
 export function getWorkDifficulty(params: GetWorkDifficultyParams): string {
-  if (!checkHash(params.blockHash)) throw new Error('Hash is not valid')
-  if (!checkWork(params.work)) throw new Error('Work is not valid')
-
-  const hashBytes = hexToByteArray(params.blockHash)
-  const workBytes = hexToByteArray(params.work).reverse()
-
-  const context = blake2bInit(8)
-  blake2bUpdate(context, workBytes)
-  blake2bUpdate(context, hashBytes)
-  const output = blake2bFinal(context).reverse()
-  const outputHex = byteArrayToHex(output)
-  const outputBigNumber = new BigNumber(`0x${outputHex}`)
-
+  const outputBigNumber = getWorkDifficultyBigNumber({ blockHash: params.blockHash, work: params.work })
   return outputBigNumber.toString(16);
 }
 

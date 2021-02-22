@@ -10,14 +10,12 @@ import { byteArrayToHex, hexToByteArray } from './utils'
 
 export const DEFAULT_WORK_THRESHOLD = 'ffffffc000000000'
 
-/** Validate work parameters. */
-export interface ValidateWorkParams {
-  /** The block hash to validate the work against */
+/** Get work difficulty parameters. */
+export interface GetWorkDifficultyParams {
+  /** The block hash to check the work against */
   blockHash: string
-  /** The work to validate */
+  /** The work to check */
   work: string
-  /** The threshold to validate against. Defaults to ffffffc000000000 */
-  threshold?: string
 }
 
 /** @hidden */
@@ -39,6 +37,27 @@ export function getWorkDifficultyBigNumber(params: GetWorkDifficultyParams): Big
 }
 
 /**
+ * Get the work difficulty for the given hash.
+ *
+ * @param params - Parameters
+ * @returns Difficulty
+ */
+export function getWorkDifficulty(params: GetWorkDifficultyParams): string {
+  const outputBigNumber = getWorkDifficultyBigNumber({ blockHash: params.blockHash, work: params.work })
+  return outputBigNumber.toString(16);
+}
+
+/** Validate work parameters. */
+export interface ValidateWorkParams {
+  /** The block hash to validate the work against */
+  blockHash: string
+  /** The work to validate */
+  work: string
+  /** The threshold to validate against. Defaults to ffffffc000000000 */
+  threshold?: string
+}
+
+/**
  * Validate whether or not the work value meets the difficulty for the given hash.
  *
  * @param params - Parameters
@@ -53,25 +72,6 @@ export function validateWork(params: ValidateWorkParams): boolean {
   const threshold = new BigNumber(`0x${thresholdHex}`)
 
   return outputBigNumber.isGreaterThanOrEqualTo(threshold)
-}
-
-/** Get work difficulty parameters. */
-export interface GetWorkDifficultyParams {
-  /** The block hash to check the work against */
-  blockHash: string
-  /** The work to check */
-  work: string
-}
-
-/**
- * Get the work difficulty for the given hash.
- *
- * @param params - Parameters
- * @returns Difficulty
- */
-export function getWorkDifficulty(params: GetWorkDifficultyParams): string {
-  const outputBigNumber = getWorkDifficultyBigNumber({ blockHash: params.blockHash, work: params.work })
-  return outputBigNumber.toString(16);
 }
 
 /** Get work multiplier parameters. */

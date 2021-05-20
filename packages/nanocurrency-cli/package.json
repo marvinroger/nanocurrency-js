@@ -8,9 +8,12 @@
     "url": "https://www.marvinroger.fr"
   },
   "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",
+  "engines": {
+    "node": ">= 12.0.0"
+  },
   "dependencies": {
     "nanocurrency": ">= 2.2.0 < 3.0.0",
-    "yargs": "^13.0.0"
+    "yargs": "^17.0.1"
   },
   "files": [
     "dist/"

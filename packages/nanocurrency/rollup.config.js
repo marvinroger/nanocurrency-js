@@ -1,7 +1,7 @@
-import autoExternal from 'rollup-plugin-auto-external'
 import typescript from 'rollup-plugin-typescript2'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
+import wasm from '@rollup/plugin-wasm'
 import { terser } from 'rollup-plugin-terser'
 import license from 'rollup-plugin-license'
 
@@ -36,16 +36,20 @@ const configs = outputs.map((output, index) => {
       commonjs(),
       typescript({
         useTsconfigDeclarationDir: true,
-        tsconfigOverride: { compilerOptions: { declaration: index === 0 } }, // only generate definitions once, otherwise crash
+        // only generate definitions once, otherwise crash
+        tsconfigOverride: {
+          compilerOptions:
+            index === 0
+              ? { declaration: true, declarationDir: 'dist/types' }
+              : {},
+        },
       }),
-      autoExternal({
-        dependencies: output.format !== 'umd',
-      }),
+      wasm({ maxFileSize: Infinity }),
     ],
   }
 
   if (ENV === 'production') {
-    config.plugins.push(terser())
+    config.plugins.push(terser({ output: { comments: false } }))
 
     config.plugins.push(
       license({

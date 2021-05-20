@@ -1,6 +1,8 @@
-const fusee = require('../../fusee').getJestConfig()
-
 module.exports = {
-  ...fusee,
-  testPathIgnorePatterns: [...fusee.testPathIgnorePatterns, '/__tests__/data/'],
+  preset: 'ts-jest',
+  globals: {
+    'ts-jest': {
+      tsconfig: 'tsconfig.test.json',
+    },
+  },
 }

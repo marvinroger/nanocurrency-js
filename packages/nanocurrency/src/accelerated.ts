@@ -3,57 +3,63 @@
  * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import loadAssembly from '../assembly'
+import wasm from './wasm/lib/nanocurrency.wasm'
 import { checkHash, checkThreshold } from './check'
 import { DEFAULT_WORK_THRESHOLD } from './work'
+import { byteArrayToHex, hexToByteArray } from './utils'
 
-type WorkFunction = (
-  blockHash: string,
-  workThreshold: string,
-  workerIndex: number,
-  workerCount: number
-) => string
-
-interface AssemblyWhenNotLoaded {
-  loaded: false
-  work: null
-}
-interface AssemblyWhenLoaded {
-  loaded: true
-  work: WorkFunction
+interface Assembly {
+  work: (
+    hash: string,
+    threshold: string,
+    workerIndex: number,
+    workerCount: number
+  ) => null | string
 }
 
-const ASSEMBLY: AssemblyWhenNotLoaded | AssemblyWhenLoaded = {
-  loaded: false,
-  work: null,
-}
+let assembly: Assembly | undefined = undefined
 
-function loadWasm(): Promise<AssemblyWhenLoaded> {
-  return new Promise((resolve, reject) => {
-    if (ASSEMBLY.loaded) {
-      return resolve(ASSEMBLY)
-    }
+async function loadWasm(): Promise<Assembly> {
+  if (assembly) {
+    return assembly
+  }
 
-    try {
-      /* eslint-disable promise/catch-or-return, promise/always-return */
-      loadAssembly().then(assembly => {
-        const loaded = Object.assign(ASSEMBLY, {
-          loaded: true,
-          work: assembly.cwrap('emscripten_work', 'string', [
-            'string',
-            'string',
-            'number',
-            'number',
-          ]),
-        }) as AssemblyWhenLoaded
+  const { instance } = await wasm({})
+  assembly = {
+    work(hash, threshold, workerIndex, workerCount) {
+      const hashBytes = hexToByteArray(hash)
+      const thresholdBytes = hexToByteArray(threshold)
 
-        resolve(loaded)
-      })
-      /* eslint-enable promise/catch-or-return, promise/always-return */
-    } catch (err) {
-      reject(err)
-    }
-  })
+      const memory = instance.exports.memory
+      const memoryPointer = instance.exports.wasm_get_io_buffer()
+
+      const sharedMemory = new Uint8Array(memory.buffer, memoryPointer, 1024)
+
+      const dataview = new DataView(
+        sharedMemory.buffer,
+        sharedMemory.byteOffset,
+        sharedMemory.byteLength
+      )
+
+      sharedMemory.set(hashBytes, 0)
+      sharedMemory.set(thresholdBytes, 32)
+      dataview.setUint8(40, workerIndex)
+      dataview.setUint8(41, workerCount)
+
+      instance.exports.wasm_work()
+
+      const found = sharedMemory[42] === 1
+      const output = sharedMemory.slice(43, 51)
+
+      if (!found) {
+        return null
+      }
+
+      return byteArrayToHex(output)
+    },
+  }
+
+  return assembly
 }
 
 /** Compute work parameters. */
@@ -98,12 +104,5 @@ export async function computeWork(
     throw new Error('Worker parameters are not valid')
   }
 
-  const work = assembly.work(blockHash, workThreshold, workerIndex, workerCount)
-  const success = work[1] === '1'
-
-  if (!success) {
-    return null
-  }
-
-  return work.substr(2)
+  return assembly.work(blockHash, workThreshold, workerIndex, workerCount)
 }

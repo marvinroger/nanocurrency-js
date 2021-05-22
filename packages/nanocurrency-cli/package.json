@@ -36,10 +36,10 @@
     "url": "https://github.com/marvinroger/nanocurrency-js.git"
   },
   "scripts": {
-    "build:prod": "tsc --build",
+    "build": "tsc --build",
     "lint": "fusee lint",
     "test": "fusee test",
-    "prepublishOnly": "yarn build:prod && yarn test && yarn lint"
+    "prepublishOnly": "yarn build && yarn test && yarn lint"
   },
   "devDependencies": {
     "json-stable-stringify-without-jsonify": "^1.0.1"

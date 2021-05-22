@@ -1,8 +1,8 @@
 /* eslint-env jest */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const nano = require('../dist/nanocurrency.cjs')
-import { INVALID_HASHES } from '../test-data/invalid'
+const nano = require('../dist/bundles/nanocurrency.cjs-node')
+import { INVALID_HASHES } from './test-data/invalid'
 
 const VALID_WORK = {
   hash: 'b9cb6b51b8eb869af085c4c03e7dc539943d0bdde13b21436b687c9c7ea56cb0',

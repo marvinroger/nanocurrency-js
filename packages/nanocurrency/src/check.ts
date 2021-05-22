@@ -4,7 +4,6 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import BigNumber from 'bignumber.js'
-import { parseAddress } from './parse'
 
 const MIN_INDEX = 0
 const MAX_INDEX = Math.pow(2, 32) - 1
@@ -111,21 +110,6 @@ export function checkHash(hash: string): boolean {
  */
 export function checkKey(key: string): boolean {
   return checkSeed(key)
-}
-
-/**
- * Check if the given address is valid.
- *
- * **Note:** it checks the format and the checksum of the address.
- * It does not check whether or not the address does exist on the network.
- *
- * @param address - The address to check
- * @returns Valid
- */
-export function checkAddress(address: string): boolean {
-  const parseResult = parseAddress(address)
-
-  return parseResult.valid
 }
 
 /**

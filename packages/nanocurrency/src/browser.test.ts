@@ -11,7 +11,7 @@ let umdScript: string
 beforeAll(async () => {
   browser = await puppeteer.launch()
   page = await browser.newPage()
-  umdScript = await fs.readFile('./dist/nanocurrency.umd.js', 'utf8')
+  umdScript = await fs.readFile('./dist/bundles/nanocurrency.umd.js', 'utf8')
 })
 
 afterAll(() => browser.close())
@@ -41,12 +41,12 @@ describe('browser', () => {
                 passed.umdScript,
                 '(',
                 function() {
-                  postMessage('lol')
+                  ;((self as unknown) as Worker).postMessage('lol')
                   // @ts-expect-error in global browser scope
                   return NanoCurrency.computeWork(
                     'b9cb6b51b8eb869af085c4c03e7dc539943d0bdde13b21436b687c9c7ea56cb0'
                   ).then((work: string) => {
-                    postMessage(work)
+                    ;((self as unknown) as Worker).postMessage(work)
                     return
                   })
                 }.toString(),

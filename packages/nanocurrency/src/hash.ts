@@ -5,13 +5,14 @@
  */
 import { blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
 
-import { checkAddress, checkAmount, checkHash } from './check'
+import { checkAmount, checkHash } from './check'
 
 import { convert, Unit } from './conversion'
 
 import { byteArrayToHex, hexToByteArray } from './utils'
 
 import { derivePublicKey } from './keys'
+import { checkAddress } from './address'
 
 const STATE_BLOCK_PREAMBLE_BYTES = new Uint8Array(32)
 STATE_BLOCK_PREAMBLE_BYTES[31] = 6

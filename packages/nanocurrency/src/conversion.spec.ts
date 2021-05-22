@@ -1,7 +1,7 @@
 /* eslint-env jest */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const nano = require('../dist/nanocurrency.cjs')
+const nano = require('../dist/bundles/nanocurrency.cjs-node')
 const INVALID_NUMBERS = [12, '.01', '0.1.', '0..1', 'z']
 const INVALID_UNITS = [12, '', 'nona', 'Kanano']
 

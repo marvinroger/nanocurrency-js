@@ -1,16 +1,16 @@
 /* eslint-env jest */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const nano = require('../dist/nanocurrency.cjs')
+const nano = require('../dist/bundles/nanocurrency.cjs-node')
 import {
   INVALID_SEEDS,
   INVALID_INDEXES,
   INVALID_SECRET_KEYS,
   INVALID_ADDRESSES,
   INVALID_PUBLIC_KEYS,
-} from '../test-data/invalid'
+} from './test-data/invalid'
 
-import VALID_KEYS from '../test-data/valid_keys.json'
+import VALID_KEYS from './test-data/valid_keys.json'
 const RANDOM_VALID_KEY = VALID_KEYS[0]
 
 describe('seeds', () => {

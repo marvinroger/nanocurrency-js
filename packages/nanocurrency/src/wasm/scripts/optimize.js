@@ -1,3 +1,4 @@
+/* eslint-disable */
 const fs = require('fs')
 const path = require('path')
 const binaryen = require('binaryen')
@@ -10,4 +11,4 @@ const wasmModule = binaryen.readBinary(wasmBinary)
 wasmModule.optimize()
 
 const optimiwedWasmBinary = wasmModule.emitBinary()
-fs.writeFileSync(WASM_PATH + '.opt', optimiwedWasmBinary)
+fs.writeFileSync(WASM_PATH, optimiwedWasmBinary)

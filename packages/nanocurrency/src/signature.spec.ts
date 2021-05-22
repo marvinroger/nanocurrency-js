@@ -1,15 +1,15 @@
 /* eslint-env jest */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const nano = require('../dist/nanocurrency.cjs')
+const nano = require('../dist/bundles/nanocurrency.cjs-node')
 import {
   INVALID_HASHES,
   INVALID_SECRET_KEYS,
   INVALID_PUBLIC_KEYS,
   INVALID_SIGNATURES,
-} from '../test-data/invalid'
+} from './test-data/invalid'
 
-import VALID_BLOCKS from '../test-data/valid_blocks.json'
+import VALID_BLOCKS from './test-data/valid_blocks.json'
 const RANDOM_VALID_BLOCK = VALID_BLOCKS[0]
 
 const INVALID_SIGNATURE =

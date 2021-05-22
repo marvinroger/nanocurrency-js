@@ -3,13 +3,14 @@
  * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import { checkAddress, checkAmount, checkHash, checkKey } from './check'
+import { checkAmount, checkHash, checkKey } from './check'
 
 import { deriveAddress, derivePublicKey } from './keys'
 
 import { unsafeHashBlock } from './hash'
 
 import { signBlock } from './signature'
+import { checkAddress } from './address'
 
 const BLANK_HASH =
   '0000000000000000000000000000000000000000000000000000000000000000'

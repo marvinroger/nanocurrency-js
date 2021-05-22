@@ -51,3 +51,18 @@ export function parseAddress(address: {}): ParseAddressResult {
     valid: true,
   }
 }
+
+/**
+ * Check if the given address is valid.
+ *
+ * **Note:** it checks the format and the checksum of the address.
+ * It does not check whether or not the address does exist on the network.
+ *
+ * @param address - The address to check
+ * @returns Valid
+ */
+export function checkAddress(address: string): boolean {
+  const parseResult = parseAddress(address)
+
+  return parseResult.valid
+}

@@ -18,6 +18,17 @@ const LICENSE_BANNER = `
 
 const extensions = ['.js', '.ts']
 
+const nodeTarget = { node: '12.0.0' }
+const browserTargets = {
+  android: '67',
+  chrome: '67',
+  edge: '79',
+  firefox: '68',
+  ios: '14',
+  opera: '54',
+  safari: '14',
+}
+
 const buildConfig = ({ file, target, format }) => {
   const config = {
     input: 'src/index.ts',
@@ -39,9 +50,7 @@ const buildConfig = ({ file, target, format }) => {
             '@babel/preset-env',
             {
               targets:
-                target === 'node'
-                  ? { node: '12.0.0' }
-                  : { browsers: 'chrome 90' },
+                target === 'node' ? { ...nodeTarget } : { ...browserTargets },
               shippedProposals: true,
             },
           ],

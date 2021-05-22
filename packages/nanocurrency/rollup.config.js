@@ -11,7 +11,7 @@ import pkg from './package.json'
 const LICENSE_BANNER = `
 /*!
 * nanocurrency-js v${pkg.version}: A toolkit for the Nano cryptocurrency.
-* Copyright (c) <%= moment().format('YYYY') %> Marvin ROGER <dev at marvinroger dot fr>
+* Copyright (c) <%= moment().format('YYYY') %> Marvin ROGER <bonjour+code at marvinroger dot fr>
 * Licensed under GPL-3.0 (https://git.io/vAZsK)
 */
 `.trim()

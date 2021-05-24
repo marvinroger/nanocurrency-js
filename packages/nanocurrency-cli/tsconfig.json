@@ -2,6 +2,7 @@
   "extends": "../../tsconfig",
   "files": ["src/index.ts"],
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "lib": ["es2015", "es2016", "es2017", "dom"]
   }
 }

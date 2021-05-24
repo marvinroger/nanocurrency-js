@@ -25,3 +25,9 @@ jobs:
     - run: yarn lerna run test
 
     - run: yarn lerna run lint
+
+    - name: Setup tmate session
+      if: ${{ failure() }}
+      uses: mxschmitt/action-tmate@v3
+      with:
+        limit-access-to-actor: true

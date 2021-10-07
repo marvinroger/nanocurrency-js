@@ -4,9 +4,9 @@
     "packages/*"
   ],
   "dependencies": {
-    "@marvinroger/fusee": "^3.3.0",
+    "@marvinroger/fusee": "^3.3.9",
     "lerna": "^4.0.0",
-    "typescript": "^4.2.4"
+    "typescript": "^4.4.3"
   },
   "name": "nanocurrency-workspace"
 }

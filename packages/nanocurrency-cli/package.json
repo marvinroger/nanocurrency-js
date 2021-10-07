@@ -42,6 +42,7 @@
     "prepublishOnly": "yarn build && yarn test && yarn lint"
   },
   "devDependencies": {
-    "json-stable-stringify-without-jsonify": "^1.0.1"
+    "json-stable-stringify-without-jsonify": "^1.0.1",
+    "typescript": "^4.4.3"
   }
 }

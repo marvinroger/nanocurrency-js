@@ -3,6 +3,8 @@
   "files": ["src/index.ts"],
   "compilerOptions": {
     "outDir": "dist",
-    "lib": ["es2015", "es2016", "es2017", "dom"]
+    "lib": ["es2015", "es2016", "es2017", "dom"],
+    "module": "es2020",
+    "target": "ES2020",
   }
 }

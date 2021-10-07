@@ -31,7 +31,7 @@ export {
 } from './check'
 export { checkAddress } from './address'
 export { convert } from './conversion'
-export type { ConvertParams, Unit } from './conversion'
+export type { ConvertParams, Unit, Base } from './conversion'
 export { hashBlock } from './hash'
 export type { HashBlockParams } from './hash'
 export {

@@ -178,16 +178,30 @@ yargs
               describe: 'source unit',
               type: 'string',
             })
+            .option('from-base', {
+              describe: 'source base',
+              type: 'string',
+            })
             .option('to', {
               demandOption: true,
               describe: 'destination unit',
               type: 'string',
             })
+            .option('to-base', {
+              describe: 'destination base',
+              type: 'string',
+            })
         },
         async argv => {
           const converted = await nanocurrency.convert(argv.input, {
-            from: argv.from as nanocurrency.Unit,
-            to: argv.to as nanocurrency.Unit,
+            from: {
+              unit: argv.from as nanocurrency.Unit,
+              base: (argv['from-base'] as unknown) as nanocurrency.Base,
+            },
+            to: {
+              unit: argv.to as nanocurrency.Unit,
+              base: (argv['to-base'] as unknown) as nanocurrency.Base,
+            },
           })
           console.log(converted)
         }

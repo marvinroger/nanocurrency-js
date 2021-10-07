@@ -11,10 +11,11 @@ import { byteArrayToHex, hexToByteArray } from './utils'
 interface Assembly {
   work: (
     hash: string,
-    threshold: string,
+    threshold: bigint,
     workerIndex: number,
     workerCount: number
   ) => null | string
+  derivePublicFromSecret: (secretKey: string) => string
 }
 
 let assembly: Assembly | undefined = undefined
@@ -28,7 +29,9 @@ async function loadWasm(): Promise<Assembly> {
   assembly = {
     work(hash, threshold, workerIndex, workerCount) {
       const hashBytes = hexToByteArray(hash)
-      const thresholdBytes = hexToByteArray(threshold)
+      const thresholdBytes = hexToByteArray(
+        threshold.toString(16).padStart(8, '0')
+      )
 
       const memory = instance.exports.memory
       const memoryPointer = instance.exports.wasm_get_io_buffer()
@@ -57,6 +60,22 @@ async function loadWasm(): Promise<Assembly> {
 
       return byteArrayToHex(output)
     },
+    derivePublicFromSecret(secretKey) {
+      const secretKeyBytes = hexToByteArray(secretKey)
+
+      const memory = instance.exports.memory
+      const memoryPointer = instance.exports.wasm_get_io_buffer()
+
+      const sharedMemory = new Uint8Array(memory.buffer, memoryPointer, 1024)
+
+      sharedMemory.set(secretKeyBytes, 0)
+
+      instance.exports.wasm_derive_public_from_secret()
+
+      const publicKeyBytes = sharedMemory.slice(32, 64)
+
+      return byteArrayToHex(publicKeyBytes)
+    },
   }
 
   return assembly
@@ -68,8 +87,8 @@ export interface ComputeWorkParams {
   workerIndex?: number
   /** The count of worker */
   workerCount?: number
-  /** The work threshold, in hex format. Defaults to `ffffffc000000000` */
-  workThreshold?: string
+  /** The work threshold, in hex format. Defaults to `0xffffffc000000000n` */
+  workThreshold?: bigint
 }
 
 /**
@@ -105,4 +124,12 @@ export async function computeWork(
   }
 
   return assembly.work(blockHash, workThreshold, workerIndex, workerCount)
+}
+
+export async function derivePublicFromSecret(
+  secretKey: string
+): Promise<string> {
+  const assembly = await loadWasm()
+
+  return assembly.derivePublicFromSecret(secretKey)
 }

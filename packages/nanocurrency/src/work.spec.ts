@@ -1,7 +1,5 @@
-/* eslint-env jest */
-/* eslint-disable @typescript-eslint/no-var-requires */
+import * as nano from '../'
 
-const nano = require('../dist/bundles/nanocurrency.cjs-node')
 import {
   INVALID_HASHES,
   INVALID_THRESHOLDS,
@@ -19,7 +17,7 @@ const INVALID_WORK = {
 const INVALID_WORK_CUSTOM_THRESHOLD = {
   blockHash: 'b9cb6b51b8eb869af085c4c03e7dc539943d0bdde13b21436b687c9c7ea56cb0',
   work: '0000000000010600',
-  threshold: 'ffffffff00000000',
+  threshold: 0xffffffff00000000n,
 }
 
 describe('validation', () => {

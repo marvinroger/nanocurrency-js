@@ -1,7 +1,5 @@
-/* eslint-env jest */
-/* eslint-disable @typescript-eslint/no-var-requires */
+import * as nano from '../'
 
-const nano = require('../dist/bundles/nanocurrency.cjs-node')
 import {
   INVALID_HASHES,
   INVALID_ADDRESSES,

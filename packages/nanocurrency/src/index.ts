@@ -6,7 +6,7 @@
 /**
  * @module NanoCurrency
  */
-export { computeWork } from './accelerated'
+export { computeWork, derivePublicFromSecret } from './accelerated'
 export type { ComputeWorkParams } from './accelerated'
 export { createBlock } from './block'
 export type {

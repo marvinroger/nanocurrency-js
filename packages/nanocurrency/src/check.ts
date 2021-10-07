@@ -3,11 +3,11 @@
  * Copyright (c) 2021 Marvin ROGER <bonjour+code at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import BigNumber from 'bignumber.js'
-
 const MIN_INDEX = 0
 const MAX_INDEX = Math.pow(2, 32) - 1
-const MAX_AMOUNT = new BigNumber('0xffffffffffffffffffffffffffffffff')
+const MAX_AMOUNT = 0xffffffffffffffffffffffffffffffffn
+const MIN_THRESHOLD = 0n
+const MAX_THRESHOLD = 0xffffffffffffffffn
 
 /** @hidden */
 export function checkString(candidate: {}): boolean {
@@ -15,22 +15,14 @@ export function checkString(candidate: {}): boolean {
 }
 
 /** @hidden */
-export function checkNumber(candidate: {}): boolean {
-  if (!checkString(candidate)) return false
-  if (
-    (candidate as string).startsWith('.') ||
-    (candidate as string).endsWith('.')
-  )
-    return false
+export function checkNumber(candidate: string): boolean {
+  if (candidate.startsWith('.') || candidate.endsWith('.')) return false
 
-  const numberWithoutDot = (candidate as string).replace('.', '')
-  // more than one '.'
-  if ((candidate as string).length - numberWithoutDot.length > 1) return false
-  for (const char of numberWithoutDot) {
-    if (char < '0' || char > '9') return false
-  }
+  const numberWithoutDot = candidate.replace(/\./g, '')
+  const moreThanOneDot = candidate.length - numberWithoutDot.length > 1
+  if (moreThanOneDot) return false
 
-  return true
+  return numberWithoutDot.split('').every(char => char >= '0' && char <= '9')
 }
 
 /**
@@ -46,9 +38,9 @@ export function checkAmount(amount: string): boolean {
   if (!checkString(amount) || !/^[1-9]{1}[0-9]{0,38}$/.test(amount))
     return false
 
-  const candidate = new BigNumber(amount)
+  const candidate = BigInt(amount)
 
-  return candidate.isLessThanOrEqualTo(MAX_AMOUNT)
+  return candidate <= MAX_AMOUNT
 }
 
 /**
@@ -71,8 +63,8 @@ export function checkSeed(seed: string): boolean {
  * @param threshold - The threshold to check
  * @returns Valid
  */
-export function checkThreshold(threshold: string): boolean {
-  return checkString(threshold) && /^[0-9a-fA-F]{16}$/.test(threshold)
+export function checkThreshold(threshold: bigint): boolean {
+  return threshold >= MIN_THRESHOLD && threshold <= MAX_THRESHOLD
 }
 
 /**

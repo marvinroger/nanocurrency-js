@@ -4,7 +4,10 @@
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 #include "wasm.h"
+#include "ed25519/ed25519.h"
+#include "nano.h"
 #include "blake2b.c"
+#include "ed25519_blake2b.c"
 
 const uint8_t BLOCK_HASH_LENGTH = 32;
 const uint8_t WORK_LENGTH = 8;
@@ -26,47 +29,6 @@ void reverse_bytes(uint8_t* const src, const uint8_t length) {
     const uint8_t temp = src[i];
     src[i] = src[(length - 1) - i];
     src[(length - 1) - i] = temp;
-  }
-}
-
-const uint8_t WORK_HASH_LENGTH = 8;
-uint8_t validate_work(const uint8_t* const block_hash, uint64_t work_threshold, uint8_t* const work) {
-  blake2b_state hash;
-  uint8_t output[WORK_HASH_LENGTH];
-
-  blake2b_init(&hash, WORK_HASH_LENGTH);
-  blake2b_update(&hash, work, WORK_LENGTH);
-  blake2b_update(&hash, block_hash, BLOCK_HASH_LENGTH);
-  blake2b_final(&hash, output, WORK_HASH_LENGTH);
-
-  const uint64_t output_int = bytes_to_uint64(output);
-
-  return output_int >= work_threshold;
-}
-
-const uint64_t MIN_UINT64 = 0x0000000000000000;
-const uint64_t MAX_UINT64 = 0xffffffffffffffff;
-int work(const uint8_t* const block_hash, uint64_t work_threshold, const uint8_t worker_index, const uint8_t worker_count, uint8_t* const dst) {
-  const uint64_t interval = (MAX_UINT64 - MIN_UINT64) / worker_count;
-
-  const uint64_t lower_bound = MIN_UINT64 + (worker_index * interval);
-  const uint64_t upper_bound = (worker_index != worker_count - 1) ? lower_bound + interval : MAX_UINT64;
-
-  uint64_t work = lower_bound;
-  uint8_t work_bytes[WORK_LENGTH];
-
-  for (;;) {
-    if (work == upper_bound) return -1;
-
-    uint64_to_bytes(work, work_bytes);
-
-    if (validate_work(block_hash, work_threshold, work_bytes)) {
-      reverse_bytes(work_bytes, WORK_LENGTH);
-      memcpy(dst, work_bytes, WORK_LENGTH);
-      return 0;
-    }
-
-    work++;
   }
 }
 
@@ -106,4 +68,39 @@ void wasm_work() {
   offset += 1;
   memcpy(io_buffer + offset, work_, WORK_LENGTH);
   offset += WORK_LENGTH;
+}
+
+WASM_EXPORT
+void wasm_derive_public_key_from_secret_key() {
+  uint8_t offset = 0;
+
+  uint8_t private_key[32];
+  memcpy(private_key, io_buffer + offset, 32);
+  offset += 32;
+
+  uint8_t public_key[32];
+  derive_public_key_from_private_key(public_key, private_key);
+
+  memcpy(io_buffer + offset, public_key, 32);
+  offset += WORK_LENGTH;
+}
+
+WASM_EXPORT
+void wasm_sign_block_hash() {
+  uint8_t offset = 0;
+
+
+  uint8_t private_key[32];
+  memcpy(private_key, io_buffer + offset, 32);
+  offset += 32;
+
+  uint8_t block_hash[32];
+  memcpy(block_hash, io_buffer + offset, 32);
+  offset += 32;
+
+  uint8_t signature[64];
+  sign_block_hash(signature, block_hash, private_key);
+
+  memcpy(io_buffer + offset, signature, 64);
+  offset += 64;
 }

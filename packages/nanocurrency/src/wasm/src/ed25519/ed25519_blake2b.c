@@ -1,10 +1,12 @@
-#include "ed25519/ed25519.h"
-#include "ed25519/ge.h"
-#include "ed25519/sc.h"
+#include "ed25519.h"
+#include "ge.h"
+#include "sc.h"
+
+#include "../blake2b/blake2b.h"
 
 // ed25519_create_keypair modified
 // seed is secret_key, and we don't need the private key on the calling side
-void ed25519_create_keypair_blake2b(unsigned char *public_key, unsigned char *secret_key) {
+void ed25519_create_keypair_blake2b(unsigned char *public_key, const unsigned char *secret_key) {
     blake2b_state hash;
     ge_p3 A;
 

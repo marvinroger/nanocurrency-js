@@ -10,5 +10,5 @@ const wasmBinary = fs.readFileSync(WASM_PATH)
 const wasmModule = binaryen.readBinary(wasmBinary)
 wasmModule.optimize()
 
-const optimiwedWasmBinary = wasmModule.emitBinary()
-fs.writeFileSync(WASM_PATH, optimiwedWasmBinary)
+const optimizedWasmBinary = wasmModule.emitBinary()
+fs.writeFileSync(WASM_PATH, optimizedWasmBinary)

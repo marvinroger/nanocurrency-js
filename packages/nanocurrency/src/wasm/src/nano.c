@@ -1,4 +1,9 @@
+#include "wasm.h"
 #include "nano.h"
+#include "blake2b/blake2b.h"
+#include "ed25519/ed25519_blake2b.h"
+#include "constants.h"
+#include "helpers.h"
 
 const uint8_t WORK_HASH_LENGTH = 8;
 uint8_t validate_work(const uint8_t* const block_hash, uint64_t work_threshold, uint8_t* const work) {

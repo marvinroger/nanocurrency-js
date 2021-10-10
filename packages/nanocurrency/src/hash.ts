@@ -7,7 +7,7 @@ import { blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
 
 import { checkAmount, checkHash } from './check'
 
-import { Base, convert, Unit } from './conversion'
+import { convert, Unit } from './conversion'
 
 import { byteArrayToHex, hexToByteArray } from './utils'
 
@@ -47,8 +47,8 @@ export function unsafeHashBlock(params: HashBlockParams): string {
     derivePublicKey(params.representative)
   )
   const balanceHex = convert(params.balance, {
-    from: { unit: Unit.raw },
-    to: { unit: Unit.raw, base: Base.Hex },
+    from: Unit.raw,
+    to: Unit.hex,
   })
   const balanceBytes = hexToByteArray(balanceHex)
   let linkBytes: Uint8Array

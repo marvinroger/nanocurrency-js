@@ -7,7 +7,7 @@ declare module '*.wasm' {
         memory: WebAssembly.Memory
         wasm_get_io_buffer: () => number
         wasm_work: () => void
-        wasm_derive_public_from_secret: () => void
+        wasm_derive_public_key_from_secret_key: () => void
       }
     }
   }>

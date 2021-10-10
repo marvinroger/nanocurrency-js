@@ -5,32 +5,10 @@
  */
 #include "wasm.h"
 #include "ed25519/ed25519.h"
+#include "blake2b/blake2b.h"
 #include "nano.h"
-#include "blake2b.c"
-#include "ed25519_blake2b.c"
-
-const uint8_t BLOCK_HASH_LENGTH = 32;
-const uint8_t WORK_LENGTH = 8;
-
-void uint64_to_bytes(const uint64_t src, uint8_t* const dst) {
-  memcpy(dst, &src, sizeof(src));
-}
-
-uint64_t bytes_to_uint64(const uint8_t* const src) {
-  uint64_t ret = 0;
-
-  memcpy(&ret, src, sizeof(ret));
-
-  return ret;
-}
-
-void reverse_bytes(uint8_t* const src, const uint8_t length) {
-  for (unsigned int i = 0; i < (length / 2); i++) {
-    const uint8_t temp = src[i];
-    src[i] = src[(length - 1) - i];
-    src[(length - 1) - i] = temp;
-  }
-}
+#include "constants.h"
+#include "helpers.h"
 
 // API surface
 

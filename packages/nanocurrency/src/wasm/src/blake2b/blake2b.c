@@ -13,27 +13,9 @@
    https://blake2.net.
 */
 
+#include "blake2b.h"
+
 #define BLAKE2_PACKED(x) x __attribute__((packed))
-
-enum blake2b_constant
-  {
-    BLAKE2B_BLOCKBYTES = 128,
-    BLAKE2B_OUTBYTES   = 64,
-    BLAKE2B_KEYBYTES   = 64,
-    BLAKE2B_SALTBYTES  = 16,
-    BLAKE2B_PERSONALBYTES = 16
-  };
-
-typedef struct blake2b_state__
-  {
-    uint64_t h[8];
-    uint64_t t[2];
-    uint64_t f[2];
-    uint8_t  buf[BLAKE2B_BLOCKBYTES];
-    uint64_t buflen;
-    uint64_t outlen;
-    uint8_t  last_node;
-  } blake2b_state;
 
 BLAKE2_PACKED(struct blake2b_param__
   {

@@ -82,19 +82,9 @@ export const INVALID_BLOCK_COMBINATIONS_COMMON = {
 export const INVALID_BLOCK_COMBINATIONS = [
   {
     ...INVALID_BLOCK_COMBINATIONS_COMMON,
-    previous: null,
-    link: 'xrb_3d5hhcypp6sqruen8qjaazirw3knf5ttc59t67nnrjzfmqxtth4sbxaxhy8m',
-  },
-  {
-    ...INVALID_BLOCK_COMBINATIONS_COMMON,
     previous:
       '0000000000000000000000000000000000000000000000000000000000000000',
     link: 'xrb_3d5hhcypp6sqruen8qjaazirw3knf5ttc59t67nnrjzfmqxtth4sbxaxhy8m',
-  },
-  {
-    ...INVALID_BLOCK_COMBINATIONS_COMMON,
-    previous: null,
-    link: null,
   },
   {
     ...INVALID_BLOCK_COMBINATIONS_COMMON,

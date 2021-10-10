@@ -9,6 +9,8 @@ import { checkNumber } from './check'
 
 /** Nano unit. */
 export enum Unit {
+  /** 10^0 raw in hexadecimal format */
+  hex = 'hex',
   /** 10^0 raw */
   raw = 'raw',
   /** 10^24 raw */
@@ -25,12 +27,8 @@ export enum Unit {
   MNano = 'MNano',
 }
 
-export enum Base {
-  Decimal = 10,
-  Hex = 16,
-}
-
-const ZEROES_MAP: { [unit in keyof typeof Unit]: number } = {
+const ZEROES: { [unit in keyof typeof Unit]: number } = {
+  hex: 0,
   raw: 0,
   nano: 24,
   knano: 27,
@@ -41,25 +39,16 @@ const ZEROES_MAP: { [unit in keyof typeof Unit]: number } = {
 }
 
 const TunedBigNumber = BigNumber.clone({
-  DECIMAL_PLACES: ZEROES_MAP.MNano,
   EXPONENTIAL_AT: 1e9,
+  DECIMAL_PLACES: ZEROES.MNano,
 })
 
 /** Convert parameters. */
 export interface ConvertParams {
-  from: {
-    /** The unit to convert the value from */
-    unit: Unit
-    /** The base the input value is represented in. Defaults to 10 */
-    base?: Base
-  }
-
-  to: {
-    /** The unit to convert the value to */
-    unit: Unit
-    /** The base the output value must be represented in. Defaults to 10 */
-    base?: Base
-  }
+  /** The unit to convert the value from */
+  from: Unit
+  /** The unit to convert the value to */
+  to: Unit
 }
 
 /**
@@ -67,37 +56,41 @@ export interface ConvertParams {
  *
  * @param value - The value to convert
  * @param params - Params
- *
  * @returns Converted number
  */
 export function convert(value: string, params: ConvertParams): string {
+  const fromZeroes = ZEROES[params.from]
+  const toZeroes = ZEROES[params.to]
+
   const valueNotValid = new Error('Value is not valid')
-  if (params.from.base === Base.Hex) {
+  if (params.from === 'hex') {
     if (!/^[0-9a-fA-F]{32}$/.test(value)) throw valueNotValid
   } else {
     if (!checkNumber(value)) throw valueNotValid
   }
 
-  const fromZeroes: number | undefined = ZEROES_MAP[params.from.unit]
-  const toZeroes: number | undefined = ZEROES_MAP[params.to.unit]
-
-  let bigNumberValue = new TunedBigNumber(value, params.from.base)
-
   const difference = fromZeroes - toZeroes
+
+  let bigNumber
+  if (params.from === 'hex') {
+    bigNumber = new TunedBigNumber(`0x${value}`)
+  } else {
+    bigNumber = new TunedBigNumber(value)
+  }
 
   if (difference < 0) {
     for (let i = 0; i < -difference; i++) {
-      bigNumberValue = bigNumberValue.dividedBy(10)
+      bigNumber = bigNumber.dividedBy(10)
     }
   } else if (difference > 0) {
     for (let i = 0; i < difference; i++) {
-      bigNumberValue = bigNumberValue.multipliedBy(10)
+      bigNumber = bigNumber.multipliedBy(10)
     }
   }
 
-  if (params.to.base === Base.Hex) {
-    return bigNumberValue.toString(Base.Hex).padStart(32, '0')
+  if (params.to === 'hex') {
+    return bigNumber.toString(16).padStart(32, '0')
   }
 
-  return bigNumberValue.toString()
+  return bigNumber.toString()
 }

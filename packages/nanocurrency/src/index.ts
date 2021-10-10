@@ -30,8 +30,8 @@ export {
   checkWork,
 } from './check'
 export { checkAddress } from './address'
-export { convert } from './conversion'
-export type { ConvertParams, Unit, Base } from './conversion'
+export { convert, Unit } from './conversion'
+export type { ConvertParams } from './conversion'
 export { hashBlock } from './hash'
 export type { HashBlockParams } from './hash'
 export {

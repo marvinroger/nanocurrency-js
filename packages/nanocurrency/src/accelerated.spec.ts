@@ -1,7 +1,8 @@
 /* eslint-env jest */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const nano = require('../dist/bundles/nanocurrency.cjs-node')
+import * as nano from '../'
+
 import { INVALID_HASHES } from './test-data/invalid'
 
 const VALID_WORK = {
@@ -26,10 +27,8 @@ describe('computeWork', () => {
 
   test('throws with invalid worker parameters', async () => {
     const INVALID_WORKER_PARAMETERS = [
-      ['p', 1],
       [1.1, 1],
       [-1, 1],
-      [0, 'p'],
       [0, 1.1],
       [0, -1],
       [1, 1],

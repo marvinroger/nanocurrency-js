@@ -1,4 +1,8 @@
+#ifndef WASM_H
+#define WASM_H
+
 #include <stdint.h>
+#include <stddef.h>
 
 #ifndef NULL
 #define NULL 0
@@ -112,3 +116,5 @@ static __inline__ void memset128(void* dst, const uint8_t value) {
     dst64[i] = val;
   }
 }
+
+#endif /* WASM_H */

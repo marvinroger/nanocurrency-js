@@ -70,7 +70,7 @@ async function loadWasm(): Promise<Assembly> {
 
       sharedMemory.set(secretKeyBytes, 0)
 
-      instance.exports.wasm_derive_public_from_secret()
+      instance.exports.wasm_derive_public_key_from_secret_key()
 
       const publicKeyBytes = sharedMemory.slice(32, 64)
 

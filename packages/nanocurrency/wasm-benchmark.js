@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const nano = require('./dist/nanocurrency.cjs')
+const nano = require('.')
 
 async function main() {
   console.time()

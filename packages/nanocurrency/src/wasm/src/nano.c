@@ -22,7 +22,7 @@ uint8_t validate_work(const uint8_t* const block_hash, uint64_t work_threshold, 
 
 const uint64_t MIN_UINT64 = 0x0000000000000000;
 const uint64_t MAX_UINT64 = 0xffffffffffffffff;
-int work(const uint8_t* const block_hash, uint64_t work_threshold, const uint8_t worker_index, const uint8_t worker_count, uint8_t* const dst) {
+int work(uint8_t* const dst, const uint8_t* const block_hash, uint64_t work_threshold, const uint8_t worker_index, const uint8_t worker_count) {
   const uint64_t interval = (MAX_UINT64 - MIN_UINT64) / worker_count;
 
   const uint64_t lower_bound = MIN_UINT64 + (worker_index * interval);
@@ -46,13 +46,17 @@ int work(const uint8_t* const block_hash, uint64_t work_threshold, const uint8_t
   }
 }
 
-void derive_public_key_from_private_key(unsigned char *public_key, const unsigned char *private_key) {
+void derive_public_key_from_private_key(uint8_t *public_key, const uint8_t* const private_key) {
   ed25519_create_keypair_blake2b(public_key, private_key);
 }
 
-void sign_block_hash(unsigned char *signature, const unsigned char *block_hash, const unsigned char *private_key) {
+void sign_block_hash(uint8_t *signature, const uint8_t* const block_hash, const uint8_t* const private_key) {
   uint8_t public_key[32];
   derive_public_key_from_private_key(public_key, private_key);
 
   ed25519_sign_blake2b(signature, block_hash, 32, public_key, private_key);
+}
+
+uint8_t verify_block_hash(const uint8_t* const block_hash, const uint8_t* const signature, const uint8_t* const public_key) {
+  return ed25519_verify_blake2b(signature, block_hash, 32, public_key);
 }

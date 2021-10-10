@@ -8,6 +8,7 @@ declare module '*.wasm' {
         wasm_get_io_buffer: () => number
         wasm_work: () => void
         wasm_derive_public_key_from_secret_key: () => void
+        wasm_sign_block_hash: () => void
       }
     }
   }>

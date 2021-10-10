@@ -38,7 +38,7 @@
   "scripts": {
     "build": "tsc --build",
     "lint": "fusee lint",
-    "test": "fusee test",
+    "test-todo": "fusee test",
     "prepublishOnly": "yarn build && yarn test && yarn lint"
   },
   "devDependencies": {

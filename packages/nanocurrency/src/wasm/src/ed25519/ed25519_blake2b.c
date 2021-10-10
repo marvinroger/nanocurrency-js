@@ -25,27 +25,36 @@ void ed25519_create_keypair_blake2b(unsigned char *public_key, const unsigned ch
 
 void ed25519_sign_blake2b(unsigned char *signature, const unsigned char *message, size_t message_len, const unsigned char *public_key, const unsigned char *private_key) {
     blake2b_state hash;
+    unsigned char ext_secret_key[64];
     unsigned char hram[64];
     unsigned char r[64];
     ge_p3 R;
 
-    blake2b_init(&hash, 32);
-    blake2b_update(&hash, private_key + 32, 32);
+    // we need to compute a 64 bytes secret key from the 32 bytes one
+    blake2b_init(&hash, 64);
+    blake2b_update(&hash, private_key, 32);
+    blake2b_final(&hash, ext_secret_key, 32);
+  	ext_secret_key[0] &= 248;
+  	ext_secret_key[31] &= 127; // 63 like above ?
+  	ext_secret_key[31] |= 64;
+
+    blake2b_init(&hash, 64);
+    blake2b_update(&hash, ext_secret_key + 32, 32);
     blake2b_update(&hash, message, message_len);
-    blake2b_final(&hash, r, 32);
+    blake2b_final(&hash, r, 64);
 
     sc_reduce(r);
     ge_scalarmult_base(&R, r);
     ge_p3_tobytes(signature, &R);
 
-    blake2b_init(&hash, 32);
+    blake2b_init(&hash, 64);
     blake2b_update(&hash, signature, 32);
     blake2b_update(&hash, public_key, 32);
     blake2b_update(&hash, message, message_len);
-    blake2b_final(&hash, hram, 32);
+    blake2b_final(&hash, hram, 64);
 
     sc_reduce(hram);
-    sc_muladd(signature + 32, hram, private_key, r);
+    sc_muladd(signature + 32, hram, ext_secret_key, r);
 }
 
 static int consttime_equal(const unsigned char *x, const unsigned char *y) {
@@ -89,7 +98,7 @@ static int consttime_equal(const unsigned char *x, const unsigned char *y) {
     return !r;
 }
 
-int ed25519_verify_blake2b(const unsigned char *signature, const unsigned char *message, size_t message_len, const unsigned char *public_key) {
+unsigned char ed25519_verify_blake2b(const unsigned char *signature, const unsigned char *message, size_t message_len, const unsigned char *public_key) {
     unsigned char h[64];
     unsigned char checker[32];
     blake2b_state hash;
@@ -104,11 +113,11 @@ int ed25519_verify_blake2b(const unsigned char *signature, const unsigned char *
         return 0;
     }
 
-    blake2b_init(&hash, 32);
+    blake2b_init(&hash, 64);
     blake2b_update(&hash, signature, 32);
     blake2b_update(&hash, public_key, 32);
     blake2b_update(&hash, message, message_len);
-    blake2b_final(&hash, h, 32);
+    blake2b_final(&hash, h, 64);
 
     sc_reduce(h);
     ge_double_scalarmult_vartime(&R, h, &A, signature + 32);

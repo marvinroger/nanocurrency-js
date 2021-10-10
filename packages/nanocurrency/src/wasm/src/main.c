@@ -40,12 +40,11 @@ void wasm_work() {
   uint64_t work_threshold_int = bytes_to_uint64(work_threshold);
 
   uint8_t work_[WORK_LENGTH];
-  int work_result = work(block_hash, work_threshold_int, worker_index, worker_count, work_);
+  int work_result = work(work_, block_hash, work_threshold_int, worker_index, worker_count);
 
   io_buffer[offset] = work_result < 0 ? 0 : 1;
   offset += 1;
   memcpy(io_buffer + offset, work_, WORK_LENGTH);
-  offset += WORK_LENGTH;
 }
 
 WASM_EXPORT
@@ -60,7 +59,6 @@ void wasm_derive_public_key_from_secret_key() {
   derive_public_key_from_private_key(public_key, private_key);
 
   memcpy(io_buffer + offset, public_key, 32);
-  offset += WORK_LENGTH;
 }
 
 WASM_EXPORT
@@ -80,5 +78,25 @@ void wasm_sign_block_hash() {
   sign_block_hash(signature, block_hash, private_key);
 
   memcpy(io_buffer + offset, signature, 64);
+}
+
+WASM_EXPORT
+void wasm_verify_block_hash() {
+  uint8_t offset = 0;
+
+
+  uint8_t public_key[32];
+  memcpy(public_key, io_buffer + offset, 32);
+  offset += 32;
+
+  uint8_t block_hash[32];
+  memcpy(block_hash, io_buffer + offset, 32);
+  offset += 32;
+
+  uint8_t signature[64];
+  memcpy(signature, io_buffer + offset, 64);
   offset += 64;
+  uint8_t valid = verify_block_hash(block_hash, signature, public_key);
+
+  io_buffer[offset] = valid;
 }

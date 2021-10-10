@@ -16,6 +16,7 @@ interface Assembly {
     workerCount: number
   ) => null | string
   derivePublicFromSecret: (secretKey: string) => string
+  signBlockHash: (privateKey: string, blockHash: string) => string
 }
 
 let assembly: Assembly | undefined = undefined
@@ -76,6 +77,24 @@ async function loadWasm(): Promise<Assembly> {
 
       return byteArrayToHex(publicKeyBytes)
     },
+    signBlockHash(privateKey, blockHash) {
+      const secretKeyBytes = hexToByteArray(privateKey)
+      const blockHashBytes = hexToByteArray(blockHash)
+
+      const memory = instance.exports.memory
+      const memoryPointer = instance.exports.wasm_get_io_buffer()
+
+      const sharedMemory = new Uint8Array(memory.buffer, memoryPointer, 1024)
+
+      sharedMemory.set(secretKeyBytes, 0)
+      sharedMemory.set(blockHashBytes, 32)
+
+      instance.exports.wasm_sign_block_hash()
+
+      const signatureBytes = sharedMemory.slice(64, 128)
+
+      return byteArrayToHex(signatureBytes)
+    },
   }
 
   return assembly
@@ -132,4 +151,13 @@ export async function derivePublicFromSecret(
   const assembly = await loadWasm()
 
   return assembly.derivePublicFromSecret(secretKey)
+}
+
+export async function signBlockHash(
+  secretKey: string,
+  blockHash: string
+): Promise<string> {
+  const assembly = await loadWasm()
+
+  return assembly.signBlockHash(secretKey, blockHash)
 }

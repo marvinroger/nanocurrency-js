@@ -60,7 +60,7 @@
     "url": "https://github.com/marvinroger/nanocurrency-js.git"
   },
   "scripts": {
-    "build:wasm": "docker run --rm -u $(id -u):$(id -g) -v \"$(pwd)/src/wasm:/app\" -w /app marvinroger/llvm:1 bash -c \"/app/scripts/build.sh\" && node ./src/wasm/scripts/optimize.js",
+    "build:wasm": "docker run --rm -u $(id -u):$(id -g) -v \"$(pwd)/src/wasm:/app\" -w /app marvinroger/llvm:1 bash -c \"/app/scripts/build.sh\" && node ./src/wasm/scripts/optimize.mjs",
     "build:js": "rm -rf dist/bundles/ && rollup -c",
     "build:declarations": "rm -rf dist/types/ && tsc --emitDeclarationOnly",
     "build": "yarn build:wasm && yarn build:js && yarn build:declarations",

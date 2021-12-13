@@ -1,3 +1,0 @@
-[submodule "packages/nanocurrency/src/assembly/blake2"]
-	path = packages/nanocurrency/src/assembly/blake2
-	url = https://github.com/BLAKE2/BLAKE2.git

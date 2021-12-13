@@ -7,5 +7,6 @@
     "@marvinroger/fusee": "^3.3.9",
     "lerna": "^4.0.0"
   },
-  "name": "nanocurrency-workspace"
+  "name": "nanocurrency-workspace",
+  "packageManager": "yarn@3.1.1"
 }

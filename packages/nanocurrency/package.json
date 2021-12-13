@@ -65,7 +65,7 @@
     "build:declarations": "rm -rf dist/types/ && tsc --emitDeclarationOnly",
     "build": "yarn build:wasm && yarn build:js && yarn build:declarations",
     "generate-docs": "fusee generate-docs",
-    "lint": "fusee lint",
+    "lint-todo": "fusee lint",
     "test": "jest",
     "check-types": "tsc --noEmit",
     "prepublishOnly": "yarn build && yarn test && yarn lint && yarn generate-docs"

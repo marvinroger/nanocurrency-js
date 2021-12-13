@@ -37,7 +37,7 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "lint": "fusee lint",
+    "lint-todo": "fusee lint",
     "test-todo": "fusee test",
     "prepublishOnly": "yarn build && yarn test && yarn lint"
   },

@@ -92,7 +92,7 @@ describe('conversion', () => {
           from: nano.Unit.raw,
           to: nano.Unit.Nano,
         })
-      ).toThrowError('Value is not valid')
+      ).toThrow('Value is not valid')
     }
   })
 
@@ -102,6 +102,6 @@ describe('conversion', () => {
         from: nano.Unit.hex,
         to: nano.Unit.Nano,
       })
-    ).toThrowError('Value is not valid')
+    ).toThrow('Value is not valid')
   })
 })

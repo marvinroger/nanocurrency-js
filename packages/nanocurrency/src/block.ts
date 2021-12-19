@@ -166,7 +166,6 @@ export function createBlock(secretKey: string, data: BlockData): Block {
     representative: data.representative,
     balance: data.balance,
     link,
-    // eslint-disable-next-line @typescript-eslint/camelcase
     link_as_account: linkAsAddress,
     work: data.work,
     signature,

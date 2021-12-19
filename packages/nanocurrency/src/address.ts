@@ -16,17 +16,17 @@ export interface ParseAddressResult {
 }
 
 /** @hidden */
-export function parseAddress(address: {}): ParseAddressResult {
+export function parseAddress(address: string): ParseAddressResult {
   const invalid = { valid: false, publicKeyBytes: null }
   if (
     !checkString(address) ||
-    !/^(xrb_|nano_)[13][13-9a-km-uw-z]{59}$/.test(address as string)
+    !/^(xrb_|nano_)[13][13-9a-km-uw-z]{59}$/.test(address)
   ) {
     return invalid
   }
 
   let prefixLength
-  if ((address as string).startsWith('xrb_')) {
+  if (address.startsWith('xrb_')) {
     prefixLength = 4
   } else {
     // nano_
@@ -34,13 +34,11 @@ export function parseAddress(address: {}): ParseAddressResult {
   }
 
   const publicKeyBytes = decodeNanoBase32(
-    (address as string).substr(prefixLength, 52)
+    address.substring(prefixLength, prefixLength + 52)
   )
-  const checksumBytes = decodeNanoBase32(
-    (address as string).substr(prefixLength + 52)
-  )
+  const checksumBytes = decodeNanoBase32(address.substring(prefixLength + 52))
 
-  const computedChecksumBytes = blake2b(publicKeyBytes, null, 5).reverse()
+  const computedChecksumBytes = blake2b(publicKeyBytes, undefined, 5).reverse()
 
   const valid = compareArrays(checksumBytes, computedChecksumBytes)
 

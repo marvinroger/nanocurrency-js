@@ -51,9 +51,8 @@ export const INVALID_ADDRESSES = [
   'xrb_1mbj7xi6yrwcuwetzd5535pdqjea5rfpsoqo9nw4gxg8itycgntucp49i1nv',
 ]
 
-export const INVALID_HASHES_AND_ADDRESSES = INVALID_HASHES.concat(
-  INVALID_ADDRESSES
-)
+export const INVALID_HASHES_AND_ADDRESSES =
+  INVALID_HASHES.concat(INVALID_ADDRESSES)
 
 export const INVALID_AMOUNTS = [
   '',

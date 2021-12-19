@@ -1,4 +1,3 @@
-/* eslint-env jest */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 import * as nano from '../'

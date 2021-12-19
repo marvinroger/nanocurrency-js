@@ -37,12 +37,16 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "lint-todo": "fusee lint",
-    "test-todo": "fusee test",
+    "lint": "fusee lint",
+    "test": "fusee test",
     "prepublishOnly": "yarn build && yarn test && yarn lint"
   },
   "devDependencies": {
+    "@marvinroger/fusee": "^4.0.3",
+    "eslint": "^8.5.0",
+    "jest": "^27.4.5",
     "json-stable-stringify-without-jsonify": "^1.0.1",
-    "typescript": "^4.5.3"
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.4"
   }
 }

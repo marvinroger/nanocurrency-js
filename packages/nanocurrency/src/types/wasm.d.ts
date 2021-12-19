@@ -1,7 +1,5 @@
 declare module '*.wasm' {
-  function rollup(
-    importObject: WebAssembly.Imports
-  ): Promise<{
+  function rollup(importObject: WebAssembly.Imports): Promise<{
     instance: {
       exports: {
         memory: WebAssembly.Memory

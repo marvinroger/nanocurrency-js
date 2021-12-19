@@ -4,6 +4,7 @@ dist/
 
 ### TS ###
 
+*.tsbuildinfo
 .rpt2_cache/
 
 ### Node ###

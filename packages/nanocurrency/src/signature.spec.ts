@@ -31,7 +31,7 @@ describe('sign', () => {
           hash: invalidHash,
           secretKey: RANDOM_VALID_BLOCK.secretKey,
         })
-      ).toThrowError('Hash is not valid')
+      ).toThrow('Hash is not valid')
     }
   })
 
@@ -43,7 +43,7 @@ describe('sign', () => {
           hash: RANDOM_VALID_BLOCK.block.hash,
           secretKey: invalidSecretKey,
         })
-      ).toThrowError('Secret key is not valid')
+      ).toThrow('Secret key is not valid')
     }
   })
 })
@@ -81,7 +81,7 @@ describe('verify', () => {
           signature: RANDOM_VALID_BLOCK.block.data.signature,
           publicKey: RANDOM_VALID_BLOCK.publicKey,
         })
-      ).toThrowError('Hash is not valid')
+      ).toThrow('Hash is not valid')
     }
   })
 
@@ -94,7 +94,7 @@ describe('verify', () => {
           signature: invalidSignature,
           publicKey: RANDOM_VALID_BLOCK.publicKey,
         })
-      ).toThrowError('Signature is not valid')
+      ).toThrow('Signature is not valid')
     }
   })
 
@@ -107,7 +107,7 @@ describe('verify', () => {
           signature: RANDOM_VALID_BLOCK.block.data.signature,
           publicKey: invalidPublicKey,
         })
-      ).toThrowError('Public key is not valid')
+      ).toThrow('Public key is not valid')
     }
   })
 })

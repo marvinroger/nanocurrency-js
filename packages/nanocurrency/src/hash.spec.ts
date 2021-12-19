@@ -37,7 +37,7 @@ describe('state', () => {
           balance: RANDOM_VALID_STATE_BLOCK.block.data.balance,
           link: RANDOM_VALID_STATE_BLOCK.originalLink,
         })
-      ).toThrowError('Account is not valid')
+      ).toThrow('Account is not valid')
     }
   })
 
@@ -52,7 +52,7 @@ describe('state', () => {
           balance: RANDOM_VALID_STATE_BLOCK.block.data.balance,
           link: RANDOM_VALID_STATE_BLOCK.originalLink,
         })
-      ).toThrowError('Previous is not valid')
+      ).toThrow('Previous is not valid')
     }
   })
 
@@ -67,7 +67,7 @@ describe('state', () => {
           balance: RANDOM_VALID_STATE_BLOCK.block.data.balance,
           link: RANDOM_VALID_STATE_BLOCK.originalLink,
         })
-      ).toThrowError('Representative is not valid')
+      ).toThrow('Representative is not valid')
     }
   })
 
@@ -82,7 +82,7 @@ describe('state', () => {
           balance: invalidAmount,
           link: RANDOM_VALID_STATE_BLOCK.originalLink,
         })
-      ).toThrowError('Balance is not valid')
+      ).toThrow('Balance is not valid')
     }
   })
 
@@ -97,7 +97,7 @@ describe('state', () => {
           balance: RANDOM_VALID_STATE_BLOCK.block.data.balance,
           link: invalidLink,
         })
-      ).toThrowError('Link is not valid')
+      ).toThrow('Link is not valid')
     }
   })
 })

@@ -10,7 +10,7 @@ const MIN_THRESHOLD = 0n
 const MAX_THRESHOLD = 0xffffffffffffffffn
 
 /** @hidden */
-export function checkString(candidate: {}): boolean {
+export function checkString(candidate: unknown): boolean {
   return typeof candidate === 'string'
 }
 
@@ -22,7 +22,7 @@ export function checkNumber(candidate: string): boolean {
   const moreThanOneDot = candidate.length - numberWithoutDot.length > 1
   if (moreThanOneDot) return false
 
-  return numberWithoutDot.split('').every(char => char >= '0' && char <= '9')
+  return numberWithoutDot.split('').every((char) => char >= '0' && char <= '9')
 }
 
 /**

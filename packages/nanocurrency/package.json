@@ -16,9 +16,10 @@
     "blakejs": "^1.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.4",
-    "@babel/preset-typescript": "^7.16.0",
+    "@babel/core": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "@babel/preset-typescript": "^7.16.5",
+    "@marvinroger/fusee": "^4.0.3",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.1.1",
@@ -27,14 +28,16 @@
     "@types/jest": "^27.0.3",
     "@types/node": "^16.11.12",
     "@types/puppeteer": "^5.4.4",
-    "binaryen": "^103.0.0",
+    "binaryen": "^104.0.0",
+    "eslint": "^8.5.0",
     "jest": "^27.4.5",
+    "prettier": "^2.5.1",
     "puppeteer": "^13.0.0",
     "rollup": "^2.61.1",
     "rollup-plugin-license": "^2.6.0",
     "rollup-plugin-terser": "^7.0.2",
-    "ts-jest": "^27.1.1",
-    "typescript": "^4.5.3"
+    "ts-jest": "^27.1.2",
+    "typescript": "^4.5.4"
   },
   "files": [
     "dist/"
@@ -62,11 +65,11 @@
   "scripts": {
     "build:wasm": "docker run --rm -u $(id -u):$(id -g) -v \"$(pwd)/src/wasm:/app\" -w /app marvinroger/llvm:1 bash -c \"/app/scripts/build.sh\" && node ./src/wasm/scripts/optimize.mjs",
     "build:js": "rm -rf dist/bundles/ && rollup -c",
-    "build:declarations": "rm -rf dist/types/ && tsc --emitDeclarationOnly",
+    "build:declarations": "rm -rf dist/types/ && tsc --project ./tsconfig.build.json --emitDeclarationOnly",
     "build": "yarn build:wasm && yarn build:js && yarn build:declarations",
     "generate-docs": "fusee generate-docs",
-    "lint-todo": "fusee lint",
-    "test": "jest",
+    "lint": "fusee lint",
+    "test": "fusee test",
     "check-types": "tsc --noEmit",
     "prepublishOnly": "yarn build && yarn test && yarn lint && yarn generate-docs"
   }

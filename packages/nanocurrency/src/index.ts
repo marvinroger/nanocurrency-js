@@ -6,7 +6,11 @@
 /**
  * @module NanoCurrency
  */
-export { computeWork, derivePublicFromSecret, signBlockHash } from './accelerated'
+export {
+  computeWork,
+  derivePublicFromSecret,
+  signBlockHash,
+} from './accelerated'
 export type { ComputeWorkParams } from './accelerated'
 export { createBlock } from './block'
 export type {
@@ -40,16 +44,8 @@ export {
   deriveSecretKey,
   generateSeed,
 } from './keys'
-export type {
-  DeriveAddressParams,
-} from './keys'
-export {
-  signBlock,
-  verifyBlock,
-} from './signature'
-export type {
-  SignBlockParams,
-  VerifyBlockParams,
-} from './signature'
+export type { DeriveAddressParams } from './keys'
+export { signBlock, verifyBlock } from './signature'
+export type { SignBlockParams, VerifyBlockParams } from './signature'
 export { validateWork } from './work'
 export type { ValidateWorkParams } from './work'

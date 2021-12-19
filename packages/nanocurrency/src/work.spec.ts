@@ -54,7 +54,7 @@ describe('validation', () => {
           blockHash: invalidHash,
           work: RANDOM_VALID_BLOCK.block.data.work,
         })
-      ).toThrowError('Hash is not valid')
+      ).toThrow('Hash is not valid')
     }
   })
 
@@ -66,7 +66,7 @@ describe('validation', () => {
           blockHash: RANDOM_VALID_BLOCK.block.hash,
           work: invalidWork,
         })
-      ).toThrowError('Work is not valid')
+      ).toThrow('Work is not valid')
     }
   })
 
@@ -79,7 +79,7 @@ describe('validation', () => {
           work: RANDOM_VALID_BLOCK.block.data.work,
           threshold: invalidThreshold,
         })
-      ).toThrowError('Threshold is not valid')
+      ).toThrow('Threshold is not valid')
     }
   })
 })

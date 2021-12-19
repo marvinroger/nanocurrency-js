@@ -34,7 +34,7 @@ describe('secret keys', () => {
   test('throws with invalid seeds', () => {
     expect.assertions(INVALID_SEEDS.length)
     for (const invalidSeed of INVALID_SEEDS) {
-      expect(() => nano.deriveSecretKey(invalidSeed, 0)).toThrowError(
+      expect(() => nano.deriveSecretKey(invalidSeed, 0)).toThrow(
         'Seed is not valid'
       )
     }
@@ -45,7 +45,7 @@ describe('secret keys', () => {
     for (const invalidIndex of INVALID_INDEXES) {
       expect(() =>
         nano.deriveSecretKey(RANDOM_VALID_KEY.seed, invalidIndex)
-      ).toThrowError('Index is not valid')
+      ).toThrow('Index is not valid')
     }
   })
 })
@@ -68,7 +68,7 @@ describe('public keys', () => {
   test('throws with invalid secret keys', () => {
     expect.assertions(INVALID_SECRET_KEYS.length)
     for (const invalidSecretKey of INVALID_SECRET_KEYS) {
-      expect(() => nano.derivePublicKey(invalidSecretKey)).toThrowError(
+      expect(() => nano.derivePublicKey(invalidSecretKey)).toThrow(
         'Secret key or address is not valid'
       )
     }
@@ -77,7 +77,7 @@ describe('public keys', () => {
   test('throws with invalid addresses', () => {
     expect.assertions(INVALID_ADDRESSES.length)
     for (const invalidAddress of INVALID_ADDRESSES) {
-      expect(() => nano.derivePublicKey(invalidAddress)).toThrowError(
+      expect(() => nano.derivePublicKey(invalidAddress)).toThrow(
         'Secret key or address is not valid'
       )
     }
@@ -104,7 +104,7 @@ describe('addresses', () => {
   test('throws with invalid public keys', () => {
     expect.assertions(INVALID_PUBLIC_KEYS.length)
     for (const invalidPublicKey of INVALID_PUBLIC_KEYS) {
-      expect(() => nano.deriveAddress(invalidPublicKey)).toThrowError(
+      expect(() => nano.deriveAddress(invalidPublicKey)).toThrow(
         'Public key is not valid'
       )
     }

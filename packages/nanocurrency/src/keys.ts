@@ -18,7 +18,7 @@ import { byteArrayToHex, getRandomBytes, hexToByteArray } from './utils'
 export function generateSeed(): Promise<string> {
   return new Promise((resolve, reject) => {
     getRandomBytes(32)
-      .then(seed => {
+      .then((seed) => {
         const seedHex = seed.reduce((hex, i) => {
           return `${hex}${`0${i.toString(16)}`.slice(-2)}`
         }, '')
@@ -109,7 +109,7 @@ export function deriveAddress(
 
   const encodedPublicKey = encodeNanoBase32(paddedPublicKeyBytes)
 
-  const checksum = blake2b(publicKeyBytes, null, 5).reverse()
+  const checksum = blake2b(publicKeyBytes, undefined, 5).reverse()
 
   const encodedChecksum = encodeNanoBase32(checksum)
 

@@ -1,59 +1,103 @@
 /*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
- * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
+ * Copyright (c) 2021 Marvin ROGER <bonjour+code at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import loadAssembly from '../assembly'
+import wasm from './wasm/lib/nanocurrency.wasm'
 import { checkHash, checkThreshold } from './check'
 import { DEFAULT_WORK_THRESHOLD } from './work'
+import { byteArrayToHex, hexToByteArray } from './utils'
 
-type WorkFunction = (
-  blockHash: string,
-  workThreshold: string,
-  workerIndex: number,
-  workerCount: number
-) => string
-
-interface AssemblyWhenNotLoaded {
-  loaded: false
-  work: null
-}
-interface AssemblyWhenLoaded {
-  loaded: true
-  work: WorkFunction
+interface Assembly {
+  work: (
+    hash: string,
+    threshold: bigint,
+    workerIndex: number,
+    workerCount: number
+  ) => null | string
+  derivePublicFromSecret: (secretKey: string) => string
+  signBlockHash: (privateKey: string, blockHash: string) => string
 }
 
-const ASSEMBLY: AssemblyWhenNotLoaded | AssemblyWhenLoaded = {
-  loaded: false,
-  work: null,
-}
+let assembly: Assembly | undefined = undefined
 
-function loadWasm(): Promise<AssemblyWhenLoaded> {
-  return new Promise((resolve, reject) => {
-    if (ASSEMBLY.loaded) {
-      return resolve(ASSEMBLY)
-    }
+async function loadWasm(): Promise<Assembly> {
+  if (assembly) {
+    return assembly
+  }
 
-    try {
-      /* eslint-disable promise/catch-or-return, promise/always-return */
-      loadAssembly().then(assembly => {
-        const loaded = Object.assign(ASSEMBLY, {
-          loaded: true,
-          work: assembly.cwrap('emscripten_work', 'string', [
-            'string',
-            'string',
-            'number',
-            'number',
-          ]),
-        }) as AssemblyWhenLoaded
+  const { instance } = await wasm({})
+  assembly = {
+    work(hash, threshold, workerIndex, workerCount) {
+      const hashBytes = hexToByteArray(hash)
+      const thresholdBytes = hexToByteArray(
+        threshold.toString(16).padStart(8, '0')
+      )
 
-        resolve(loaded)
-      })
-      /* eslint-enable promise/catch-or-return, promise/always-return */
-    } catch (err) {
-      reject(err)
-    }
-  })
+      const memory = instance.exports.memory
+      const memoryPointer = instance.exports.wasm_get_io_buffer()
+
+      const sharedMemory = new Uint8Array(memory.buffer, memoryPointer, 1024)
+
+      const dataview = new DataView(
+        sharedMemory.buffer,
+        sharedMemory.byteOffset,
+        sharedMemory.byteLength
+      )
+
+      sharedMemory.set(hashBytes, 0)
+      sharedMemory.set(thresholdBytes, 32)
+      dataview.setUint8(40, workerIndex)
+      dataview.setUint8(41, workerCount)
+
+      instance.exports.wasm_work()
+
+      const found = sharedMemory[42] === 1
+      const output = sharedMemory.slice(43, 51)
+
+      if (!found) {
+        return null
+      }
+
+      return byteArrayToHex(output)
+    },
+    derivePublicFromSecret(secretKey) {
+      const secretKeyBytes = hexToByteArray(secretKey)
+
+      const memory = instance.exports.memory
+      const memoryPointer = instance.exports.wasm_get_io_buffer()
+
+      const sharedMemory = new Uint8Array(memory.buffer, memoryPointer, 1024)
+
+      sharedMemory.set(secretKeyBytes, 0)
+
+      instance.exports.wasm_derive_public_key_from_secret_key()
+
+      const publicKeyBytes = sharedMemory.slice(32, 64)
+
+      return byteArrayToHex(publicKeyBytes)
+    },
+    signBlockHash(privateKey, blockHash) {
+      const secretKeyBytes = hexToByteArray(privateKey)
+      const blockHashBytes = hexToByteArray(blockHash)
+
+      const memory = instance.exports.memory
+      const memoryPointer = instance.exports.wasm_get_io_buffer()
+
+      const sharedMemory = new Uint8Array(memory.buffer, memoryPointer, 1024)
+
+      sharedMemory.set(secretKeyBytes, 0)
+      sharedMemory.set(blockHashBytes, 32)
+
+      instance.exports.wasm_sign_block_hash()
+
+      const signatureBytes = sharedMemory.slice(64, 128)
+
+      return byteArrayToHex(signatureBytes)
+    },
+  }
+
+  return assembly
 }
 
 /** Compute work parameters. */
@@ -62,8 +106,8 @@ export interface ComputeWorkParams {
   workerIndex?: number
   /** The count of worker */
   workerCount?: number
-  /** The work threshold, in hex format. Defaults to `ffffffc000000000` */
-  workThreshold?: string
+  /** The work threshold, in hex format. Defaults to `0xffffffc000000000n` */
+  workThreshold?: bigint
 }
 
 /**
@@ -98,12 +142,22 @@ export async function computeWork(
     throw new Error('Worker parameters are not valid')
   }
 
-  const work = assembly.work(blockHash, workThreshold, workerIndex, workerCount)
-  const success = work[1] === '1'
+  return assembly.work(blockHash, workThreshold, workerIndex, workerCount)
+}
 
-  if (!success) {
-    return null
-  }
+export async function derivePublicFromSecret(
+  secretKey: string
+): Promise<string> {
+  const assembly = await loadWasm()
 
-  return work.substr(2)
+  return assembly.derivePublicFromSecret(secretKey)
+}
+
+export async function signBlockHash(
+  secretKey: string,
+  blockHash: string
+): Promise<string> {
+  const assembly = await loadWasm()
+
+  return assembly.signBlockHash(secretKey, blockHash)
 }

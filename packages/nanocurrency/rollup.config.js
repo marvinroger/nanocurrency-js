@@ -1,60 +1,101 @@
-import autoExternal from 'rollup-plugin-auto-external'
-import typescript from 'rollup-plugin-typescript2'
+import babel from '@rollup/plugin-babel'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
+import replace from '@rollup/plugin-replace'
+import wasm from '@rollup/plugin-wasm'
 import { terser } from 'rollup-plugin-terser'
 import license from 'rollup-plugin-license'
 
 import pkg from './package.json'
 
-const ENV = process.env.NODE_ENV
-
 const LICENSE_BANNER = `
 /*!
 * nanocurrency-js v${pkg.version}: A toolkit for the Nano cryptocurrency.
-* Copyright (c) <%= moment().format('YYYY') %> Marvin ROGER <dev at marvinroger dot fr>
+* Copyright (c) <%= moment().format('YYYY') %> Marvin ROGER <bonjour+code at marvinroger dot fr>
 * Licensed under GPL-3.0 (https://git.io/vAZsK)
 */
 `.trim()
 
-const outputs = [
-  {
-    name: 'NanoCurrency',
-    file: 'dist/nanocurrency.umd.js',
-    format: 'umd',
-  },
-  { file: pkg.main, format: 'cjs' },
-  { file: pkg.module, format: 'es' },
-]
+const extensions = ['.js', '.ts']
 
-const configs = outputs.map((output, index) => {
+const nodeTarget = { node: '12.0.0' }
+const browserTargets = {
+  android: '67',
+  chrome: '67',
+  edge: '79',
+  firefox: '68',
+  ios: '14',
+  opera: '54',
+  safari: '14',
+}
+
+const buildConfig = ({ file, target, format }) => {
   const config = {
     input: 'src/index.ts',
-    output,
+    output: {
+      file,
+      format,
+      name: 'NanoCurrency',
+    },
     plugins: [
-      resolve(),
-      commonjs(),
-      typescript({
-        useTsconfigDeclarationDir: true,
-        tsconfigOverride: { compilerOptions: { declaration: index === 0 } }, // only generate definitions once, otherwise crash
+      replace({
+        preventAssignment: true,
+        values: { 'process.env.TARGET': JSON.stringify(target) },
       }),
-      autoExternal({
-        dependencies: output.format !== 'umd',
+      resolve({ extensions }),
+      commonjs(),
+      babel({
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              targets:
+                target === 'node' ? { ...nodeTarget } : { ...browserTargets },
+              shippedProposals: true,
+            },
+          ],
+          '@babel/preset-typescript',
+        ],
+        extensions,
+        babelHelpers: 'bundled',
+      }),
+      wasm({ maxFileSize: Infinity }),
+      terser({ output: { comments: false } }),
+      license({
+        banner: LICENSE_BANNER,
       }),
     ],
   }
 
-  if (ENV === 'production') {
-    config.plugins.push(terser())
-
-    config.plugins.push(
-      license({
-        banner: LICENSE_BANNER,
-      })
-    )
-  }
-
   return config
-})
+}
+
+const configs = [
+  buildConfig({
+    target: 'browser',
+    file: 'dist/bundles/nanocurrency.umd.js',
+    format: 'umd',
+  }),
+  buildConfig({
+    target: 'node',
+    file: 'dist/bundles/nanocurrency.cjs-node.js',
+    format: 'cjs',
+  }),
+  buildConfig({
+    target: 'browser',
+    file: 'dist/bundles/nanocurrency.cjs-browser.js',
+    format: 'cjs',
+  }),
+  buildConfig({
+    target: 'node',
+    file: 'dist/bundles/nanocurrency.esm-node.js',
+    format: 'esm',
+  }),
+  buildConfig({
+    target: 'browser',
+    file: 'dist/bundles/nanocurrency.esm-browser.js',
+    format: 'esm',
+  }),
+]
 
 export default configs

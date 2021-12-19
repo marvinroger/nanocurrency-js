@@ -1,9 +1,10 @@
 /*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
- * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
+ * Copyright (c) 2021 Marvin ROGER <bonjour+code at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import BigNumber from 'bignumber.js'
+
 import { checkNumber } from './check'
 
 /** Nano unit. */
@@ -58,15 +59,8 @@ export interface ConvertParams {
  * @returns Converted number
  */
 export function convert(value: string, params: ConvertParams): string {
-  const paramsNotValid = new Error('From or to is not valid')
-  if (!params) throw paramsNotValid
-
-  const fromZeroes: number | undefined = ZEROES[params.from]
-  const toZeroes: number | undefined = ZEROES[params.to]
-
-  if (typeof fromZeroes === 'undefined' || typeof toZeroes === 'undefined') {
-    throw new Error('From or to is not valid')
-  }
+  const fromZeroes = ZEROES[params.from]
+  const toZeroes = ZEROES[params.to]
 
   const valueNotValid = new Error('Value is not valid')
   if (params.from === 'hex') {

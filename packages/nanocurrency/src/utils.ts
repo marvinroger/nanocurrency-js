@@ -1,37 +1,26 @@
 /*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
- * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
+ * Copyright (c) 2021 Marvin ROGER <bonjour+code at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-const IS_NODE =
-  Object.prototype.toString.call(
-    typeof process !== 'undefined' ? process : 0
-  ) === '[object process]'
-
-let fillRandom: (bytes: Uint8Array) => Promise<void>
-if (!IS_NODE) {
-  fillRandom = bytes => {
-    return new Promise(resolve => {
-      crypto.getRandomValues(bytes)
-      resolve()
-    })
-  }
-} else {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { promisify } = require('util')
-  fillRandom = promisify(require('crypto').randomFill)
-}
 
 /** @hidden */
-export function getRandomBytes(count: number): Promise<Uint8Array> {
-  return new Promise((resolve, reject) => {
-    const bytes = new Uint8Array(count)
-    fillRandom(bytes)
-      .then(() => {
-        return resolve(bytes)
-      })
-      .catch(reject)
-  })
+export async function getRandomBytes(count: number): Promise<Uint8Array> {
+  const bytes = new Uint8Array(count)
+
+  if (process.env.TARGET === 'node') {
+    const { promisify } = await import('util')
+    const { randomFill } = await import('crypto')
+    await promisify(randomFill)(bytes)
+    return bytes
+  }
+
+  if (process.env.TARGET === 'browser') {
+    crypto.getRandomValues(bytes)
+    return bytes
+  }
+
+  throw new Error('The target is not supported')
 }
 
 /** @hidden */

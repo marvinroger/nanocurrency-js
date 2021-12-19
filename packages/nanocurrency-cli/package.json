@@ -8,9 +8,12 @@
     "url": "https://www.marvinroger.fr"
   },
   "bugs": "https://github.com/marvinroger/nanocurrency-js/issues",
+  "engines": {
+    "node": ">= 12.0.0"
+  },
   "dependencies": {
     "nanocurrency": ">= 2.2.0 < 3.0.0",
-    "yargs": "^13.0.0"
+    "yargs": "^17.3.0"
   },
   "files": [
     "dist/"
@@ -33,12 +36,17 @@
     "url": "https://github.com/marvinroger/nanocurrency-js.git"
   },
   "scripts": {
-    "build:prod": "tsc --build",
+    "build": "tsc --build",
     "lint": "fusee lint",
     "test": "fusee test",
-    "prepublishOnly": "yarn build:prod && yarn test && yarn lint"
+    "prepublishOnly": "yarn build && yarn test && yarn lint"
   },
   "devDependencies": {
-    "json-stable-stringify-without-jsonify": "^1.0.1"
+    "@marvinroger/fusee": "^4.0.3",
+    "eslint": "^8.5.0",
+    "jest": "^27.4.5",
+    "json-stable-stringify-without-jsonify": "^1.0.1",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.4"
   }
 }

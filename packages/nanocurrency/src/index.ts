@@ -1,25 +1,29 @@
 /*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
- * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
+ * Copyright (c) 2021 Marvin ROGER <bonjour+code at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 /**
  * @module NanoCurrency
  */
-export { computeWork, ComputeWorkParams } from './accelerated'
 export {
+  computeWork,
+  derivePublicFromSecret,
+  signBlockHash,
+} from './accelerated'
+export type { ComputeWorkParams } from './accelerated'
+export { createBlock } from './block'
+export type {
   Block,
   BlockData,
   BlockRepresentation,
   ChangeBlockData,
   CommonBlockData,
-  createBlock,
   OpenBlockData,
   ReceiveBlockData,
   SendBlockData,
 } from './block'
 export {
-  checkAddress,
   checkAmount,
   checkHash,
   checkIndex,
@@ -29,19 +33,19 @@ export {
   checkThreshold,
   checkWork,
 } from './check'
-export { convert, ConvertParams, Unit } from './conversion'
-export { hashBlock, HashBlockParams } from './hash'
+export { checkAddress } from './address'
+export { convert, Unit } from './conversion'
+export type { ConvertParams } from './conversion'
+export { hashBlock } from './hash'
+export type { HashBlockParams } from './hash'
 export {
   deriveAddress,
-  DeriveAddressParams,
   derivePublicKey,
   deriveSecretKey,
   generateSeed,
 } from './keys'
-export {
-  signBlock,
-  SignBlockParams,
-  verifyBlock,
-  VerifyBlockParams,
-} from './signature'
-export { validateWork, ValidateWorkParams } from './work'
+export type { DeriveAddressParams } from './keys'
+export { signBlock, verifyBlock } from './signature'
+export type { SignBlockParams, VerifyBlockParams } from './signature'
+export { validateWork } from './work'
+export type { ValidateWorkParams } from './work'

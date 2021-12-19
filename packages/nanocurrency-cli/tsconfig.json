@@ -1,7 +1,11 @@
 {
-  "extends": "../../tsconfig",
-  "files": ["src/index.ts"],
+  "extends": "@marvinroger/fusee/typescript/node12",
   "compilerOptions": {
-    "outDir": "dist"
-  }
+    "outDir": "dist",
+    "lib": ["es2015", "es2016", "es2017", "dom"],
+    "module": "es2020",
+    "target": "ES2020",
+    "moduleResolution": "node"
+  },
+  "includes": ["src/"],
 }

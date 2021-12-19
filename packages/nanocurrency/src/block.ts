@@ -1,15 +1,16 @@
 /*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
- * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
+ * Copyright (c) 2021 Marvin ROGER <bonjour+code at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
-import { checkAddress, checkAmount, checkHash, checkKey } from './check'
+import { checkAmount, checkHash, checkKey } from './check'
 
 import { deriveAddress, derivePublicKey } from './keys'
 
 import { unsafeHashBlock } from './hash'
 
 import { signBlock } from './signature'
+import { checkAddress } from './address'
 
 const BLANK_HASH =
   '0000000000000000000000000000000000000000000000000000000000000000'
@@ -165,7 +166,6 @@ export function createBlock(secretKey: string, data: BlockData): Block {
     representative: data.representative,
     balance: data.balance,
     link,
-    // eslint-disable-next-line @typescript-eslint/camelcase
     link_as_account: linkAsAddress,
     work: data.work,
     signature,

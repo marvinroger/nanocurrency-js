@@ -1,17 +1,18 @@
 /*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
- * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
+ * Copyright (c) 2021 Marvin ROGER <bonjour+code at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import { blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
 
-import { checkAddress, checkAmount, checkHash } from './check'
+import { checkAmount, checkHash } from './check'
 
 import { convert, Unit } from './conversion'
 
 import { byteArrayToHex, hexToByteArray } from './utils'
 
 import { derivePublicKey } from './keys'
+import { checkAddress } from './address'
 
 const STATE_BLOCK_PREAMBLE_BYTES = new Uint8Array(32)
 STATE_BLOCK_PREAMBLE_BYTES[31] = 6
@@ -45,7 +46,10 @@ export function unsafeHashBlock(params: HashBlockParams): string {
   const representativeBytes = hexToByteArray(
     derivePublicKey(params.representative)
   )
-  const balanceHex = convert(params.balance, { from: Unit.raw, to: Unit.hex })
+  const balanceHex = convert(params.balance, {
+    from: Unit.raw,
+    to: Unit.hex,
+  })
   const balanceBytes = hexToByteArray(balanceHex)
   let linkBytes: Uint8Array
   if (checkAddress(params.link)) {

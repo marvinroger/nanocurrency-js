@@ -1,13 +1,13 @@
 /*!
  * nanocurrency-js: A toolkit for the Nano cryptocurrency.
- * Copyright (c) 2019 Marvin ROGER <dev at marvinroger dot fr>
+ * Copyright (c) 2021 Marvin ROGER <bonjour+code at marvinroger dot fr>
  * Licensed under GPL-3.0 (https://git.io/vAZsK)
  */
 import { blake2b, blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
 import { checkIndex, checkKey, checkSeed } from './check'
 import { derivePublicFromSecret } from './nacl'
 import { encodeNanoBase32 } from './nano-base32'
-import { parseAddress } from './parse'
+import { parseAddress } from './address'
 import { byteArrayToHex, getRandomBytes, hexToByteArray } from './utils'
 
 /**
@@ -18,7 +18,7 @@ import { byteArrayToHex, getRandomBytes, hexToByteArray } from './utils'
 export function generateSeed(): Promise<string> {
   return new Promise((resolve, reject) => {
     getRandomBytes(32)
-      .then(seed => {
+      .then((seed) => {
         const seedHex = seed.reduce((hex, i) => {
           return `${hex}${`0${i.toString(16)}`.slice(-2)}`
         }, '')
@@ -109,7 +109,7 @@ export function deriveAddress(
 
   const encodedPublicKey = encodeNanoBase32(paddedPublicKeyBytes)
 
-  const checksum = blake2b(publicKeyBytes, null, 5).reverse()
+  const checksum = blake2b(publicKeyBytes, undefined, 5).reverse()
 
   const encodedChecksum = encodeNanoBase32(checksum)
 

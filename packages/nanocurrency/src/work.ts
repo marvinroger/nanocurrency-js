@@ -9,6 +9,44 @@ import { checkHash, checkThreshold, checkWork } from './check'
 import { byteArrayToHex, hexToByteArray } from './utils'
 
 export const DEFAULT_WORK_THRESHOLD = 'ffffffc000000000'
+export const MAX_WORK_THRESHOLD = '10000000000000000'
+
+/** Get work difficulty parameters. */
+export interface GetWorkDifficultyParams {
+  /** The block hash to check the work against */
+  blockHash: string
+  /** The work to check */
+  work: string
+}
+
+/** @hidden */
+export function getWorkDifficultyBigNumber(params: GetWorkDifficultyParams): BigNumber {
+  if (!checkHash(params.blockHash)) throw new Error('Hash is not valid')
+  if (!checkWork(params.work)) throw new Error('Work is not valid')
+
+  const hashBytes = hexToByteArray(params.blockHash)
+  const workBytes = hexToByteArray(params.work).reverse()
+
+  const context = blake2bInit(8)
+  blake2bUpdate(context, workBytes)
+  blake2bUpdate(context, hashBytes)
+  const output = blake2bFinal(context).reverse()
+  const outputHex = byteArrayToHex(output)
+  const outputBigNumber = new BigNumber(`0x${outputHex}`)
+
+  return outputBigNumber
+}
+
+/**
+ * Get the work difficulty for the given hash.
+ *
+ * @param params - Parameters
+ * @returns Difficulty
+ */
+export function getWorkDifficulty(params: GetWorkDifficultyParams): string {
+  const outputBigNumber = getWorkDifficultyBigNumber({ blockHash: params.blockHash, work: params.work })
+  return outputBigNumber.toString(16);
+}
 
 /** Validate work parameters. */
 export interface ValidateWorkParams {
@@ -29,20 +67,36 @@ export interface ValidateWorkParams {
 export function validateWork(params: ValidateWorkParams): boolean {
   const thresholdHex = params.threshold ?? DEFAULT_WORK_THRESHOLD
 
-  if (!checkHash(params.blockHash)) throw new Error('Hash is not valid')
-  if (!checkWork(params.work)) throw new Error('Work is not valid')
   if (!checkThreshold(thresholdHex)) throw new Error('Threshold is not valid')
 
+  const outputBigNumber = getWorkDifficultyBigNumber({ blockHash: params.blockHash, work: params.work })
   const threshold = new BigNumber(`0x${thresholdHex}`)
-  const hashBytes = hexToByteArray(params.blockHash)
-  const workBytes = hexToByteArray(params.work).reverse()
-
-  const context = blake2bInit(8)
-  blake2bUpdate(context, workBytes)
-  blake2bUpdate(context, hashBytes)
-  const output = blake2bFinal(context).reverse()
-  const outputHex = byteArrayToHex(output)
-  const outputBigNumber = new BigNumber(`0x${outputHex}`)
 
   return outputBigNumber.isGreaterThanOrEqualTo(threshold)
+}
+
+/** Get work multiplier parameters. */
+export interface GetDifficultyMultiplierParams {
+  /** The block hash to check the work against */
+  difficulty: string
+  /** The threshold to calculate against. Defaults to ffffffc000000000 */
+  threshold?: string
+}
+
+/**
+ * Get the difficulty multiplier of a work for the given hash.
+ *
+ * @param params - Parameters
+ * @returns Multiplier
+ */
+export function getDifficultyMultiplier(params: GetDifficultyMultiplierParams): number {
+  const thresholdHex = params.threshold ?? DEFAULT_WORK_THRESHOLD
+
+  if (!checkThreshold(thresholdHex)) throw new Error('Threshold is not valid')
+  if (!checkThreshold(params.difficulty)) throw new Error('Difficulty is not valid')
+
+  const threshold = new BigNumber(`0x${MAX_WORK_THRESHOLD}`).minus(new BigNumber(`0x${thresholdHex}`))
+  const difficulty = new BigNumber(`0x${MAX_WORK_THRESHOLD}`).minus(new BigNumber(`0x${params.difficulty}`))
+
+  return threshold.dividedBy(difficulty).toNumber();
 }

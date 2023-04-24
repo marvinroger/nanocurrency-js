@@ -12,29 +12,14 @@ export enum Unit {
   hex = 'hex',
   /** 10^0 raw */
   raw = 'raw',
-  /** 10^24 raw */
+  /** 10^30 raw */
   nano = 'nano',
-  /** 10^27 raw */
-  knano = 'knano',
-  /** 10^30 raw */
-  Nano = 'Nano',
-  /** 10^30 raw */
-  NANO = 'NANO',
-  /** 10^33 raw */
-  KNano = 'KNano',
-  /** 10^36 raw */
-  MNano = 'MNano',
 }
 
 const ZEROES: { [unit in keyof typeof Unit]: number } = {
   hex: 0,
   raw: 0,
-  nano: 24,
-  knano: 27,
-  Nano: 30,
-  NANO: 30,
-  KNano: 33,
-  MNano: 36,
+  nano: 30,
 }
 
 const TunedBigNumber = BigNumber.clone({
